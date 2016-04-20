@@ -2,7 +2,7 @@ import Location
 import Player
 class board:
 
-	def init(self):
+	def __init__(self):
 		return 0
 
 	def initialPlacement(self, i, players):

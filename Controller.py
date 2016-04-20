@@ -1,13 +1,14 @@
 import Player
 import Board
 import Location
+reload(Player)
 
 CONST_DEFAULT_NUM_PLAYERS = 2
 CONST_ROBBER = 7
 
 def main():
 	board = Board.board()
-	board.init()
+	
 	numPlayers = 0
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
 	try:
