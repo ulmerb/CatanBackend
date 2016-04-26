@@ -1,7 +1,7 @@
 import Location
 import Player
 class board:
-
+	#Catan board has 19 tiles, 54 corners, 36 edges
 	def __init__(self):
 		return 0
 
