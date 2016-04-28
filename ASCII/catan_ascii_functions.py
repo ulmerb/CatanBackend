@@ -23,7 +23,7 @@ def replaceText(old,new,currentBoardNum):
 
 def main():
 	currentBoardNum = 1
-	currentCommands = ["batch update", "verify","undo","print board","replace","build","help"]
+	currentCommands = ["batch update", "verify","undo","print board","replace","build","formatting","help"]
 	while(True):
 		print("Enter a Command")
 		command = raw_input("> ")
@@ -31,6 +31,7 @@ def main():
 		if(command == "batch update"):
 			subCommand = raw_input("What is the name and location of the update file?")
 			foundFile = False
+			fileData = 0
 			while foundFile == False:
 				try:
 					fileData = open(subCommand,'r')
@@ -38,6 +39,7 @@ def main():
 				except IOError:
 					subCommand =raw_input("Incorrect file name try again\n>")
 			lines = [line.rstrip('\n') for line in fileData]
+			fileData.close()
 			print lines
 			for line in lines:
 				result = line.split(',')
@@ -150,6 +152,13 @@ def main():
 			print "Current Commands are"
 			for l in currentCommands:
 				print "- ",l
+
+		if(command =="formatting"):
+	 		filein = "BoardFormatting.txt"
+			f = open(filein,'r')
+			filedata = f.read()
+			print filedata
+			f.close()			
 
 main()
 

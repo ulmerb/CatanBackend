@@ -1,0 +1,16 @@
+Current Formatting for the board
+
+ALL ARE 3 CHARACTERS (except ports are 5)
+
+Initialized
+Roads: 01R-71R
+Vertexes: 01V-53V
+Tiles: 01T-19T
+Ports: port1-port9
+
+When Built
+Roads: "!R" + playerNum
+Settlements: settlementNum (1-5) + "S" + playerNum
+Cities: "!C" + playerNum
+Tiles: "B/W/O/G/S" + 02-12 for Brick, Wood, Ore, Grain, Sheep
+Ports: "#3:1#" or "#2:1" + "B/W/O/G/S" for Brick, Wood, Ore, Grain, Sheep
