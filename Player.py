@@ -4,7 +4,7 @@ import random
 class player:
         #test comment
 	def __init__(self):
-	        self.score = 0
+	        self.score =  0
 	        self.resources =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
 	        self.roadsRemaining = 15
 	        self.citiesRemaining = 4
