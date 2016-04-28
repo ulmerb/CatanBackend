@@ -13,6 +13,7 @@ def main():
 	board = Board.board()
 	devCardsDeck = Devcards.devcards()
 	numPlayers = 0
+	#test Ben
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
 	try:
 		numPlayers = input('How many players do you want? ')
