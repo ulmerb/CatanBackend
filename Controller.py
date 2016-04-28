@@ -2,6 +2,7 @@
 import Player
 import Board
 import Location
+import Devcards
 reload(Player)
 reload(Board)
 
@@ -10,6 +11,7 @@ CONST_ROBBER = 7
 
 def main():
 	board = Board.board()
+	devCardsDeck = Devcards.devcards()
 	numPlayers = 0
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
 	try:
