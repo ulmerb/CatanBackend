@@ -1,6 +1,22 @@
 class Location:
+	def __init__(self):
+		self.x = None
+		self.y = None
+
 	def __str__(self):
 		return "Location"
+
+	def setX(self, x):
+		self.x = x
+
+	def setY(self, y):
+		self.y = y
+
+	def getX(self):
+		return self.x
+
+	def getY(self):
+		return self.y
 
 class Tile(Location):
 	def __init__(self):
@@ -28,17 +44,6 @@ class Tile(Location):
 	def setRobber(self, val):
 		self.robber = val
 
-	def setX(self, x):
-		self.x = x
-
-	def setY(self, y):
-		self.y = y
-
-	def getX(self):
-		return self.x
-
-	def getY(self):
-		return self.y
 
 class Edge(Location):
 	def __str__(self):
