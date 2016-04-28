@@ -5,7 +5,7 @@ class player:
 
 	def __init__(self):
 	        self.score = 0
-	        self.resources =  {'wood':0, 'wool':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+	        self.resources =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
 	        self.roadsRemaining = 15
 	        self.citiesRemaining = 4
 	        self.settlementsRemaining = 5
@@ -13,7 +13,6 @@ class player:
 	        #of where its built, for now initialize as an empty list for each that can be filled to match board 
 	        #loactions however we choose to store those
 	        self.structures = {'roads' : [], 'settlements' : [], 'cities' : [], 'ports' : []}
-		print "test" 
 		self.devCardsHeld = []
 		self.devCardsPlayed = []
 	
@@ -37,7 +36,7 @@ class player:
 	def canBuildSettlement(self, location = -1):
        	        #we'll need some additional handling to see if theres a spot they can build,
        	        #dependent on board/location implementations, for now just check resources
-        	if self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.resources['grain'] >= 1 and self.resources['wool'] >= 1 and self.settlementsRemaining > 0:
+        	if self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.resources['grain'] >= 1 and self.resources['sheep'] >= 1 and self.settlementsRemaining > 0:
            	        if location == -1 or location in self.structures['roads']:
            	            return True
 		return False       
@@ -52,7 +51,7 @@ class player:
 		return False
 
 	def canBuildDevCard(self):
-	        if self.resources['wool'] >= 1 and self.resources['grain'] >= 1 and self.resources['ore'] >= 1:
+	        if self.resources['sheep'] >= 1 and self.resources['grain'] >= 1 and self.resources['ore'] >= 1:
 	           return True
 		return False
 
@@ -89,7 +88,7 @@ class player:
 		    self.resources['wood'] -= 1
 		    self.resources['brick'] -= 1
 		    self.resources['grain'] -= 1
-		    self.resources['wool'] -= 1
+		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location)
 		else:
 		    print "You cannot build a settlement there"
@@ -111,13 +110,13 @@ class player:
 		    #we will need a deck to draw from
 		    cardName
 		    self.devCardsHeld.append('dummy')
-		    self.resources['wool'] -= 1
+		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
 		    self.resources['ore'] -=1
 		else:
 		    print "You cannot draw a development card right now"
 
-	def loseRandomCard(self, cardType):
+	def loseRandomCard(self, cardType = 'res'):
 	        #loseDevCard or Resource
 	        if cardType == 'dev':
 	            if self.devCardsHeld != []:
@@ -126,9 +125,10 @@ class player:
           	        print "No Dev Cards to steal"
           	elif cardType =='res':
           	    resources = []
+          	    #note to self chance needed here to account for different amounts of resources #####
           	    for r in self.resources:
           	        if self.resources[r] != 0:
-          	            resources.append(r)
+          	                 resources.append(r)
           	    if len(resources) == 0:
           	        print "No resources to steal"
           	    else:
@@ -138,14 +138,15 @@ class player:
           	else:
           	    print "invalid card type"
 
-	def addResource(self, resource, amount):
+	def addResource(self, resource, amount, verbose = False):
 	       self.resources[resource] += amount
-	       print "Now you have: ", self.resources
-	       return 0
+	       if verbose:
+	           print "Now you have: ", self.resources
 
-	def loseResource(self, resource, amount):
+	def loseResource(self, resource, amount, verbose = False):
 		self.resources[resource] -= amount
-	        print "Now you have: ", self.resources
+		if verbose:
+	           print "Now you have: ", self.resources
 	#I added these two mostly for testing but could be useful
 	def checkResources(self):
 	        return self.resources
