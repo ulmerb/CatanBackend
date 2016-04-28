@@ -1,5 +1,5 @@
 class Location:
-	def __init__(self,x,y):
+	def __init__(self, x, y):
 		self.x = x
 		self.y = y
 
@@ -19,7 +19,7 @@ class Location:
 		return self.y
 
 class Tile(Location):
-	def __init__(self,x,y):
+	def __init__(self, x, y):
 		self.type = None
 		self.number = None
 		self.robber = False
@@ -46,9 +46,47 @@ class Tile(Location):
 
 
 class Edge(Location):
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+		self.owner = None
+
 	def __str__(self):
 		return "Road"
 
+	def buildRoad(self, player):
+		self.owner = player
+
+	def getOwner(self):
+		return self.owner
+
+
 class Vertex(Location):
+	def __init__(self, x, y):
+		self.x = x
+		self.y = y
+		self.settlement = None
+		self.city = None
+
 	def __str__(self):
 		return "Settlement or City"
+
+	def buildSettlement(self, player):
+		self.settlement = player
+
+	def buildCity(self, player):
+		self.settlement = None
+		self.city = player
+
+	def getSettlement(self):
+		return self.settlement
+
+	def getCity(self):
+		return self.city
+
+	def getOwner(self):
+		if self.settlement is not None:
+			return settlement
+		if self.city is not None:
+			return city
+		return None

@@ -3,12 +3,15 @@ import Player
 import random 
 
 class board:
-	#tests
-	#
 	#http://stackoverflow.com/questions/1838656/how-do-i-represent-a-hextile-hex-grid-in-memory
+
+	def printBoard(self):
+		print self.tiles
 
 	def init(self):
 		self.BOARD_LENGTH = 5
+		self.robberX = None
+		self.robberY = None
 		spacesLength = 2 * self.BOARD_LENGTH + 2
 		self.edges = [[Location.Edge(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
 		self.vertices = [[Location.Vertex(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
@@ -25,6 +28,8 @@ class board:
 					self.tiles[i][j].setY(j)
 					if givenType != "desert":
 						self.tiles[i][j].setNumber(numbers.pop())	
+						self.robberX = i
+						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)	
 		self.printBoard()
@@ -66,15 +71,15 @@ class board:
 	def getShuffledTypes(self):
 		types = []
 		for i in range(3):
-			types.append("rock")
+			types.append("quarry")
 		for i in range(4):
-			types.append("wood")
+			types.append("forest")
 		for i in range(3):
-			types.append("brick")
+			types.append("brickpit")
 		for i in range(4):
-			types.append("sheep")
+			types.append("sheepherd")
 		for i in range(4):
-			types.append("wheat")
+			types.append("plain")
 		types.append("desert")
 		random.shuffle(types)
 		return types
@@ -206,33 +211,69 @@ class board:
 
 	def getAllTiles(self):
 		tiles = []
-		tiles.append(Location.Tile())
-		tiles.append(Location.Tile())
+		for row in self.tiles:
+			for tile in row:
+				tiles.append(tile)
 		return tiles
 
-	def moveRobber(self, location):
-		print "Robber moved to " + str(location)
+	def moveRobber(self, tile):
+		self.tiles[self.robberX][self.robberY].setRobber(False)
+		print "Robber moved to " + str(tile)
+		if tile is not None:
+			tile.setRobber(True)
+			self.robberX = tile.getX()
+			self.robberY = tile.getY()
+		else:
+			print "Invalid location"
 
 	def playersToStealFrom(self, players):
+		relatedVertices = self.getTileToVertices(self.tiles[self.robberX][self.robberY])
 		targets = []
-		targets.append(0)
-		targets.append(1)
-		return targets
+		for vertex in relatedVertices:
+			if vertex.getOwner() is not None:
+				targets.add(vertex.getOwner())
+		return set(targets)
 
 	def getPotentialRoadLocs(self, curPlayer, players):
-		return 0
+		result = []
+		for row in self.vertices:
+			for vertex in row:
+				if vertex.getOwner() == curPlayer:
+					roadLocs = self.getVertexToEdges(vertex)
+					for road in roadLocs:
+						if road.getOwner() == None:
+							result.append(road)
+		return set(result)
 
 	def getPotentialSettlementLocs(self, curPlayer, players):
-		return 0
+		result = []
+		for row in self.edges:
+			for edge in row:
+				if edge.owner == curPlayer:
+					for vertex in self.getVertexToEdges(edge):
+						if vertex.getOwner() == None:
+							foundNeighbor = False
+							for neighbor in self.getVertexToVertices(vertex):
+								if neighbor.getOwner != None:
+									foundNeighbor = True
+									break
+							if foundNeighbor == False:
+								result.append(vertex)
+		return set(result)
 
 	def getPotentialCityLocs(self, curPlayer, players):
-		return 0
+		result = []
+		for row in self.vertices:
+			for vertex in row:
+				if vertex.getSettlement() == curPlayer:
+					result.append(vertex)
+		return result
 
-	def buildRoad(self, curPlayer, players, location):
-		return 0
+	def buildRoad(self, curPlayer, players, edge):
+		edge.buildRoad(curPlayer)
 
-	def buildCity(self, curPlayer, players, location):
-		return 0
+	def buildCity(self, curPlayer, players, vertex):
+		vertex.buildCity(curPlayer)
 
-	def buildSettlement(self, curPlayer, players, location):
-		return 0
+	def buildSettlement(self, curPlayer, players, vertex):
+		vertex.buildSettlement(curPlayer)
