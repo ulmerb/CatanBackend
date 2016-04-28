@@ -28,7 +28,7 @@ class devcards:
 
 	def getRandomDevCard(self):
 		if len(self.devCardsArr) == 0:
-			return "no more dev cards!"
+			return "no more dev cards"
 		else: 
 			self.numDevCards -= 1
 			return self.devCardsArr.pop(0)
