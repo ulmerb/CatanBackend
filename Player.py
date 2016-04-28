@@ -109,7 +109,7 @@ class player:
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
-		    self.devCardsHeld.append('dummy')
+		    self.devCardsHeld.append(nameCard)
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
 		    self.resources['ore'] -=1

@@ -5,7 +5,7 @@ class devcards:
 	#names of card:
 	# knight, victoryPoint, roadBuild, monopoly, yearOfPlenty
 
-	def init(self):
+	def __init__(self):
 		self.numDevCards = 25
 		self.numKnights = 14
 		self.numVictoryPoints = 5
@@ -31,7 +31,9 @@ class devcards:
 			return "no more dev cards"
 		else: 
 			self.numDevCards -= 1
-			return self.devCardsArr.pop(0)
+			cardName = self.devCardsArr.pop(0)
+			print cardName
+			return cardName
 
 	def getNumDevCards(self):
 		return self.numDevCards
