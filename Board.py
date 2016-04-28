@@ -90,7 +90,7 @@ class board:
 		print "assigning resources for the dice roll " + str(diceRoll)
 		return -1
 
-	def getTilesNeighborTiles(self, tile):
+	def getTileToTiles(self, tile):
 		result = []
 		x = tile.getX()
 		y = tile.getY()
@@ -118,7 +118,7 @@ class board:
 					result.append(self.tiles[x-1][y+offset])
 		return result
 
-	def getVerticesNeighborVertices(self, vertex):
+	def getVertexToVertices(self, vertex):
 		result = []
 		x = vertex.getX()
 		y = vertex.getY()
@@ -128,7 +128,81 @@ class board:
 		if y+1 < len(self.vertices[0]):
 			if self.vertices[x][y+1] != None:
 				result.append(self.vertices[x][y+1])
+		if y > 0:
+			if self.vertices[x][y-1] != None:
+				result.append(self.vertices[x][y-1])
+		if x+offset >= 0 and x+offset <= len(self.vertices):
+			if self.vertices[x+offset][y] is not None:
+				result.append(self.vertices[x+offset][y])
+		return result
 
+	def getTileToVertices(self, tile):
+		result = []
+		x = tile.getX()
+		y = tile.getY()
+		offset = (x % 2)*-1
+		result.append(self.vertices[x][2*y+offset])
+		result.append(self.vertices[x][2*y+offset+1])
+		result.append(self.vertices[x][2*y+offset+2])
+		result.append(self.vertices[x+1][2*y+offset])
+		result.append(self.vertices[x+1][2*y+offset+1])
+		result.append(self.vertices[x+1][2*y+offset+2])
+		return result
+
+	def getTileToEdges(self, tile):
+		result = []
+		x = tile.getX()
+		y = tile.getY()
+		offset = (x % 2)*-1
+		result.append(self.edges[2*x][2*y+offset])
+		result.append(self.edges[2*x][2*y+offset+1])
+		result.append(self.edges[2*x+1][2*y+offset+2])
+		result.append(self.edges[2*x+1][2*y+offset])
+		result.append(self.edges[2*x+2][2*y+offset])
+		result.append(self.edges[2*x+2][2*y+offset+1])
+		return result
+
+	def getVertexToEdges(self, vertex):
+		result = []
+		x = vertex.getX()
+		y = vertex.getY()
+		offset = 1
+		if x%2 != y%2:
+			offset = -1
+		if self.edges[x*2][y] is not None:
+			result.append(self.edges[x*2][y])
+		if self.edges[x*2][y-1] is not None:
+			result.append(self.edges[x*2][y-1])
+		if self.edges[x*2+offset][y] is not None:
+			result.append(self.edges[x*2+offset][y])
+		return result
+
+	def getVertexToTiles(self, vertex):
+		result = []
+		x = vertex.getX()
+		y = vertex.getY()
+		xOffset = x % 2
+		yOffset = y % 2
+		if x < len(self.tiles) and y/2 < len(self.tiles[x]):
+			if self.tiles[x][y/2] is not None:
+				result.append(self.tiles[x][y/2])
+
+		if x > 0 and x < len(self.tiles) and y/2 < len(self.tiles[x]):
+			if self.tiles[x-1][y/2] is not None:
+				return result
+
+		xMod = x
+		if xOffset + yOffset == 1:
+			xMod -=1
+		yMod = y/2
+		if yOffset == 1:
+			yMod += 1
+		else:
+			yMod -=1
+		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMOd < len(self.tiles[0]):
+			if self.tiles[xMod][yMod] is not None:
+				result.append(self.tiles[xMod][yMod])
+		return result
 
 	def getAllTiles(self):
 		tiles = []
