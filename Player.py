@@ -105,9 +105,10 @@ class player:
 		else:
 		    print "You cannot build a city there"
 
-	def buildDevCard(self):
+	def buildDevCard(self, deck):
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
+		    nameCard = deck.getRandomDevCard()
 		    self.devCardsHeld.append('dummy')
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1

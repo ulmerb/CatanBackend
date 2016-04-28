@@ -142,7 +142,7 @@ def buildCity(curPlayer, players, board):
 
 def buildDevCard(curPlayer, players, board):
 	if players[curPlayer].canBuildDevCard():
-		players[curPlayer].buildDevCard()
+		players[curPlayer].buildDevCard(devCardsDeck)
 	else:
 		print "You can't build a dev card"
 
