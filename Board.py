@@ -3,7 +3,7 @@ import Player
 import random 
 
 class board:
-	#
+	#tests
 	#
 	#http://stackoverflow.com/questions/1838656/how-do-i-represent-a-hextile-hex-grid-in-memory
 
