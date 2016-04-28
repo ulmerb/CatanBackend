@@ -109,6 +109,7 @@ class player:
 	def buildDevCard(self):
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
+		    #testing comment for Ben Limonchik
 		    self.devCardsHeld.append('dummy')
 		    self.resources['wool'] -= 1
 		    self.resources['grain'] -= 1
