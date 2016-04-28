@@ -108,7 +108,6 @@ class player:
 	def buildDevCard(self):
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
-		    cardName
 		    self.devCardsHeld.append('dummy')
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
@@ -125,9 +124,9 @@ class player:
           	        print "No Dev Cards to steal"
           	elif cardType =='res':
           	    resources = []
-          	    #note to self chance needed here to account for different amounts of resources #####
           	    for r in self.resources:
           	        if self.resources[r] != 0:
+          	            for _ in xrange(self.resources[r]):
           	                 resources.append(r)
           	    if len(resources) == 0:
           	        print "No resources to steal"
