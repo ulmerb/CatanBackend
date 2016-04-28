@@ -8,7 +8,7 @@ class board:
 	def printBoard(self):
 		print self.tiles
 
-	def init(self):
+	def __init__(self):
 		self.BOARD_LENGTH = 5
 		self.robberX = None
 		self.robberY = None
@@ -33,7 +33,6 @@ class board:
 					else:
 						self.tiles[i][j].setRobber(True)	
 		self.printBoard()
-		return 0		
 
 	def printBoard(self):
 		for i in range(self.BOARD_LENGTH):
