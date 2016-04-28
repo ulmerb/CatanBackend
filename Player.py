@@ -32,6 +32,8 @@ class player:
    	        if (location == -1 and len(self.structures['settlements']) > 0) or location in self.structures['settlements']:
    	            return True
 		return False
+	def dummyfuction(skljflksdjflksd):
+	    pass
 
 	def canBuildSettlement(self, location = -1):
        	        #we'll need some additional handling to see if theres a spot they can build,
