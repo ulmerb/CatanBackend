@@ -1,7 +1,7 @@
 class Location:
-	def __init__(self):
-		self.x = None
-		self.y = None
+	def __init__(self,x,y):
+		self.x = x
+		self.y = y
 
 	def __str__(self):
 		return "Location"
@@ -19,12 +19,12 @@ class Location:
 		return self.y
 
 class Tile(Location):
-	def __init__(self):
+	def __init__(self,x,y):
 		self.type = None
 		self.number = None
 		self.robber = False
-		self.x = None
-		self.y = None
+		self.x = x
+		self.y = y
 
 	def __str__(self):
 		return "Tile"

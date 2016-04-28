@@ -10,9 +10,9 @@ class board:
 	def init(self):
 		self.BOARD_LENGTH = 5
 		spacesLength = 2 * self.BOARD_LENGTH + 2
-		self.edges = [[Location.Edge() for i in range(spacesLength)] for j in range(spacesLength)]
-		self.vertices = [[Location.Vertex() for i in range(spacesLength)] for j in range(spacesLength)]
-		self.tiles = [[Location.Tile() for i in range(self.BOARD_LENGTH)] for j in range(self.BOARD_LENGTH)]
+		self.edges = [[Location.Edge(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
+		self.vertices = [[Location.Vertex(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
+		self.tiles = [[Location.Tile(i,j) for i in range(self.BOARD_LENGTH)] for j in range(self.BOARD_LENGTH)]
 		self.fillEmpty()
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
