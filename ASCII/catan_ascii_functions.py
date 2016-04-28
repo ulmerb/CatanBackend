@@ -2,25 +2,52 @@
 import os
 import sys
 import fileinput
-
+def printBoard(currentBoardNum):
+ 	filein = "catan_example" + str(currentBoardNum) + ".txt"
+	f = open(filein,'r')
+	filedata = f.read()
+	print filedata
+	f.close()
 
 def replaceText(old,new,currentBoardNum):
- 		filein = "catan_example" + str(currentBoardNum) + ".txt"
-		fileout = "catan_example" + str(currentBoardNum + 1) + ".txt"
-		f = open(filein,'r')
-		filedata = f.read()
-		f.close()
-		newdata = filedata.replace(old,new)
-		f = open(fileout,'w')
-		f.write(newdata)
-		print newdata
-		f.close()
+	filein = "catan_example" + str(currentBoardNum) + ".txt"
+	fileout = "catan_example" + str(currentBoardNum + 1) + ".txt"
+	f = open(filein,'r')
+	filedata = f.read()
+	f.close()
+	newdata = filedata.replace(old,new)
+	f = open(fileout,'w')
+	f.write(newdata)
+	# print newdata
+	f.close()
 
 def main():
 	currentBoardNum = 1
+	currentCommands = ["batch update", "verify","undo","print board","replace","build","help"]
 	while(True):
 		print("Enter a Command")
 		command = raw_input("> ")
+
+		if(command == "batch update"):
+			subCommand = raw_input("What is the name and location of the update file?")
+			foundFile = False
+			while foundFile == False:
+				try:
+					fileData = open(subCommand,'r')
+					foundFile = True
+				except IOError:
+					subCommand =raw_input("Incorrect file name try again\n>")
+			lines = [line.rstrip('\n') for line in fileData]
+			print lines
+			for line in lines:
+				result = line.split(',')
+				old = result[0]
+				new = result[1]
+				print old, new
+				replaceText(old,new,currentBoardNum)
+			currentBoardNum += 1
+			printBoard(currentBoardNum)
+
 
 		if(command=="verify"):
 			filein ="catan_example" + str(currentBoardNum) + ".txt"
@@ -92,6 +119,7 @@ def main():
 			new = raw_input("Replace with this (use full numbering): ")
 			replaceText(old,new,currentBoardNum);
 			currentBoardNum += 1
+			printBoard(currentBoardNum)
 
 		if(command=="build"):
 			subCommand = raw_input("What do you want to build? ('road','settlement','city')")
@@ -116,7 +144,12 @@ def main():
 				output = "!C"+player
 				replaceText(location,output,currentBoardNum)
 				currentBoardNum += 1
+			printBoard(currentBoardNum)
 
+		if(command =="help"):
+			print "Current Commands are"
+			for l in currentCommands:
+				print "- ",l
 
 main()
 
