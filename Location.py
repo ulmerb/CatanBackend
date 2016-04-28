@@ -3,45 +3,47 @@ class Location:
 		return "Location"
 
 class Tile(Location):
+	def __init__(self):
+		self.type = None
+		self.number = None
+		self.robber = False
+		self.x = None
+		self.y = None
+
 	def __str__(self):
 		return "Tile"
-	def __init__(self, resource, diceNumber):
-		# if resource == None then it is desert tile
-		self.resource = resource
-		self.isDesert = not resource
-		self.diceNumber = diceNumber
-		self.points = []
-		self.edges = []
 
-	def addPoint(settlementLoc):
-		self.points.append(settlementLoc)
-		settlementLoc.addTile(self)
+	def setType(self, givenType):
+		self.type = givenType
 
-	def addRoad(roadLoc):
-		self.edges.append(roadLoc)
-		roadLoc.addTile(self)
+	def setNumber(self, givenNumber):
+		self.number = givenNumber
 
-class RoadLocation(Location):
+	def getType(self):
+		return self.type
+
+	def getNumber(self):
+		return self.number
+
+	def setRobber(self, val):
+		self.robber = val
+
+	def setX(self, x):
+		self.x = x
+
+	def setY(self, y):
+		self.y = y
+
+	def getX(self):
+		return self.x
+
+	def getY(self):
+		return self.y
+
+class Edge(Location):
 	def __str__(self):
 		return "Road"
-	def __init__(self,pointA,pointB):
-		self.points = [pointA, pointB]
-		self.tiles = []
-		pointA.addRoadLoc(self)
-		pointB.addRoadLoc(self)
 
-	def addTile(tile):
-		self.tiles.append(tile)
-
-class SettlementLocation(Location):
+class Vertex(Location):
 	def __str__(self):
 		return "Settlement or City"
-	def __init__(self):
-		self.edges = []
-		self.tiles = []
-
-	def addTile(tile):
-		self.tiles.append(tile)
-
-	def addRoadLoc(roadLoc):
-		self.edges.append(roadLoc)
