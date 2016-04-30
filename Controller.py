@@ -2,14 +2,18 @@
 import Player
 import Board
 import Location
+import Devcards
 reload(Player)
+reload(Board)
 
 CONST_DEFAULT_NUM_PLAYERS = 2
 CONST_ROBBER = 7
 
 def main():
 	board = Board.board()
+	devCardsDeck = Devcards.devcards()
 	numPlayers = 0
+	#test Ben
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
 	try:
 		numPlayers = input('How many players do you want? ')
@@ -138,7 +142,7 @@ def buildCity(curPlayer, players, board):
 
 def buildDevCard(curPlayer, players, board):
 	if players[curPlayer].canBuildDevCard():
-		players[curPlayer].buildDevCard()
+		players[curPlayer].buildDevCard(devCardsDeck)
 	else:
 		print "You can't build a dev card"
 
@@ -163,7 +167,92 @@ def askPlayerForSettlementLocation():
 def askPlayerForCityLocation():
 	return 0
 
-def trade(curPlayer, players, board):
-	print "Trading phase"
+def tradeHelper(trade, curResources, rec = False):
+    for r in trade:
+            valid = True
+            while(valid):
+                maxi = curResources[r]
+                if (rec):
+                    maxi = float('inf')
+                if rec:
+                    cur = raw_input(r + "?")
+                else:
+                    cur = raw_input(r + "? (You have " + str(maxi) + ")")
+                if isInt(cur):
+                    cur = int(cur)
+                    if cur >= 0 and cur <= maxi:
+                        trade[r] = cur
+                        valid = False
+                    else:
+                        print "invalid amount try again"
+                else:
+                    print "invalid input try again"
+    return trade
+def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
+    partnerRes = players[partner].checkResources()
+    for r in recieve:
+        if recieve[r] > partnerRes[r]:
+            print "Player ", partner, " cant make the proposed trade because they dont have enough " + r + "."
+            return False
+    print "Player " + str(partner) + ", Player " + str(curPlayer) + " has proposed to trade: ", offer, "for: ",  recieve, "do you accept?"
+    answer = raw_input("y/n?") 
+    if answer == "Yes" or answer == "yes" or answer == "y":
+        confirm =  raw_input("Player " + str(curPlayer) + " would you like to confirm this trade?")
+        if confirm  == "Yes" or confirm == "yes" or confirm == "y":
+            print "Trade confirmed."
+            for r in offer:
+                players[curPlayer].loseResource(r, offer[r])
+                players[partner].addResource(r, offer[r])
+            for r in recieve:
+                players[curPlayer].addResource(r, recieve[r])
+                players[partner].loseResource(r, recieve[r])
+            return True
+        else:
+            print "Player " + str(curPlayer) + " has changed their mind."
+    else:
+        print "Player " + str(partner) + "has rejected the trade."
+    return False
+def trade(curPlayer, players):
+        print "Trading phase"
+        trading = True
+        while(trading):
+            response = raw_input("Would you like to propose a trade?")
+            if  response == "Yes" or response == "yes" or response == "y":
+                curResources = players[curPlayer].checkResources()  
+                offer =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+                print "What would you like to offer? (Enter an amount for each following resource)"
+                offer = tradeHelper(offer, curResources)
+                recieve = {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+                print "What would you like in return? (Enter an amount for each following resource)"
+                recieve = tradeHelper(recieve, curResources, True)
+                partner = -1
+                potentialPartner = raw_input("Would like to ask a specific player (if so enter the player number you'd like to trade with)")
+                if isInt(potentialPartner):
+                    potentialPartner = int(potentialPartner)
+                    if potentialPartner < len(players) and potentialPartner != curPlayer:
+                        partner = potentialPartner
+                        print "Proposing trade to player: ", partner
+                    else:
+                        print "No partner or invalid partner inserted, proposing trade to all players"
+                if partner != -1:
+                    tradeLogicHelper(curPlayer, partner, players, offer, recieve)
+                else:
+                    for i in xrange(len(players)):
+                        if i == curPlayer:
+                            continue
+                        else:
+                            executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
+                            if (executed):
+                                break
+            else:
+                trading = False
+	
+def isInt(s):
+    try: 
+        int(s)
+        return True
+    except ValueError:
+        return False
+
 
 main()
