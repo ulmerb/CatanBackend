@@ -29,7 +29,16 @@ class board:
 						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)
-		self.printBoard()
+		realVertices = []
+		realEdges = []
+		for row in self.tiles:
+			for tile in row:
+				if tile is not None:
+					print tile
+					realVertices += self.getTileToEdges(tile)
+					realEdges += self.getTileToVertices(tile)
+		print "Number of playable vertices: ", len(set(realVertices)), "Number of playable edges", len(set(realEdges))
+		#self.printBoard()
 
 	def printBoard(self):
 		for i in range(self.BOARD_LENGTH):
@@ -325,7 +334,7 @@ class board:
 		vertex.buildSettlement(curPlayer)
 
 	def vertexInBounds(self,x, y):
-		print 
+		print self.vertices
 		return True
 
 		
