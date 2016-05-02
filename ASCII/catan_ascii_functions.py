@@ -2,6 +2,8 @@
 import os
 import sys
 import fileinput
+import json
+
 def printBoard(currentBoardNum):
  	filein = "catan_example" + str(currentBoardNum) + ".txt"
 	f = open(filein,'r')
@@ -27,6 +29,22 @@ def main():
 	while(True):
 		print("Enter a Command")
 		command = raw_input("> ")
+
+
+# 		jsondata = simplejson.dumps(data, indent=4, skipkeys=True, sort_keys=True)
+# 		fd = open(filename, 'w')
+# 		fd.write(jsondata)
+# 		fd.close()
+		if(command == "JSON Output"):
+			filein = "catan_example" + str(currentBoardNum) + ".txt"
+			with open(filein) as f:
+				content = f.readlines()
+				jsondata = json.dumps(content)
+				fd = open("jsonOutput.json",'w')
+				fd.write(jsondata)
+				fd.close()
+				print "downloaded to jsonOutput.json, all lines seperated into an array"
+				f.close()
 
 		if(command == "batch update"):
 			subCommand = raw_input("What is the name and location of the update file?")
