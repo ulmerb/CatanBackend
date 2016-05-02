@@ -29,7 +29,7 @@ class board:
 						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)
-		#self.printBoard()
+		self.printBoard()
 
 	def printBoard(self):
 		for i in range(self.BOARD_LENGTH):
@@ -85,8 +85,7 @@ class board:
 			try:
 				settleLoc = input('Player ' + str(i) + ', enter a settlement location: ')
 				x,y = settleLoc
-				print type(self.vertices[x][y]), isinstance(self.vertices[x][y], Location.Edge)
-				if self.inBounds(self.vertices[x][y]):
+				if self.vertexInBounds(x,y):
 					okLocs = self.getPotentialSettlementLocs(i, players, True)
 					if self.vertices[x][y] in okLocs:
 						self.buildSettlement(i, players, self.vertices[x][y])
@@ -297,9 +296,9 @@ class board:
 			edges = players[curPlayer].structures.roads
 			for edge in edges:
 				v1, v2 = self.getEdgeToVertices(edge)
-				#v1 and v2 are neighbors so they're either both in or both out
-				if neighborsUnclaimed(v1) and neighborsUnclaimed(v2):
+				if neighborsUnclaimed(v1):
 					locs.add(v1)
+				if neighborsUnclaimed(v2):
 					locs.add(v2)
 		else:
 			for row in self.vertices:
@@ -325,6 +324,8 @@ class board:
 	def buildSettlement(self, curPlayer, players, vertex):
 		vertex.buildSettlement(curPlayer)
 
-	def inBounds(self,loc):
-		#print type(loc)
+	def vertexInBounds(self,x, y):
+		print 
 		return True
+
+		
