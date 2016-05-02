@@ -23,6 +23,14 @@ def main():
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player())
+	# players[0].addResource("wood",10)
+	# players[0].addResource("ore",10)
+	# players[0].addResource("grain",10)
+	# players[0].addResource("sheep",10)
+	# players[0].buildDevCard(devCardsDeck)
+	# print players[0].devCardsHeld
+	# print devCardsDeck.getNumDevCards()
+
 	firstPlacement(numPlayers, players, board)
 	playMainGame(numPlayers, players, board)
 
