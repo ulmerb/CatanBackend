@@ -69,10 +69,16 @@ class Vertex(Location):
 		self.city = None
 
 	def __str__(self):
-		return "Settlement or City"
+		if self.settlement is not None:
+			return "Settlement " + str(self.x) + "," + str(self.y) + " owned by player " + str(self.settlement)
+		elif self.city is not None:
+			return "City " + str(self.x) + "," + str(self.y) + "owned by player " + str(self.city)
+		return "Empty " + str(self.x) + "," + str(self.y)
 
 	def buildSettlement(self, player):
 		self.settlement = player
+		print self.x, self.y
+		print "built settlement", self.settlement
 
 	def buildCity(self, player):
 		self.settlement = None
@@ -86,7 +92,7 @@ class Vertex(Location):
 
 	def getOwner(self):
 		if self.settlement is not None:
-			return settlement
+			return self.settlement
 		if self.city is not None:
-			return city
+			return self.city
 		return None

@@ -10,14 +10,14 @@ class board:
 		self.robberX = None
 		self.robberY = None
 		spacesLength = 2 * self.BOARD_LENGTH + 2
-		self.edges = [[Location.Edge(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
-		self.vertices = [[Location.Vertex(i,j) for i in range(spacesLength)] for j in range(spacesLength)]
-		self.tiles = [[Location.Tile(i,j) for i in range(self.BOARD_LENGTH)] for j in range(self.BOARD_LENGTH)]
+		self.edges = [[Location.Edge(i,j) for j in range(spacesLength)] for i in range(spacesLength)]
+		self.vertices = [[Location.Vertex(i,j) for j in range(spacesLength)] for i in range(spacesLength)]
+		self.tiles = [[Location.Tile(i,j) for j in range(self.BOARD_LENGTH)] for i in range(self.BOARD_LENGTH)]
 		self.fillEmpty()
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
 		for i in range(self.BOARD_LENGTH):
-			for  j in range(self.BOARD_LENGTH):
+			for j in range(self.BOARD_LENGTH):
 				if self.tiles[i][j] is not None:
 					givenType = types.pop()
 					self.tiles[i][j].setType(givenType)
@@ -28,8 +28,8 @@ class board:
 						self.robberX = i
 						self.robberY = j
 					else:
-						self.tiles[i][j].setRobber(True)	
-		self.printBoard()
+						self.tiles[i][j].setRobber(True)
+		#self.printBoard()
 
 	def printBoard(self):
 		for i in range(self.BOARD_LENGTH):
@@ -79,9 +79,26 @@ class board:
 		types.append("desert")
 		random.shuffle(types)
 		return types
-
+	
 	def initialPlacement(self, i, players):
-		print str(i) + " places their initial piece"
+		while True:
+			try:
+				settleLoc = input('Player ' + str(i) + ', enter a settlement location: ')
+				x,y = settleLoc
+				print type(self.vertices[x][y]), isinstance(self.vertices[x][y], Location.Edge)
+				if self.inBounds(self.vertices[x][y]):
+					okLocs = self.getPotentialSettlementLocs(i, players, True)
+					if self.vertices[x][y] in okLocs:
+						self.buildSettlement(i, players, self.vertices[x][y])
+						print self.vertices[x][y]
+						break
+					else:
+						print "You may not build there"
+				else:
+					print "Location is out of bounds."
+			except EOFError:
+				print "Invalid location"
+
 		return 0
 
 	def rollDice(self):
@@ -145,18 +162,13 @@ class board:
 		result = []
 		x = vertex.getX()
 		y = vertex.getY()
-		offset = 1
-		if x % 2 != y % 2:
-			offset = -1
-		if y+1 < len(self.vertices[0]):
-			if self.vertices[x][y+1] != None:
-				result.append(self.vertices[x][y+1])
-		if y > 0:
-			if self.vertices[x][y-1] != None:
-				result.append(self.vertices[x][y-1])
-		if x+offset >= 0 and x+offset <= len(self.vertices):
-			if self.vertices[x+offset][y] is not None:
-				result.append(self.vertices[x+offset][y])
+		offset = 1 if x % 2 == y % 2 else -1
+		if y+1 < len(self.vertices[0]) and self.vertices[x][y+1] is not None:
+			result.append(self.vertices[x][y+1])
+		if y > 0 and self.vertices[x][y-1] is not None:
+			result.append(self.vertices[x][y-1])
+		if x+offset >= 0 and x+offset < len(self.vertices) and self.vertices[x+offset][y] is not None:
+			result.append(self.vertices[x+offset][y])
 		return result
 
 	def getTileToVertices(self, tile):
@@ -199,6 +211,16 @@ class board:
 		if self.edges[x*2+offset][y] is not None:
 			result.append(self.edges[x*2+offset][y])
 		return result
+
+	def getEdgeToVertices(self, edge):
+	    x = edge.x
+	    y = edge.y
+	    vertexOne = self.vertices[(x-1)/2][y]
+	    vertexTwo = self.vertices[(x+1)/2][y]
+	    if x%2 == 0:
+	      vertexOne = self.vertices[x/2][y]
+	      vertexTwo = self.vertices[x/2][y+1]
+	    return (vertexOne, vertexTwo)
 
 	def getVertexToTiles(self, vertex):
 		result = []
@@ -259,25 +281,32 @@ class board:
 				if vertex.getOwner() == curPlayer:
 					roadLocs = self.getVertexToEdges(vertex)
 					for road in roadLocs:
-						if road.getOwner() == None:
+						if road.getOwner() is None:
 							result.append(road)
 		return set(result)
 
-	def getPotentialSettlementLocs(self, curPlayer, players):
-		result = []
-		for row in self.edges:
-			for edge in row:
-				if edge.owner == curPlayer:
-					for vertex in self.getVertexToEdges(edge):
-						if vertex.getOwner() == None:
-							foundNeighbor = False
-							for neighbor in self.getVertexToVertices(vertex):
-								if neighbor.getOwner != None:
-									foundNeighbor = True
-									break
-							if foundNeighbor == False:
-								result.append(vertex)
-		return set(result)
+	def getPotentialSettlementLocs(self, curPlayer, players, initializing):
+		def neighborsUnclaimed(vertex):
+			for neighb in self.getVertexToVertices(vertex):
+				if neighb.getOwner() is not None:
+					return False
+			return True
+
+		locs = set()
+		if not initializing:
+			edges = players[curPlayer].structures.roads
+			for edge in edges:
+				v1, v2 = self.getEdgeToVertices(edge)
+				#v1 and v2 are neighbors so they're either both in or both out
+				if neighborsUnclaimed(v1) and neighborsUnclaimed(v2):
+					locs.add(v1)
+					locs.add(v2)
+		else:
+			for row in self.vertices:
+				for vertex in row:
+					if vertex.getOwner() is None and neighborsUnclaimed(vertex):
+						locs.add(vertex)
+		return locs
 
 	def getPotentialCityLocs(self, curPlayer, players):
 		result = []
@@ -295,3 +324,7 @@ class board:
 
 	def buildSettlement(self, curPlayer, players, vertex):
 		vertex.buildSettlement(curPlayer)
+
+	def inBounds(self,loc):
+		#print type(loc)
+		return True
