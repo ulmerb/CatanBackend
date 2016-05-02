@@ -34,7 +34,6 @@ class board:
 		for row in self.tiles:
 			for tile in row:
 				if tile is not None:
-					print tile
 					realVertices += self.getTileToEdges(tile)
 					realEdges += self.getTileToVertices(tile)
 		print "Number of playable vertices: ", len(set(realVertices)), "Number of playable edges", len(set(realEdges))
