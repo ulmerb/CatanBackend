@@ -5,9 +5,6 @@ import random
 class board:
 	#http://stackoverflow.com/questions/1838656/how-do-i-represent-a-hextile-hex-grid-in-memory
 
-	def printBoard(self):
-		print self.tiles
-
 	def __init__(self):
 		self.BOARD_LENGTH = 5
 		self.robberX = None
@@ -90,9 +87,31 @@ class board:
 	def rollDice(self):
 		return (random.randint(1, 6) + random.randint(1, 6))
 
-	def assignResources(self, diceRoll):
-		print "assigning resources for the dice roll " + str(diceRoll)
-		return -1
+	def assignResources(self, diceRoll, players):
+		resourceMap = {}
+		for row in self.tiles:
+			for tile in row:
+				if tile is not None and tile.getNumber() == diceRoll:
+					for vertex in self.getTileToVertices(tile):
+						amount = 0
+						if vertex.getSettlement() is not None:
+							amount = 1
+						if vertex.getCity() is not None:
+							amount = 2
+						if amount != 0:
+							if vertex.getType() == "forest":
+								players[vertex.getOwner()].addResource("wood", amount)
+							elif vertex.getType() == "quarry":
+								players[vertex.getOwner()].addResource("ore", amount)
+							elif vertex.getType() == "brickpit":
+								players[vertex.getOwner()].addResource("brick", amount)
+							elif vertex.getType() == "sheepherd":
+								players[vertex.getOwner()].addResource("wool", amount)
+							elif vertex.getType() == "plain":
+								players[vertex.getOwner()].addResource("grain", amount)
+
+
+
 
 	def getTileToTiles(self, tile):
 		result = []
