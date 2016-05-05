@@ -7,6 +7,7 @@ reload(Player)
 reload(Board)
 
 CONST_DEFAULT_NUM_PLAYERS = 2
+
 CONST_ROBBER = 7
 
 def main():
