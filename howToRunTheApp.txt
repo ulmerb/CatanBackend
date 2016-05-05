@@ -1,0 +1,22 @@
+How to run the app:
+
+1) in One tab: cd to the CatanBackend folder and run the following command: 
+to get a python server on port 8000:
+“python -m SimpleHTTPServer 8000”
+
+2) Open a new tab and in the same folder CatanBackend run the command: mongod
+to get mongo db running (obviously you should install mongo locally.
+If you don’t have mongoldb already here is a useful link to install it:
+https://docs.mongodb.org/manual/tutorial/install-mongodb-enterprise-on-os-x/
+
+3) Enter the following directory: /CatanBackend/frontEnd/project7/
+and run the following command: node loadDatabase.js
+(it uploads the db which is currently empty but in the future it will fill the DB)
+and then run the command: nodemon
+
+4) Now enter the following directory:
+/CatanBackend/frontEnd/project7
+within it you will find the file: photo-share.html
+now you can open it in your local browser.
+
+Let me know if you are having problems running the app
