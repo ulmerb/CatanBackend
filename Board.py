@@ -304,9 +304,9 @@ class board:
 			edges = players[curPlayer].structures.roads
 			for edge in edges:
 				v1, v2 = self.getEdgeToVertices(edge)
-				if neighborsUnclaimed(v1):
+				if neighborsUnclaimed(v1) and v1.getOwner() is None:
 					locs.add(v1)
-				if neighborsUnclaimed(v2):
+				if neighborsUnclaimed(v2) and v2.getOwner() is None:
 					locs.add(v2)
 		else:
 			for row in self.vertices:
@@ -333,7 +333,7 @@ class board:
 		vertex.buildSettlement(curPlayer)
 
 	def vertexInBounds(self,x, y):
-		print self.vertices
+		#print self.vertices
 		return True
 
 		
