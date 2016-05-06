@@ -12,7 +12,7 @@ class ai:
         self.costInRes = 1.0
         self.port = 1.0
         self.vp = 1.0
-        self.diceProbs = [0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
+        self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         
     def getBuildLocations(self):
@@ -55,6 +55,13 @@ class ai:
     def getCostInTurns(self, buildType,roadsAway,incomeMap):
    	resCost = self.getResourceCost(buildType,roadsAway)
    	turnCost = 0.0 
+   	ownedResources = self.AI.resources
+   	for res in resCost:
+   	    dif = 0
+   	    temp = resCost[res] - ownedResources[res]
+   	    if temp > dif:
+   	        dif = temp
+   	    resCost[res] = dif
    	for key in resCost.keys():
   		curIncome = incomeMap[key]
   		curCost = resCost[key]
@@ -73,7 +80,7 @@ class ai:
             tileType = tile.getType()
             if tileType == 'desert':
                 continue 
-            exReturn[tileType] += self.diceProbs[tile.getNumber() - 2]
+            exReturn[tileType] += self.diceProbs[tile.getNumber()]
         return exReturn
              
     def decideMove(self):
