@@ -75,15 +75,15 @@ class board:
 	def getShuffledTypes(self):
 		types = []
 		for i in range(3):
-			types.append("quarry")
+			types.append("ore")
 		for i in range(4):
-			types.append("forest")
+			types.append("wood")
 		for i in range(3):
-			types.append("brickpit")
+			types.append("brick")
 		for i in range(4):
-			types.append("sheepherd")
+			types.append("sheep")
 		for i in range(4):
-			types.append("plain")
+			types.append("grain")
 		types.append("desert")
 		random.shuffle(types)
 		return types
@@ -123,20 +123,7 @@ class board:
 						if vertex.getCity() is not None:
 							amount = 2
 						if amount != 0:
-							if vertex.getType() == "forest":
-								players[vertex.getOwner()].addResource("wood", amount)
-							elif vertex.getType() == "quarry":
-								players[vertex.getOwner()].addResource("ore", amount)
-							elif vertex.getType() == "brickpit":
-								players[vertex.getOwner()].addResource("brick", amount)
-							elif vertex.getType() == "sheepherd":
-								players[vertex.getOwner()].addResource("wool", amount)
-							elif vertex.getType() == "plain":
-								players[vertex.getOwner()].addResource("grain", amount)
-
-
-
-
+						        players[vertex.getOwner()].addResources(vertex.getType(), amount)
 	def getTileToTiles(self, tile):
 		result = []
 		x = tile.getX()
