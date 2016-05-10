@@ -1,0 +1,52 @@
+<md-card>
+	<md-subheader class="md-primary">Log In</md-subheader>
+	<md-input-container>
+	  	<label>Please enter Login Name:</label>
+	  	<input type="text" ng-model="login_name" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+		<label>Please enter your password:</label>
+		<input type="password" ng-model="password" required md-maxlength="40">
+	</md-input-container>
+	<!-- <button ng-click="updateLoginName($event)"> Log In</button> -->
+	<md-button class="md-raised" ng-click="updateLoginName($event)">Log In</md-button>
+	<p>{{error_text}}</p>
+</md-card>
+<hr color"blue">
+<md-card>
+	<md-subheader class="md-primary">Register: new user</md-subheader>
+	<md-input-container>
+	  	<label>First Name:</label>
+	  	<input type="text" ng-model="first_name">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Last Name:</label>
+	  	<input type="text" ng-model="last_name">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Login Name:</label>
+	  	<input type="text" ng-model="login_name_registration" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Password:</label>
+	  	<input type="password" ng-model="password_one" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Enter Password again:</label>
+	  	<input type="password" ng-model="password_two" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Location:</label>
+	  	<input type="text" ng-model="location_registration" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Description:</label>
+	  	<input type="text" ng-model="description_registration" required md-maxlength="40">
+	</md-input-container>
+	<md-input-container>
+	  	<label>Occupation:</label>
+	  	<input type="text" ng-model="occupation" required md-maxlength="40">
+	</md-input-container>
+	<md-button class="md-raised" ng-click="registerNewUser()">Register Me</md-button>
+	<p>{{error_text_registration}}</p>
+</md-card>

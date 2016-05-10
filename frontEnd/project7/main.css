@@ -1,0 +1,93 @@
+/*
+CSS for the CS142 project #5 main page
+
+Since CSS uses a global name space for classes we should use class names starting with
+cs142-main- here.
+*/
+
+/*present hyperlinks like buttons:*/
+a {
+	font: bold 15px Arial;
+  	text-decoration: none;
+  	background-color: #EEEEEE;
+  	color: #333333;
+  	padding: 2px 6px 2px 6px;
+  	border-top: 1px solid #CCCCCC;
+  	border-right: 1px solid #333333;
+  	border-bottom: 1px solid #333333;
+  	border-left: 1px solid #CCCCCC;
+  	border-radius: 6px;
+}
+
+.side{
+	background-color: #dfe3ee;
+}
+#content {
+	background-color: #f7f7f7; 
+}
+
+#textbox {
+    width: 100%;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: space-between; 
+
+	overflow: hidden;  
+	background-color: #2b4170; 
+	background: -moz-linear-gradient(top, #3b5998, #2b4170);
+	background: -ms-linear-gradient(top, #3b5998, #2b4170);
+	background: -webkit-linear-gradient(top, #3b5998, #2b4170);
+	border: 1px solid #2b4170;
+	text-shadow: 0 -1px -1px #1f2f52;  
+	color: orange;
+
+	font-family: "Georgia", Times, serif;
+
+}
+
+/* On the flex item to pin */
+.left {
+	font-size: 20px;
+   	align-self: flex-start;
+   	padding-left: 20px;
+}
+
+.right {
+    margin-left: auto;
+    padding-right: 20px;
+    /*align-self: flex-start;*/
+}
+
+.small{
+	padding-left: 13px;
+	font-size: 13px;
+}
+
+.small_button {
+  padding: 3px;
+  font-size: 12px;
+}
+
+.buttons {
+    margin-left: 10px;
+    position: fixed;
+    top: 0.8%;
+    /*width: 100px;*/
+}
+
+.AddSSL {
+    margin-bottom: 2px; /* or something like this for the gap */
+    width: 100%;
+}
+
+.Downloadcrl {
+    width: 60%;
+    padding: 2px;
+    font-size: 12px;
+}
+
+/*.padd{
+  padding-left: 5px;
+  padding-right: 5px;
+}*/

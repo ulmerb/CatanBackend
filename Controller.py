@@ -3,10 +3,14 @@ import Player
 import Board
 import Location
 import Devcards
+import Ai
+import sys
 reload(Player)
 reload(Board)
+reload(Ai)
 
 CONST_DEFAULT_NUM_PLAYERS = 2
+
 CONST_ROBBER = 7
 
 def main():

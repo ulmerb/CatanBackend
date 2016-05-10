@@ -86,7 +86,7 @@ def main():
 			print "Road Search Done"
 			# vertexes
 			print "Vertex Search"
-			for i in xrange(1,54):
+			for i in xrange(1,55):
 				output =""
 				if(i < 10):
 					output = "0"+str(i)+"V"
