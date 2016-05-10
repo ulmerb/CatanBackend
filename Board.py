@@ -29,15 +29,6 @@ class board:
 						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)
-		realVertices = []
-		realEdges = []
-		for row in self.tiles:
-			for tile in row:
-				if tile is not None:
-					realVertices += self.getTileToEdges(tile)
-					realEdges += self.getTileToVertices(tile)
-		print "Number of playable vertices: ", len(set(realVertices)), "Number of playable edges", len(set(realEdges))
-		#self.printBoard()
 
 	def printBoard(self):
 		for i in range(self.BOARD_LENGTH):
@@ -52,8 +43,8 @@ class board:
 	def fillEmpty(self):
 		self.tiles[0][0] = None
 		self.tiles[0][4] = None
-		self.tiles[1][4] = None
-		self.tiles[3][4] = None
+		self.tiles[1][0] = None
+		self.tiles[3][0] = None
 		self.tiles[4][0] = None
 		self.tiles[4][4] = None
 
@@ -167,8 +158,8 @@ class board:
 
 	def getVertexToVertices(self, vertex):
 		result = []
-		x = vertex.getX()
-		y = vertex.getY()
+		x = vertex.x
+		y = vertex.y
 		offset = 1 if x % 2 == y % 2 else -1
 		if y+1 < len(self.vertices[0]) and self.vertices[x][y+1] is not None:
 			result.append(self.vertices[x][y+1])
@@ -180,8 +171,8 @@ class board:
 
 	def getTileToVertices(self, tile):
 		result = []
-		x = tile.getX()
-		y = tile.getY()
+		x = tile.x
+		y = tile.y
 		offset = (x % 2)*-1
 		result.append(self.vertices[x][2*y+offset])
 		result.append(self.vertices[x][2*y+offset+1])
@@ -335,5 +326,3 @@ class board:
 	def vertexInBounds(self,x, y):
 		#print self.vertices
 		return True
-
-		
