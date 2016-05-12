@@ -28,7 +28,7 @@ class board:
 					self.tiles[i][j].setX(i)
 					self.tiles[i][j].setY(j)
 					if givenType != "desert":
-						self.tiles[i][j].setNumber(numbers.pop())	
+						self.tiles[i][j].setNumber(numbers.pop())
 						self.robberX = i
 						self.robberY = j
 					else:
@@ -88,8 +88,7 @@ class board:
 				for vert in row:
 					if vert is not None and vert.getOwner() is not None:
 						vertAscii = self.vertexToAscii(vert.x, vert.y)
-						settleNum = str(len(players[vert.getOwner()].structures['settlements']))
-						writer.writerow([vertAscii, settleNum + "S" + str(vert.getOwner())])
+						writer.writerow([vertAscii, str(vert.settleNum) + "S" + str(vert.getOwner())])
 						
 
 	def batchUpdate(self):
@@ -97,7 +96,7 @@ class board:
 		self.currentBoardNumber = newBoardNumber
 
 	def printBoard(self):
-		asc.printBoard(1)		
+		asc.printBoard(1)
 
 
 	def fillEmpty(self):
@@ -365,7 +364,7 @@ class board:
 		players[curPlayer].buildRoad(edge)
 
 	def buildCity(self, curPlayer, players, vertex):
-		players[curPlayer].buildCity(vertex)	
+		players[curPlayer].buildCity(vertex)
 
 	def buildSettlement(self, curPlayer, players, vertex):
 		players[curPlayer].buildSettlement(vertex)

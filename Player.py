@@ -92,7 +92,7 @@ class player:
 		    self.resources['grain'] -= 1
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location)
-		    location.buildSettlement(self.playerNumber)
+		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
 		else:
 		    print "You cannot build a settlement there"
 

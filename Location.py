@@ -75,8 +75,9 @@ class Vertex(Location):
 			return "City " + str(self.x) + "," + str(self.y) + "owned by player " + str(self.city)
 		return "Empty " + str(self.x) + "," + str(self.y)
 
-	def buildSettlement(self, player):
+	def buildSettlement(self, player, settlementNumber):
 		self.settlement = player
+		self.settleNum = settlementNumber
 
 	def buildCity(self, player):
 		self.settlement = None

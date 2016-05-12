@@ -11,15 +11,16 @@ def printBoard(currentBoardNum):
 	print filedata
 	f.close()
 
-def replaceText(olds,news,currentBoardNum):
+def replaceText(old,new,currentBoardNum):
 	filein = "ASCII/catan_example" + str(currentBoardNum) + ".txt"
 	fileout = "ASCII/catan_example" + str(currentBoardNum + 1) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	f.close()
-	newdata = filedata
-	for i,old in enumerate(olds):
-		newdata = newdata.replace(old,news[i])
+	print old, new
+	print filedata
+	newdata = filedata.replace(old,new)
+	print newdata
 	f = open(fileout,'w')
 	f.write(newdata)
 	# print newdata
@@ -76,14 +77,12 @@ def batchUpdate(curBoardNum):
 	fileData = open("ASCII/latest_update.csv",'r')
 	lines = [line.rstrip('\n') for line in fileData]
 	fileData.close()
-	olds = []
-	news = []
 	for line in lines:
 		result = line.split(',')
-		olds.append(result[0])
-		news.append(result[1])
-		replaceText(olds,news,curBoardNum)
-	curBoardNum += 1
+		old = result[0]
+		new = result[1]
+		replaceText(old,new,curBoardNum)
+		curBoardNum += 1
 	printBoard(curBoardNum)
 	return curBoardNum
 
