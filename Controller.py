@@ -5,6 +5,7 @@ import Location
 import Devcards
 import Ai
 import sys
+import ASCII.catan_ascii_functions as asc
 reload(Player)
 reload(Board)
 reload(Ai)
@@ -26,7 +27,7 @@ def main():
 		print  ""
 	players = []
 	for i in range (0, numPlayers):
-		players.append(Player.player())
+		players.append(Player.player(i))
 	# players[0].addResource("wood",10)
 	# players[0].addResource("ore",10)
 	# players[0].addResource("grain",10)
@@ -163,6 +164,10 @@ def firstPlacement(numPlayers, players, board):
 		board.initialPlacement(i, players)
 	for i in range(numPlayers, 0, -1):
 	 	board.initialPlacement(i-1, players)
+	board.createBatchCSV(players)
+	board.batchUpdate()
+
+
 
 def selectDevCard(potentialDevCards):
 	return 0

@@ -3,7 +3,7 @@ import random
 
 class player:
 
-	def __init__(self):
+	def __init__(self, i):
 	        self.score =  0
 	        self.resources =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
 	        self.roadsRemaining = 15
@@ -13,6 +13,7 @@ class player:
 	        #of where its built, for now initialize as an empty list for each that can be filled to match board 
 	        #loactions however we choose to store those
 	        self.structures = {'roads' : [], 'settlements' : [], 'cities' : [], 'ports' : []}
+	        self.playerNumber = i
 		self.devCardsHeld = []
 		self.devCardsPlayed = []
 	
@@ -78,11 +79,12 @@ class player:
 		    self.resources['wood'] -= 1
 		    self.resources['brick'] -= 1
 		    self.structures['roads'].append(location)
+		    location.buildRoad(self.playerNumber)
 		else:
 		    print "You cannot build a road there"
 
 	def buildSettlement(self, location):
-		if self.canBuildSettlement(location):
+		if self.canBuildSettlement(location) or self.settlementsRemaining > 3:
 		    #we will need a deck to draw from
 		    self.settlementsRemaining -=1
 		    self.resources['wood'] -= 1
@@ -90,6 +92,7 @@ class player:
 		    self.resources['grain'] -= 1
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location)
+		    location.buildSettlement(self.playerNumber)
 		else:
 		    print "You cannot build a settlement there"
 
@@ -101,6 +104,7 @@ class player:
 		    self.resources['grain'] -= 2
 		    self.structures['settlements'].remove(location)
 		    self.structures['cities'].append(location)
+		    location.buildCity(self.playerNumber)
 
 		else:
 		    print "You cannot build a city there"

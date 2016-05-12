@@ -1,6 +1,9 @@
 import Location
 import Player
 import random 
+import ASCII.catan_ascii_functions as asc
+import csv
+import math
 
 class board:
 	#http://stackoverflow.com/questions/1838656/how-do-i-represent-a-hextile-hex-grid-in-memory
@@ -10,10 +13,11 @@ class board:
 		self.robberX = None
 		self.robberY = None
 		spacesLength = 2 * self.BOARD_LENGTH + 2
-		self.edges = [[Location.Edge(i,j) for j in range(spacesLength)] for i in range(spacesLength)]
-		self.vertices = [[Location.Vertex(i,j) for j in range(spacesLength)] for i in range(spacesLength)]
+		self.edges = [[Location.Edge(i,j) for j in range(spacesLength)] for i in range(spacesLength - 1)]
+		self.vertices = [[Location.Vertex(i,j) for j in range(spacesLength)] for i in range(spacesLength/2)]
 		self.tiles = [[Location.Tile(i,j) for j in range(self.BOARD_LENGTH)] for i in range(self.BOARD_LENGTH)]
 		self.fillEmpty()
+		self.currentBoardNumber = 1
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
 		for i in range(self.BOARD_LENGTH):
@@ -29,16 +33,72 @@ class board:
 						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)
+		verts = []
+  		edges = []
+		for row in self.tiles:
+		    for hex in row:
+		      if hex is not None:
+		        vs = self.getTileToVertices(hex)
+		        es = self.getTileToEdges(hex)
+		        verts += vs
+		        edges += es
+		        #hexes.append(hex)
+	  	playableEdges = set(edges)
+	  	for i in range(spacesLength - 1):
+	  		for j in range(spacesLength):
+	  			if self.edges[i][j] not in playableEdges:
+	  				self.edges[i][j] = None
+	  	playableVertices = set(verts)
+	  	for i in range(spacesLength/2):
+	  		for j in range(spacesLength):
+	  			if self.vertices[i][j] not in playableVertices:
+	  				self.vertices[i][j] = None
+
+	# formulas generated using lagragian interpolation
+	# Takes in a tile's grid coordinates and outputs the appropriate ascii string
+	def tileToAscii(self,x,y):
+		result = int(round(x**4/float(6) - (3*x**3)/float(2) + (13*x**2)/float(3) + y))
+		if result < 10:
+			return '0' + str(result) + 'T'
+		return str(result) + 'T'
+
+	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
+	def vertexToAscii(self,x,y):
+		result = int(round(x**5/float(60) - (5/float(24))*x**4 + 
+			(2/float(3))*x**3 + (5/float(24))*x**2 + (439/float(60))*x - 1 + y))
+		if result < 10:
+			return '0' + str(result) + 'V'
+		return str(result) + 'V'
+
+	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
+	def edgeToAscii(self,x,y):
+		result = 0
+		if x % 2 == 0:
+			result = int(round(x**5/float(640) - (float(5)/128)*x**4 + (float(7)/24)*x**3 - (float(15)/32)*x**2 + (float(667)/120)*x - 1 + y))
+		else:
+			result = int(round(x**4/float(192) - x**3/float(6) + (float(151)/96)*x**2 + (float(13)/6)*x + 1.421875 + math.ceil(0.5*y)))
+		if result < 10:
+			return '0' + str(result) + 'R'
+		return str(result) + 'R'
+
+	def createBatchCSV(self, players):
+		with open('ASCII/latest_update.csv', 'wb') as csvfile:
+			writer = csv.writer(csvfile, delimiter=',')
+			for row in self.vertices:
+				for vert in row:
+					if vert is not None and vert.getOwner() is not None:
+						vertAscii = self.vertexToAscii(vert.x, vert.y)
+						settleNum = str(len(players[vert.getOwner()].structures['settlements']))
+						writer.writerow([vertAscii, settleNum + "S" + str(vert.getOwner())])
+						
+
+	def batchUpdate(self):
+		newBoardNumber = asc.batchUpdate(self.currentBoardNumber)
+		self.currentBoardNumber = newBoardNumber
 
 	def printBoard(self):
-		for i in range(self.BOARD_LENGTH):
-			for j in range(self.BOARD_LENGTH):
-				print i, j
-				if self.tiles[i][j] is not None:
-					print self.tiles[i][j].getType()
-					print self.tiles[i][j].getNumber()
-				else:
-					print "None"
+		asc.printBoard(1)		
+
 
 	def fillEmpty(self):
 		self.tiles[0][0] = None
@@ -282,14 +342,14 @@ class board:
 			edges = players[curPlayer].structures.roads
 			for edge in edges:
 				v1, v2 = self.getEdgeToVertices(edge)
-				if neighborsUnclaimed(v1) and v1.getOwner() is None:
+				if v1 is not None and neighborsUnclaimed(v1) and v1.getOwner() is None:
 					locs.add(v1)
-				if neighborsUnclaimed(v2) and v2.getOwner() is None:
+				if v2 is not None and neighborsUnclaimed(v2) and v2.getOwner() is None:
 					locs.add(v2)
 		else:
 			for row in self.vertices:
 				for vertex in row:
-					if vertex.getOwner() is None and neighborsUnclaimed(vertex):
+					if vertex is not None and vertex.getOwner() is None and neighborsUnclaimed(vertex):
 						locs.add(vertex)
 		return locs
 
@@ -297,19 +357,21 @@ class board:
 		result = []
 		for row in self.vertices:
 			for vertex in row:
-				if vertex.getSettlement() == curPlayer:
+				if vertex is not None and vertex.getSettlement() == curPlayer:
 					result.append(vertex)
 		return result
 
 	def buildRoad(self, curPlayer, players, edge):
-		edge.buildRoad(curPlayer)
+		players[curPlayer].buildRoad(edge)
 
 	def buildCity(self, curPlayer, players, vertex):
-		vertex.buildCity(curPlayer)
+		players[curPlayer].buildCity(vertex)	
 
 	def buildSettlement(self, curPlayer, players, vertex):
-		vertex.buildSettlement(curPlayer)
+		players[curPlayer].buildSettlement(vertex)
 
-	def vertexInBounds(self,x, y):
-		#print self.vertices
-		return True
+	def vertexInBounds(self,x,y):
+		return self.vertices[x][y] is not None
+
+	def edgeInBounds(self, x,y):
+		return self.edges[x][y] is not None

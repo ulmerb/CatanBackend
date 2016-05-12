@@ -77,8 +77,6 @@ class Vertex(Location):
 
 	def buildSettlement(self, player):
 		self.settlement = player
-		print self.x, self.y
-		print "built settlement", self.settlement
 
 	def buildCity(self, player):
 		self.settlement = None

@@ -3,13 +3,7 @@ from Board import *
 import Player
 import random
 
-def specPrint(listOfEdges):
-  l = []
-  for edge in listOfEdges:
-    l.append(str(edge.x) + str(edge.y))
-  return l
-
-def test():
+def test1():
   b = board()
   verts = []
   edges = []
@@ -19,10 +13,34 @@ def test():
       if hex is not None:
         vs = b.getTileToVertices(hex)
         es = b.getTileToEdges(hex)
-        es = specPrint(es)
         verts += vs
         edges += es
         hexes.append(hex)
-  print len(set(edges))
-  print len(set(verts))
-test()
+  edges = set(edges)
+  verts = set(verts)
+  for row in b.vertices:
+    arr = [str(v.x) + ',' + str(v.y) if v in verts else 'None' for v in row]
+    print ' '.join(arr)
+  print "----------------------------------------"
+  for row in b.edges:
+    arr = [str(v.x) + ',' + str(v.y) if v in edges else 'None' for v in row]
+    print ' '.join(arr)
+  print "----------------------------------------"
+  for t in b.tiles:
+    for tile in t:
+      if tile is not None:
+        arr = [str(v.x) + "," + str(v.y) for v in b.getTileToVertices(tile)]
+        print tile.x, tile.y, "vertices: ", ' '.join(arr) 
+  print "----------------------------------------"
+  for t in b.tiles:
+    for tile in t:
+      if tile is not None:
+        arr = [str(v.x) + "," + str(v.y) for v in b.getTileToTiles(tile)]
+        print tile.x, tile.y, "tiles: ", ' '.join(arr)
+
+
+
+def test2():
+  b = board()
+# test1()
+test2()

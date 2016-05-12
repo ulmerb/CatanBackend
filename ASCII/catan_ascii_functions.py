@@ -5,24 +5,136 @@ import fileinput
 import json
 
 def printBoard(currentBoardNum):
- 	filein = "catan_example" + str(currentBoardNum) + ".txt"
+ 	filein = "ASCII/catan_example" + str(currentBoardNum) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	print filedata
 	f.close()
 
-def replaceText(old,new,currentBoardNum):
-	filein = "catan_example" + str(currentBoardNum) + ".txt"
-	fileout = "catan_example" + str(currentBoardNum + 1) + ".txt"
+def replaceText(olds,news,currentBoardNum):
+	filein = "ASCII/catan_example" + str(currentBoardNum) + ".txt"
+	fileout = "ASCII/catan_example" + str(currentBoardNum + 1) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	f.close()
-	newdata = filedata.replace(old,new)
+	newdata = filedata
+	for i,old in enumerate(olds):
+		newdata = newdata.replace(old,news[i])
 	f = open(fileout,'w')
 	f.write(newdata)
 	# print newdata
 	f.close()
 
+def verify(boardNum):
+	filein ="ASCII/catan_example" + str(boardNum) + ".txt"
+	f = open(filein,'r')
+	filedata = f.read()
+	# roads
+	print "Road Search"
+	for i in xrange(1,72):
+		output =""
+		if(i < 10):
+			output = "0"+str(i)+"R"
+		else:
+			output = str(i)+"R"
+		if output not in filedata:
+			print "NOT FOUND",output
+	print "Road Search Done"
+	# vertexes
+	print "Vertex Search"
+	for i in xrange(1,55):
+		output =""
+		if(i < 10):
+			output = "0"+str(i)+"V"
+		else:
+			output = str(i)+"V"
+		if output not in filedata:
+			print "NOT FOUND",output
+	print "Vertext Search Done"
+	# tiles
+	print "Tile Search"
+	for i in xrange(1,20):
+		output =""
+		if(i < 10):
+			output = "0"+str(i)+"T"
+		else:
+			output = str(i)+"T"
+		if output not in filedata:
+			print "NOT FOUND",output
+	print "Tile Search Done"
+
+	# ports
+	print "Port Search"
+	for i in xrange(1,10):
+		output = "port"+str(i)
+		if output not in filedata:
+			print "NOT FOUND",output
+	print "Port Search Done"
+	f.close()
+
+def batchUpdate(curBoardNum):
+	fileData = open("ASCII/latest_update.csv",'r')
+	lines = [line.rstrip('\n') for line in fileData]
+	fileData.close()
+	olds = []
+	news = []
+	for line in lines:
+		result = line.split(',')
+		olds.append(result[0])
+		news.append(result[1])
+		replaceText(olds,news,curBoardNum)
+	curBoardNum += 1
+	printBoard(curBoardNum)
+	return curBoardNum
+
+def undo(curBoardNum):
+	current = "ASCII/catan_example" + str(curBoardNum) + ".txt"
+	previous = "ASCII/catan_example" + str(curBoardNum - 1) + ".txt"
+	f = open(previous,'r')
+	filedata = f.read()
+	f.close()
+	f = open(current,'w')
+	f.write(filedata)
+	f.close()
+
+def replace(curBoardNum, old, new):
+	replaceText(old,new,curBoardNum)
+	curBoardNum += 1
+	printBoard(curBoardNum)
+	return curBoardNum
+
+def buildRoad(curBoardNum,location,player):
+	output = "!R"+player
+	replaceText(location,output,curBoardNum)
+	curBoardNum += 1
+	printBoard(curBoardNum)
+	return curBoardNum
+
+def buildSettlement(curBoardNum, location, player, settlementNumber):
+	output = settlementNumber+"S"+player
+	replaceText(location,output,curBoardNum)
+	curBoardNum += 1
+	printBoard(curBoardNum)
+	return curBoardNum
+
+def buildCity(curBoardNum, location, player):
+	output = "!C"+player
+	replaceText(location,output,curBoardNum)
+	curBoardNum += 1
+	printBoard(curBoardNum)
+	return curBoardNum
+
+
+def build(curBoardNum, subCommand, location=None, player=None, settlementNumber=None):
+	if(subCommand == "road"):
+		return buildRoad(curBoardNum,location,player)
+		
+	if(subCommand == "settlement"):
+		return buildSettlement(curBoardNum,location,player,settlementNumber)
+		
+	if(subCommand=="city"):
+		return buildCity(curBoardNum, location, player)
+	
 def main():
 	currentBoardNum = 1
 	currentCommands = ["batch update", "verify","undo","print board","replace","build","formatting","help"]
@@ -178,7 +290,7 @@ def main():
 			print filedata
 			f.close()			
 
-main()
+# main()
 
 
 	
