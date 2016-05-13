@@ -56,8 +56,8 @@ def playTurn(curPlayer, players, board):
 		handleRobber(curPlayer, players, board)
 	else:
 		print str(diceRoll) + " was rolled"
-		board.assignResources(diceRoll)
-	trade(curPlayer, players, board)
+		board.assignResources(diceRoll, players)
+	trade(curPlayer, players)
 	build(curPlayer, players, board)
 	return players[curPlayer].hasWon()
 

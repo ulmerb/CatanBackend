@@ -173,7 +173,7 @@ class board:
 						if vertex.getCity() is not None:
 							amount = 2
 						if amount != 0:
-						        players[vertex.getOwner()].addResources(vertex.getType(), amount)
+						        players[vertex.getOwner()].addResource(tile.getType(), amount)
 	def getTileToTiles(self, tile):
 		result = []
 		x = tile.getX()

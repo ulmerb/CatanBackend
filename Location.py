@@ -95,3 +95,9 @@ class Vertex(Location):
 		if self.city is not None:
 			return self.city
 		return None
+
+	def setType(self,resource):
+		pass
+
+	def getType(self):
+		return self.type
