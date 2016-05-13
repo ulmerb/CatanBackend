@@ -16,6 +16,9 @@ class player:
 	        self.playerNumber = i
 		self.devCardsHeld = []
 		self.devCardsPlayed = []
+
+	def __str__(self):
+		return str(self.playerNumber) + " resources:" + str(self.resources) + " score: " + str(self.score)
 	
 	def getScore(self):
                  return self.score   

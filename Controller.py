@@ -35,7 +35,6 @@ def main():
 	# players[0].buildDevCard(devCardsDeck)
 	# print players[0].devCardsHeld
 	# print devCardsDeck.getNumDevCards()
-
 	firstPlacement(numPlayers, players, board)
 	playMainGame(numPlayers, players, board)
 
@@ -57,6 +56,8 @@ def playTurn(curPlayer, players, board):
 	else:
 		print str(diceRoll) + " was rolled"
 		board.assignResources(diceRoll, players)
+	for player in players:
+		print player
 	trade(curPlayer, players)
 	build(curPlayer, players, board)
 	return players[curPlayer].hasWon()
@@ -164,6 +165,11 @@ def firstPlacement(numPlayers, players, board):
 		board.initialPlacement(i, players)
 	for i in range(numPlayers, 0, -1):
 	 	board.initialPlacement(i-1, players)
+ 	for player in players:
+		player.resources['wood'] += 2
+		player.resources['brick'] += 2
+		player.resources['grain'] += 2
+		player.resources['sheep'] += 2
 	board.createBatchCSV(players)
 	board.batchUpdate()
 
