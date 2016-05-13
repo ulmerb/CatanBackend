@@ -17,7 +17,7 @@ def replaceText(old,new,currentBoardNum):
 	f = open(filein,'r')
 	filedata = f.read()
 	f.close()
-	print old.strip(), new.strip()
+	print "old", old, 'new ', new
 	newdata = filedata.replace(old,new)
 	f = open(fileout,'w')
 	f.write(newdata)
@@ -73,7 +73,7 @@ def verify(boardNum):
 
 def batchUpdate(curBoardNum):
 	fileData = open("ASCII/latest_update.csv",'r')
-	lines = [line.rstrip('\n') for line in fileData]
+	lines = [line.rstrip('\n').rstrip('\r') for line in fileData]
 	fileData.close()
 	for line in lines:
 		result = line.split(',')
@@ -286,7 +286,6 @@ def main():
 			filedata = f.read()
 			print filedata
 			f.close()			
-
 # main()
 
 
