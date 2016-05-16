@@ -84,6 +84,23 @@ class board:
 	def createBatchCSV(self, players):
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
 			writer = csv.writer(csvfile, delimiter=',')
+			# THIS DISPLAYS THE INITINALIZED TILES - matt
+			for row in self.tiles:
+				for tile in row:
+					if tile is not None:
+						tileAscii = self.tileToAscii(tile.x,tile.y)
+						goalTag = ""
+						if(tile.getType() == "desert"):
+							goalTag = "ROB"
+						else:
+							goalTag = str(tile.getType()[0]).capitalize()
+							if(tile.getNumber() < 10):
+								goalTag += "0"+ str(tile.getNumber())
+							else:
+								goalTag += str(tile.getNumber())
+						# print goalTag
+						writer.writerow([tileAscii,goalTag])
+
 			for row in self.vertices:
 				for vert in row:
 					if vert is not None and vert.getOwner() is not None:
