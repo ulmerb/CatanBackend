@@ -56,8 +56,11 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.devCards = []
         $scope.main.players = []
         $scope.main.hasLongestRoad = false
-        $scope.main.victoryPointCardsPlayed = false
-        $scope.main.portsControlled = 200
+        $scope.main.hasLargestArmy = false
+        $scope.main.victoryPointCardsPlayed = 0
+        $scope.main.portsControlled = 0
+        /*send this to the backend when filled*/
+        $scope.main.buildRoadLocation
 
         /*
         * FetchModel - Fetch a model from the web server.
