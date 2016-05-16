@@ -16,6 +16,9 @@ class board:
 		self.edges = [[Location.Edge(i,j) for j in range(spacesLength)] for i in range(spacesLength - 1)]
 		self.vertices = [[Location.Vertex(i,j) for j in range(spacesLength)] for i in range(spacesLength/2)]
 		self.tiles = [[Location.Tile(i,j) for j in range(self.BOARD_LENGTH)] for i in range(self.BOARD_LENGTH)]
+		self.asciiToTile = {}
+		self.asciiToVertex = {}
+		self.asciiToEdge = {}
 		self.fillEmpty()
 		self.currentBoardNumber = 1
 		types = self.getShuffledTypes()
@@ -33,6 +36,8 @@ class board:
 						self.robberY = j
 					else:
 						self.tiles[i][j].setRobber(True)
+		
+		# This sets non-playable edges and vertices(ones not boarding any tile i.e. the ocean) to None
 		verts = []
   		edges = []
 		for row in self.tiles:
@@ -54,6 +59,9 @@ class board:
 	  			if self.vertices[i][j] not in playableVertices:
 	  				self.vertices[i][j] = None
 
+	  	# Maps the initial board ascii to the tile, edge, or vertex it refers to. Will be updated
+	  	# everytime a structure is built
+	  	self.buildASCIIGridMaps()
 	# formulas generated using lagragian interpolation
 	# Takes in a tile's grid coordinates and outputs the appropriate ascii string
 	def tileToAscii(self,x,y):
@@ -80,6 +88,29 @@ class board:
 		if result < 10:
 			return '0' + str(result) + 'R'
 		return str(result) + 'R'
+
+	def buildASCIIGridMaps(self):
+		self.buildASCIIToTiles()
+		self.buildASCIIToVertices()
+		self.buildASCIIToEdges()
+
+	def buildASCIIToTiles(self):
+		for row in self.tiles:
+			for tile in row:
+				if tile is not None:
+					self.asciiToTile[self.tileToAscii(tile.x, tile.y)] = tile
+
+	def buildASCIIToVertices(self):
+		for row in self.vertices:
+			for v in row:
+				if v is not None:
+					self.asciiToVertex[self.vertexToAscii(v.x, v.y)] = v
+
+	def buildASCIIToEdges(self):
+		for row in self.edges:
+			for e in row:
+				if e is not None:
+					self.asciiToEdge[self.edgeToAscii(e.x, e.y)] = e
 
 	def createBatchCSV(self, players):
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
@@ -174,6 +205,7 @@ class board:
 							amount = 2
 						if amount != 0:
 						        players[vertex.getOwner()].addResource(tile.getType(), amount)
+
 	def getTileToTiles(self, tile):
 		result = []
 		x = tile.getX()

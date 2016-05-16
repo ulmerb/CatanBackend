@@ -52,7 +52,8 @@ def playTurn(curPlayer, players, board):
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
-		handleRobber(curPlayer, players, board)
+		print "Robber not handled"
+		#handleRobber(curPlayer, players, board)
 	else:
 		print str(diceRoll) + " was rolled"
 		board.assignResources(diceRoll, players)
