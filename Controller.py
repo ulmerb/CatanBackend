@@ -129,7 +129,8 @@ def askPlayerIfDevCard(curPlayer, players, board):
 
 def steal(target, curPlayer):
 	stolen = target.loseRandomCard()
-	curPlayer.addResource(stolen, 1)
+	print "target",target,"curPlayer",curPlayer,"stolen",stolen
+	players[curPlayer].addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
 	if players[curPlayer].canBuildRoad():

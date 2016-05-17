@@ -139,10 +139,10 @@ class player:
           	    if len(resources) == 0:
           	        print "No resources to steal"
           	    else:
-                   	 i = random.randint(0, len(resources) - 1)
-                   	 print "1 ", resources[i], " was stolen"
-                        self.loseResource(resources[i], 1)
-                        return resources[i]
+					i = random.randint(0, len(resources) - 1)
+					print "1 ", resources[i], " was stolen"
+					self.loseResource(resources[i], 1)
+					return resources[i]
           	else:
           	    print "invalid card type"
 
