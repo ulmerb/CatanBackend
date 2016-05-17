@@ -134,7 +134,7 @@ def steal(target, curPlayer,players):
 	players[curPlayer].addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
-	roadLocation = askPlayerForRoadLocation()
+	roadLocation = askPlayerForRoadLocation(board)
 	players[curPlayer].buildRoad(roadLocation, board)
 	board.buildRoad(curPlayer, players, roadLocation)
 
@@ -176,8 +176,13 @@ def useCard(curPlayer, chosenCard):
 	return 0
 
 # convert some string or index into location object
-def askPlayerForRoadLocation():
-	return 0
+def askPlayerForRoadLocation(board):
+	while True:
+		asciiLoc = raw_input('Enter the location where you want to build: ')
+		if asciiLoc in board.asciiToEdge:
+			return board.asciiToEdge[asciiLoc]
+		else:
+			print 'That location does not exist'
 
 def askPlayerForSettlementLocation(board):
 	while True:
