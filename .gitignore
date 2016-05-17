@@ -1,3 +1,4 @@
 *.pyc
 *catan_example*.txt
 *latest_update.csv
+ASCII/latest_update.csv
