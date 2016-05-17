@@ -229,6 +229,8 @@ def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
             for r in recieve:
                 players[curPlayer].addResource(r, recieve[r])
                 players[partner].loseResource(r, recieve[r])
+            for player in players:
+				print player
             return True
         else:
             print "Player " + str(curPlayer) + " has changed their mind."
