@@ -142,27 +142,20 @@ class player:
 		else:
 		    print "You cannot draw a development card right now"
 
-	def loseRandomCard(self, cardType = 'res'):
-	        #loseDevCard or Resource
-	        if cardType == 'dev':
-	            if self.devCardsHeld != []:
-          		self.devCardsHeld.pop(random.randrange(len(self.devCardsHeld)))
-          	    else:
-          	        print "No Dev Cards to steal"
-          	elif cardType =='res':
-          	    resources = []
-          	    for r in self.resources:
-          	        if self.resources[r] != 0:
-          	            for _ in xrange(self.resources[r]):
-          	                 resources.append(r)
-          	    if len(resources) == 0:
-          	        print "No resources to steal"
-          	    else:
-                   	 i = random.randint(0, len(resources) - 1)
-                   	 print "1 ", resources[i], " was stolen"
-                         self.loseResource(resources[i], 1)
-          	else:
-          	    print "invalid card type"
+	def loseRandomCard(self):
+       	    resources = []
+       	    for r in self.resources:
+       	        if self.resources[r] != 0:
+       	            for _ in xrange(self.resources[r]):
+      	                 resources.append(r)
+       	    if len(resources) == 0:
+       	        print "No resources to steal"
+       	        return None
+       	    else:
+              	 i = random.randint(0, len(resources) - 1)
+              	 print "1 ", resources[i], " was stolen"
+                 self.loseResource(resources[i], 1)
+                 return resources[i]
 
 	def addResource(self, resource, amount, verbose = False):
 	       self.resources[resource] += amount

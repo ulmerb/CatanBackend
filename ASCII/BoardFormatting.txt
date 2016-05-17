@@ -14,3 +14,8 @@ Settlements: settlementNum (1-5) + "S" + playerNum
 Cities: "!C" + playerNum
 Tiles: "ROB" OR "B/W/O/G/S" + 02-12 for Brick, Wood, Ore, Grain, Sheep 
 Ports: "#3:1#" or "#2:1" + "B/W/O/G/S" for Brick, Wood, Ore, Grain, Sheep
+
+Additional Tags
+Each Tile has a "T"+NUM to be able to reference if there are duplicates of the tile (e.g. two brick sixes)
+
+

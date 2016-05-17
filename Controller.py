@@ -89,16 +89,20 @@ def handleRobber(curPlayer, players, board):
 	print "Robber"
 	locations = board.getAllTiles()
 	print "Choose a location: "
+	location_dict = {}
 	for l in locations:
-		print l
+		goalTag = board.tileToAscii(l.x,l.y)
+		location_dict[goalTag] = l
+		print goalTag
 	locationForRobber = 0
 	try:
-		locationForRobber = raw_input("")
+		locationForRobber = raw_input("Enter a location (e.g. 12T)")
 	except EOFError:
 		locationForRobber = Location.Tile()
 		print  ""
-	board.moveRobber(locationForRobber)
-	targets = board.playersToStealFrom(locationForRobber)
+	newRobberLocation = location_dict[locationForRobber]
+	board.moveRobber(newRobberLocation)
+	targets = board.playersToStealFrom(newRobberLocation)
 	print "Choose a player to steal from:"
 	for t in targets:
 		print t
@@ -108,7 +112,7 @@ def handleRobber(curPlayer, players, board):
 	except EOFError:
 		target = 0
 		print  ""
-	steal(target, curPlayer)
+	steal(players[int(target)], curPlayer)
 
 def askPlayerIfDevCard(curPlayer, players, board):
 	useCard = 0
@@ -126,8 +130,9 @@ def askPlayerIfDevCard(curPlayer, players, board):
 	return 0
 
 def steal(target, curPlayer):
-	stolen = target.getRandomCard()
-	curPlayer.addResource(stolen, 1)
+	stolen = target.loseRandomCard()
+	print "target",target,"curPlayer",curPlayer,"stolen",stolen
+	players[curPlayer].addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
 	roadLocation = askPlayerForRoadLocation()
