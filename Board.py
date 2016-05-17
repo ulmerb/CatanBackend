@@ -375,7 +375,7 @@ class board:
 		endpoints = self.getEdgeToVertices(edge)
 		for v in endpoints:
 			for e in self.getVertexToEdges(v):
-				if e is not edge and e is not in edges:
+				if e is not edge:
 					edges.add(e)
 		return edges
 
