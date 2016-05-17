@@ -475,7 +475,7 @@ class board:
 		return result
 
 	def buildRoad(self, curPlayer, players, edge):
-		players[curPlayer].buildRoad(edge)
+		players[curPlayer].buildRoad(edge, self)
 
 	def buildCity(self, curPlayer, players, vertex):
 		players[curPlayer].buildCity(vertex)
