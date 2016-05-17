@@ -33,7 +33,7 @@ class player:
         #on all of these methods I'll leave the option to check a specific location for now
 	def canBuildCity(self, location):
    	    if self.resources['grain'] >= 2 and self.resources['ore'] >= 3 and self.citiesRemaining > 0:
-   	        if location in self.structures['settlements']:
+   	        if location.index in self.structures['settlements']:
    	            return True
 		return False
 		
@@ -104,7 +104,7 @@ class player:
 		    print "You cannot build a road there"
 
 	def buildSettlement(self, location, board):
-		if self.canBuildSettlement(board, location) or self.settlementsRemaining > 3:
+		if self.canBuildSettlement(board, location) or (self.settlementsRemaining > 3 and self.citiesRemaining == 4):
 		    #we will need a deck to draw from
 		    self.settlementsRemaining -=1
 		    self.resources['wood'] -= 1
@@ -120,6 +120,7 @@ class player:
 		if self.canBuildCity(location):
 		    #we will need a deck to draw from
 		    self.citiesRemaining -=1
+		    self.settlementsRemaining +=1
 		    self.resources['ore'] -= 3
 		    self.resources['grain'] -= 2
 		    self.structures['settlements'].remove(location.index)
