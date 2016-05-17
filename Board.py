@@ -136,7 +136,7 @@ class board:
 		for row in self.tiles:
 			for tile in row:
 				if tile is not None:
-					index = self.tileToArray(tile.x,tile.y)
+					index = self.tileToArray(tile.x,tile.y) - 1
 					tile.index = index
 					self.tileArray[index] = tile
 
@@ -144,15 +144,20 @@ class board:
 		for row in self.vertices:
 			for v in row:
 				if v is not None:
-					index = self.vertexToArray(v.x,v.y)
+					index = self.vertexToArray(v.x,v.y) - 1
 					v.index = index
 					self.vertexArray[index] = v
+
+	#debugging function
+	def printEdges(self):
+		for row in self.edges:
+			print ','.join([str(e.x) + ',' + str(e.y) if e is not None else "None" for e in row])
 
 	def buildedgeToArray(self):
 		for row in self.edges:
 			for e in row:
 				if e is not None:
-					index = self.tileToArray(e.x,e.y)
+					index = self.edgeToArray(e.x,e.y) - 1
 					e.index = index
 					self.edgeArray[index] = e
 
@@ -461,7 +466,7 @@ class board:
 		players[curPlayer].buildCity(vertex)
 
 	def buildSettlement(self, curPlayer, players, vertex):
-		players[curPlayer].buildSettlement(self,vertex)
+		players[curPlayer].buildSettlement(vertex, self)
 
 	def vertexInBounds(self,x,y):
 		return self.vertices[x][y] is not None
