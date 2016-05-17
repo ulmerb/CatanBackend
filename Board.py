@@ -137,7 +137,7 @@ class board:
 			for tile in row:
 				if tile is not None:
 					index = self.tileToArray(tile.x,tile.y) - 1
-					tile.index = index
+					tile.index = index + 1
 					self.tileArray[index] = tile
 
 	def buildvertexToArray(self):
@@ -145,7 +145,7 @@ class board:
 			for v in row:
 				if v is not None:
 					index = self.vertexToArray(v.x,v.y) - 1
-					v.index = index
+					v.index = index + 1
 					self.vertexArray[index] = v
 
 	#debugging function
@@ -158,7 +158,7 @@ class board:
 			for e in row:
 				if e is not None:
 					index = self.edgeToArray(e.x,e.y) - 1
-					e.index = index
+					e.index = index + 1
 					self.edgeArray[index] = e
 
 	def createBatchCSV(self, players):
