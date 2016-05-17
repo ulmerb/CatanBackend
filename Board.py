@@ -186,6 +186,12 @@ class board:
 					if vert is not None and vert.getOwner() is not None:
 						vertAscii = self.vertexToAscii(vert.x, vert.y)
 						writer.writerow([vertAscii, str(vert.settleNum) + "S" + str(vert.getOwner())])
+
+			for row in self.edges:
+				for edge in row:
+					if edge is not None and edge.getOwner() is not None:
+						edgeAscii = self.edgeToAscii(edge.x,edge.y)
+						writer.writerow([edgeAscii, "!R" + str(vert.getOwner())])
 						
 
 	def batchUpdate(self):
