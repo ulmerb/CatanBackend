@@ -136,7 +136,7 @@ class board:
 		for row in self.tiles:
 			for tile in row:
 				if tile is not None:
-					index = tileToArray(tile.x,tile.y)
+					index = self.tileToArray(tile.x,tile.y)
 					tile.index = index
 					self.tileArray[index] = tile
 
@@ -144,7 +144,7 @@ class board:
 		for row in self.vertices:
 			for v in row:
 				if v is not None:
-					index = vertexToArray(v.x,v.y)
+					index = self.vertexToArray(v.x,v.y)
 					v.index = index
 					self.vertexArray[index] = v
 
@@ -152,7 +152,7 @@ class board:
 		for row in self.edges:
 			for e in row:
 				if e is not None:
-					index = tileToArray(e.x,e.y)
+					index = self.tileToArray(e.x,e.y)
 					e.index = index
 					self.edgeArray[index] = e
 
