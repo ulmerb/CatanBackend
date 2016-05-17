@@ -141,7 +141,8 @@ class player:
           	    else:
                    	 i = random.randint(0, len(resources) - 1)
                    	 print "1 ", resources[i], " was stolen"
-                         self.loseResource(resources[i], 1)
+                        self.loseResource(resources[i], 1)
+                        return resources[i]
           	else:
           	    print "invalid card type"
 

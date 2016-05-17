@@ -110,7 +110,7 @@ def handleRobber(curPlayer, players, board):
 	except EOFError:
 		target = 0
 		print  ""
-	steal(target, curPlayer)
+	steal(players[int(target)], curPlayer)
 
 def askPlayerIfDevCard(curPlayer, players, board):
 	useCard = 0
@@ -128,7 +128,7 @@ def askPlayerIfDevCard(curPlayer, players, board):
 	return 0
 
 def steal(target, curPlayer):
-	stolen = target.getRandomCard()
+	stolen = target.loseRandomCard()
 	curPlayer.addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
