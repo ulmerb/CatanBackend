@@ -21,6 +21,9 @@ class board:
 		self.asciiToEdge = {}
 		self.fillEmpty()
 		self.currentBoardNumber = 1
+		self.tileArray = [0] * 19
+		self.vertexArray = [0] * 54
+		self.edgeArray = [0] * 72
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
 		for i in range(self.BOARD_LENGTH):
@@ -70,6 +73,10 @@ class board:
 			return '0' + str(result) + 'T'
 		return str(result) + 'T'
 
+	def tileToArray(self,x,y):
+		return int(round(x**4/float(6) - (3*x**3)/float(2) + (13*x**2)/float(3) + y))
+
+
 	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
 	def vertexToAscii(self,x,y):
 		result = int(round(x**5/float(60) - (5/float(24))*x**4 + 
@@ -77,6 +84,10 @@ class board:
 		if result < 10:
 			return '0' + str(result) + 'V'
 		return str(result) + 'V'
+
+	def vertexToArray(self,x,y):
+		return int(round(x**5/float(60) - (5/float(24))*x**4 + 
+			(2/float(3))*x**3 + (5/float(24))*x**2 + (439/float(60))*x - 1 + y))
 
 	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
 	def edgeToAscii(self,x,y):
@@ -89,10 +100,19 @@ class board:
 			return '0' + str(result) + 'R'
 		return str(result) + 'R'
 
+	def edgeToArray(self,x,y):
+		if x % 2 == 0:
+			return int(round(x**5/float(640) - (float(5)/128)*x**4 + (float(7)/24)*x**3 - (float(15)/32)*x**2 + (float(667)/120)*x - 1 + y))
+		else:
+			return int(round(x**4/float(192) - x**3/float(6) + (float(151)/96)*x**2 + (float(13)/6)*x + 1.421875 + math.ceil(0.5*y)))
+
 	def buildASCIIGridMaps(self):
 		self.buildASCIIToTiles()
 		self.buildASCIIToVertices()
 		self.buildASCIIToEdges()
+		self.buildtileToArray()
+		self.buildvertexToArray()
+		self.buildedgeToArray()
 
 	def buildASCIIToTiles(self):
 		for row in self.tiles:
@@ -111,6 +131,30 @@ class board:
 			for e in row:
 				if e is not None:
 					self.asciiToEdge[self.edgeToAscii(e.x, e.y)] = e
+
+	def buildtileToArray(self):
+		for row in self.tiles:
+			for tile in row:
+				if tile is not None:
+					index = tileToArray(tile.x,tile.y)
+					tile.index = index
+					self.tileArray[index] = tile
+
+	def buildvertexToArray(self):
+		for row in self.vertices:
+			for v in row:
+				if v is not None:
+					index = vertexToArray(v.x,v.y)
+					v.index = index
+					self.vertexArray[index] = v
+
+	def buildedgeToArray(self):
+		for row in self.edges:
+			for e in row:
+				if e is not None:
+					index = tileToArray(e.x,e.y)
+					e.index = index
+					self.edgeArray[index] = e
 
 	def createBatchCSV(self, players):
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
@@ -370,12 +414,12 @@ class board:
 
 		locs = set()
 		if not initializing:
-			edges = players[curPlayer].structures.roads
+			edges = players[curPlayer].structures['roads']
 			for edge in edges:
 				v1, v2 = self.getEdgeToVertices(edge)
-				if v1 is not None and neighborsUnclaimed(v1) and v1.getOwner() is None:
+				if v1 is not None and v1.getOwner() is None and neighborsUnclaimed(v1):
 					locs.add(v1)
-				if v2 is not None and neighborsUnclaimed(v2) and v2.getOwner() is None:
+				if v2 is not None and v2.getOwner() is None and neighborsUnclaimed(v2):
 					locs.add(v2)
 		else:
 			for row in self.vertices:
@@ -399,7 +443,7 @@ class board:
 		players[curPlayer].buildCity(vertex)
 
 	def buildSettlement(self, curPlayer, players, vertex):
-		players[curPlayer].buildSettlement(vertex)
+		players[curPlayer].buildSettlement(self,vertex)
 
 	def vertexInBounds(self,x,y):
 		return self.vertices[x][y] is not None

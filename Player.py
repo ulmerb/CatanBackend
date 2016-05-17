@@ -5,7 +5,7 @@ class player:
 
 	def __init__(self, i):
 	        self.score =  0
-	        self.resources =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+	        self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 4, 'grain' : 4}
 	        self.roadsRemaining = 15
 	        self.citiesRemaining = 4
 	        self.settlementsRemaining = 5
@@ -31,27 +31,46 @@ class player:
 	            return True
 		return False
         #on all of these methods I'll leave the option to check a specific location for now
-	def canBuildCity(self, location = -1):
+	def canBuildCity(self, location):
    	    if self.resources['grain'] >= 2 and self.resources['ore'] >= 3 and self.citiesRemaining > 0:
-   	        if (location == -1 and len(self.structures['settlements']) > 0) or location in self.structures['settlements']:
+   	        if location in self.structures['settlements']:
    	            return True
 		return False
 		
-	def canBuildSettlement(self, location = -1):
-       	        #we'll need some additional handling to see if theres a spot they can build,
-       	        #dependent on board/location implementations, for now just check resources
-        	if self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.resources['grain'] >= 1 and self.resources['sheep'] >= 1 and self.settlementsRemaining > 0:
-           	        if location == -1 or location in self.structures['roads']:
-           	            return True
-		return False       
+	def canBuildSettlement(self, board, gridLoc):
+		if gridLoc.getOwner() is not None:
+			return False
+		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.resources['grain'] >= 1 and self.resources['sheep'] >= 1 and self.settlementsRemaining > 0):
+			print "Insufficent resources, ", self.resources
+			return False
+		adjRoads = board.getVertexToEdges(gridLoc)
+		playerHasRoad = False
+		for road in self.structures['roads']:
+			if road in adjRoads:
+				playerHasRoad = True
+				break
+		if not playerHasRoad:
+			return False
+		for n in board.getVertexToVertices(gridLoc):
+			if n.getOwner() is not None:
+				return False
+		if not gridLoc in settlementLocations:
+	        return False
+		else:
+			print self, " cannot play there"
+		return False
 
-	def canBuildRoad(self, location =-1):
-	        #we'll need some additional handling to see if theres a spot they can build,
-       	        #dependent on board/location implementations, for now just check resources
-        	if self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0:
-           	        if location == -1 or True:
-           	            #or true is a stub to indicate we'll need a board check to see if a location can be built on
-           	            return True
+	def canBuildRoad(self, location, board):
+		if location.getOwner() is not None:
+			return False
+		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0):
+			return False
+		for neighbV in board.getEdgeToVertices(location):
+			if neighbV.getOwner() == self.playerNumber:
+				return True
+		for neigbE in board.getEdgeToEdges(location):
+			if neighbE.getOwner() == self.playerNumber:
+				return True
 		return False
 
 	def canBuildDevCard(self):
@@ -75,26 +94,26 @@ class player:
             else:
                 print "You don't have that card"
             
-	def buildRoad(self, location):
-		if self.canBuildRoad(location):
+	def buildRoad(self, location, board):
+		if self.canBuildRoad(location, board):
 		    #we will need a deck to draw from
 		    self.roadsRemaining -=1
 		    self.resources['wood'] -= 1
 		    self.resources['brick'] -= 1
-		    self.structures['roads'].append(location)
+		    self.structures['roads'].append(location.index)
 		    location.buildRoad(self.playerNumber)
 		else:
 		    print "You cannot build a road there"
 
-	def buildSettlement(self, location):
-		if self.canBuildSettlement(location) or self.settlementsRemaining > 3:
+	def buildSettlement(self, location, board):
+		if self.canBuildSettlement(board, location) or self.settlementsRemaining > 3:
 		    #we will need a deck to draw from
 		    self.settlementsRemaining -=1
 		    self.resources['wood'] -= 1
 		    self.resources['brick'] -= 1
 		    self.resources['grain'] -= 1
 		    self.resources['sheep'] -= 1
-		    self.structures['settlements'].append(location)
+		    self.structures['settlements'].append(location.index)
 		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
 		else:
 		    print "You cannot build a settlement there"
@@ -105,8 +124,8 @@ class player:
 		    self.citiesRemaining -=1
 		    self.resources['ore'] -= 3
 		    self.resources['grain'] -= 2
-		    self.structures['settlements'].remove(location)
-		    self.structures['cities'].append(location)
+		    self.structures['settlements'].remove(location.index)
+		    self.structures['cities'].append(location.index)
 		    location.buildCity(self.playerNumber)
 
 		else:

@@ -65,10 +65,10 @@ def playTurn(curPlayer, players, board):
 
 def build(curPlayer, players, board):
 	print "Player " + str(curPlayer) + " is building"
-	while(True):
+	while(True):		
 		try:
 			response = raw_input("Do you want to build?")
-			if  response == "Yes" or response == "yes" or response == "y":
+			if response == "Yes" or response == "yes" or response == "y":
 				toBuild = raw_input("What do you want to build? ")
 				if toBuild == "road":
 					buildRoad(curPlayer, players, board)
@@ -78,6 +78,7 @@ def build(curPlayer, players, board):
 					buildCity(curPlayer, players, board)
 				elif toBuild == "devCard":
 					buildDevCard(curPlayer, players, board)
+				break
 			else:
 				break
 		except EOFError:
@@ -129,31 +130,19 @@ def steal(target, curPlayer):
 	curPlayer.addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
-	if players[curPlayer].canBuildRoad():
-		roadLocations = board.getPotentialRoadLocs(curPlayer, players)
-		roadLocation = askPlayerForRoadLocation()
-		players[curPlayer].buildRoad()
-		board.buildRoad(curPlayer, players, roadLocation)
-	else:
-		print "You can't build a road"
+	roadLocation = askPlayerForRoadLocation()
+	players[curPlayer].buildRoad(roadLocation, board)
+	board.buildRoad(curPlayer, players, roadLocation)
 
 def buildSettlement(curPlayer, players, board):
-	if players[curPlayer].canBuildSettlement():
-		settlementLocations = board.getPotentialSettlementLocs(curPlayer, players)
-		settlementLocation = askPlayerForSettlementLocation()
-		players[curPlayer].buildSettlement()
-		board.buildSettlement(curPlayer, players, settlementLocation)
-	else:
-		print "You can't build a settlement"
+	settlementLocation = askPlayerForSettlementLocation(board)
+	players[curPlayer].buildSettlement(settlementLocation, board)
+	board.buildSettlement(curPlayer, players, settlementLocation)
 
 def buildCity(curPlayer, players, board):
-	if players[curPlayer].canBuildCity():
-		cityLocations = board.getPotentialCityLocs(curPlayer, players)
-		cityLocation = askPlayerForCityLocation()
-		players[curPlayer].buildCity()
-		board.buildCity(curPlayer, players, cityLocation)
-	else:
-		print "You can't build a city"
+	cityLocation = askPlayerForCityLocation()
+	players[curPlayer].buildCity(cityLocation)
+	board.buildCity(curPlayer, players, cityLocation)
 
 def buildDevCard(curPlayer, players, board):
 	if players[curPlayer].canBuildDevCard():
@@ -182,11 +171,17 @@ def selectDevCard(potentialDevCards):
 def useCard(curPlayer, chosenCard):
 	return 0
 
+# convert some string or index into location object
 def askPlayerForRoadLocation():
 	return 0
 
-def askPlayerForSettlementLocation():
-	return 0
+def askPlayerForSettlementLocation(board):
+	while True:
+		asciiLoc = raw_input('Enter the location where you want to build: ')
+		if asciiLoc in board.asciiToVertex:
+			return board.asciiToVertex[asciiLoc]
+		else:
+			print 'That location does not exist'
 
 def askPlayerForCityLocation():
 	return 0

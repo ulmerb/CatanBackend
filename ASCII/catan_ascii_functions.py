@@ -285,7 +285,7 @@ def main():
 			f = open(filein,'r')
 			filedata = f.read()
 			print filedata
-			f.close()			
+			f.close()
 # main()
 
 
