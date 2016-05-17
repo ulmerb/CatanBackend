@@ -346,19 +346,31 @@ class board:
 		return result
 
 	def getVertexToEdges(self, vertex):
-		result = []
-		x = vertex.getX()
-		y = vertex.getY()
-		offset = 1
-		if x%2 != y%2:
-			offset = -1
-		if self.edges[x*2][y] is not None:
-			result.append(self.edges[x*2][y])
-		if self.edges[x*2][y-1] is not None:
-			result.append(self.edges[x*2][y-1])
-		if self.edges[x*2+offset][y] is not None:
-			result.append(self.edges[x*2+offset][y])
-		return result
+		vertexEdges = []
+		x = vertex.x
+		y = vertex.y
+		offset = -1
+		if x % 2 == y % 2: offset = 1
+		edgeOne = self.edges[x*2][y-1]
+		edgeTwo = self.edges[x*2][y]
+		edgeThree = self.edges[x*2+offset][y]
+		if edgeOne != None: vertexEdges.append(edgeOne)
+		if edgeTwo != None: vertexEdges.append(edgeTwo)
+		if edgeThree != None: vertexEdges.append(edgeThree)
+		return vertexEdges
+		# result = []
+		# x = vertex.getX()
+		# y = vertex.getY()
+		# offset = 1
+		# if x%2 != y%2:
+		# 	offset = -1
+		# if self.edges[x*2][y] is not None:
+		# 	result.append(self.edges[x*2][y])
+		# if self.edges[x*2][y-1] is not None:
+		# 	result.append(self.edges[x*2][y-1])
+		# if self.edges[x*2+offset][y] is not None:
+		# 	result.append(self.edges[x*2+offset][y])
+		# return result
 
 	def getEdgeToVertices(self, edge):
 	    x = edge.x
