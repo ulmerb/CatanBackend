@@ -137,7 +137,6 @@ class board:
 			for tile in row:
 				if tile is not None:
 					index = self.tileToArray(tile.x,tile.y)
-					print index
 					tile.index = index
 					self.tileArray[index - 1] = tile
 
@@ -146,7 +145,6 @@ class board:
 			for v in row:
 				if v is not None:
 					index = self.vertexToArray(v.x,v.y)
-					print index
 					v.index = index
 					self.vertexArray[index - 1] = v
 
@@ -155,7 +153,6 @@ class board:
 			for e in row:
 				if e is not None:
 					index = self.edgeToArray(e.x,e.y)
-					print index
 					e.index = index
 					self.edgeArray[index - 1] = e
 
@@ -202,7 +199,7 @@ class board:
 		self.currentBoardNumber = newBoardNumber
 
 	def printBoard(self):
-		asc.printBoard(1)
+		asc.printBoard(self.currentBoardNumber)
 
 
 	def fillEmpty(self):
