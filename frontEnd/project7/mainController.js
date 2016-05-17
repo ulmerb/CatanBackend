@@ -59,8 +59,14 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.hasLargestArmy = false
         $scope.main.victoryPointCardsPlayed = 0
         $scope.main.portsControlled = 0
+        $scope.main.isUserLoggedIn = false
+        $scope.main.userAlreadyRolledDieThisTurn = false
+        $scope.main.lastDieRollValue = 0
         /*send this to the backend when filled*/
         $scope.main.buildRoadLocation = ""
+        $scope.main.buildSettlementLocation = ""
+        $scope.main.buildCityLocation = ""
+        $scope.main.robberLocation = ""
 
         /*
         * FetchModel - Fetch a model from the web server.
@@ -96,7 +102,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
           });
         });
 
-        $scope.main.isUserLoggedIn = false;
 
         $rootScope.$on( "$routeChangeStart", function(event, next, current) {
           if (!$scope.main.isUserLoggedIn) {
@@ -187,6 +192,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                  + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
         }
 
+        //New functions:
+
+        $scope.rollDieButtonPressed = function() {
+            $scope.main.userAlreadyRolledDieThisTurn = true
+            $scope.main.lastDieRollValue = 7 //remove later
+        }
 
 
 
