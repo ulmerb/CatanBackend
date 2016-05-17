@@ -52,8 +52,8 @@ def playTurn(curPlayer, players, board):
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
-		print "Robber not handled"
-		#handleRobber(curPlayer, players, board)
+		#print "Robber not handled"
+		handleRobber(curPlayer, players, board)
 	else:
 		print str(diceRoll) + " was rolled"
 		board.assignResources(diceRoll, players)
@@ -112,7 +112,7 @@ def handleRobber(curPlayer, players, board):
 	except EOFError:
 		target = 0
 		print  ""
-	steal(players[int(target)], curPlayer)
+	steal(players[int(target)], curPlayer,players)
 
 def askPlayerIfDevCard(curPlayer, players, board):
 	useCard = 0
@@ -129,9 +129,8 @@ def askPlayerIfDevCard(curPlayer, players, board):
 		print "Not doing dev card, sublime"
 	return 0
 
-def steal(target, curPlayer):
+def steal(target, curPlayer,players):
 	stolen = target.loseRandomCard()
-	print "target",target,"curPlayer",curPlayer,"stolen",stolen
 	players[curPlayer].addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
