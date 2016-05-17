@@ -116,7 +116,7 @@ class player:
 		else:
 		    print "You cannot build a settlement there"
 
-	def buildCity(self, location):
+	def buildCity(self, location, board):
 		if self.canBuildCity(location):
 		    #we will need a deck to draw from
 		    self.citiesRemaining -=1

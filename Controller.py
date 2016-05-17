@@ -145,7 +145,7 @@ def buildSettlement(curPlayer, players, board):
 
 def buildCity(curPlayer, players, board):
 	cityLocation = askPlayerForCityLocation()
-	players[curPlayer].buildCity(cityLocation)
+	players[curPlayer].buildCity(cityLocation, board)
 	board.buildCity(curPlayer, players, cityLocation)
 
 def buildDevCard(curPlayer, players, board):
@@ -156,9 +156,9 @@ def buildDevCard(curPlayer, players, board):
 
 def firstPlacement(numPlayers, players, board):
 	for i in range (0, numPlayers):
-		board.initialPlacement(i, players)
+		initialPlacement(i, players, board)
 	for i in range(numPlayers, 0, -1):
-	 	board.initialPlacement(i-1, players)
+	 	initialPlacement(i-1, players, board)
  	for player in players:
 		player.resources['wood'] += 2
 		player.resources['brick'] += 2
@@ -167,6 +167,41 @@ def firstPlacement(numPlayers, players, board):
 	board.createBatchCSV(players)
 	board.batchUpdate()
 
+def initialPlacement(curPlayer, players, board):
+	#Note: This presumes the board.acii maps are kept up to date, which they aren't
+	print curPlayer, " is placing their initial settlement and road"
+	settlementLoc = None
+	asciiVertexLoc = None
+	roadLoc = None
+	try:
+		while (True):
+			asciiVertexLoc = raw_input("Enter the ascii for the location you want to build your settlement: ")
+			if asciiVertexLoc not in board.asciiToVertex:
+				print "error, invalid ascii"
+			else:
+				settlementLoc = board.asciiToVertex[asciiVertexLoc]
+				break
+	except EOFError:
+		print "On sublime, naively building"
+		possibleLocations = board.getPossibleSettlementLocations(i, players, True)
+		settlementLoc = possibleLocations[0]
+	try:
+		while (True):
+			asciiRoadLoc = raw_input("Enter the ascii for the location you want to build your road: ")
+			if asciiRoadLoc not in board.asciiToEdge:
+				print "error, invalid ascii"
+			else:
+				roadLoc = board.asciiToEdge[asciiRoadLoc]
+				if roadLoc not in board.getVertexToEdges(settlementLoc):
+					print "Error, that road location is not a neighbor of your settlement location, ", asciiVertexLoc
+				else:
+					break
+	except EOFError:
+		print "On sublime, naively building"
+		possibleLocations = board.getVertexToEdges(board, settlementLoc)
+		roadLoc = possibleLocations[0]
+	players[curPlayer].buildSettlement(settlementLoc, board)
+	players[curPlayer].buildRoad(roadLoc, board)
 
 
 def selectDevCard(potentialDevCards):
@@ -216,6 +251,7 @@ def tradeHelper(trade, curResources, rec = False):
                 else:
                     print "invalid input try again"
     return trade
+
 def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
     partnerRes = players[partner].checkResources()
     for r in recieve:
@@ -242,6 +278,7 @@ def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
     else:
         print "Player " + str(partner) + "has rejected the trade."
     return False
+
 def trade(curPlayer, players):
         print "Trading phase"
         trading = True
