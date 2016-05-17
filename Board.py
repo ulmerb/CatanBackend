@@ -191,7 +191,7 @@ class board:
 				for edge in row:
 					if edge is not None and edge.getOwner() is not None:
 						edgeAscii = self.edgeToAscii(edge.x,edge.y)
-						writer.writerow([edgeAscii, "!R" + str(vert.getOwner())])
+						writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
 						
 
 	def batchUpdate(self):
@@ -369,6 +369,15 @@ class board:
 	      vertexOne = self.vertices[x/2][y]
 	      vertexTwo = self.vertices[x/2][y+1]
 	    return (vertexOne, vertexTwo)
+
+	def getEdgeToEdges(self, edge):
+		edges = set()
+		endpoints = self.getEdgeToVertices(edge)
+		for v in endpoints:
+			for e in self.getVertexToEdges(v):
+				if e is not edge and e is not in edges:
+					edges.add(e)
+		return edges
 
 	def getVertexToTiles(self, vertex):
 		result = []
