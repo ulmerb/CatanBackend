@@ -104,7 +104,7 @@ class player:
 		    print "You cannot build a road there"
 
 	def buildSettlement(self, location, board):
-		if self.canBuildSettlement(board, location) or self.settlementsRemaining > 3:
+		if self.canBuildSettlement(location, board) or self.settlementsRemaining > 3:
 		    #we will need a deck to draw from
 		    self.settlementsRemaining -=1
 		    self.resources['wood'] -= 1
