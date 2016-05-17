@@ -54,11 +54,9 @@ class player:
 		for n in board.getVertexToVertices(gridLoc):
 			if n.getOwner() is not None:
 				return False
-		if not gridLoc in settlementLocations:
-	        return False
 		else:
 			print self, " cannot play there"
-		return False
+		return True
 
 	def canBuildRoad(self, location, board):
 		if location.getOwner() is not None:
@@ -69,7 +67,7 @@ class player:
 			if neighbV.getOwner() == self.playerNumber:
 				return True
 		for neigbE in board.getEdgeToEdges(location):
-			if neighbE.getOwner() == self.playerNumber:
+			if neigbE.getOwner() == self.playerNumber:
 				return True
 		return False
 
