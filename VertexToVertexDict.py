@@ -7,7 +7,7 @@ VertexToVertexDict = {
 6: [5, 7], 
 7: [6, 15], 
 8: [9, 18], 
-9: [8, 10], 
+9: [1, 8, 10], 
 10: [9, 11, 20], 
 11: [3, 10, 12], 
 12: [11, 13, 22], 
@@ -50,7 +50,14 @@ VertexToVertexDict = {
 49: [48, 50], 
 50: [42, 49, 51], 
 51: [50, 52], 
-52: [44, 51, 53]
+52: [44, 51, 53],
 53: [52, 54], 
 54: [46, 53]
 }
+
+for key in VertexToVertexDict:
+	foundList = VertexToVertexDict[key]
+	for item in foundList:
+		secondList = VertexToVertexDict[item]
+		if key in secondList:
+			print key, item
