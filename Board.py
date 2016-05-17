@@ -136,30 +136,33 @@ class board:
 		for row in self.tiles:
 			for tile in row:
 				if tile is not None:
-					index = self.tileToArray(tile.x,tile.y) - 1
-					tile.index = index + 1
-					self.tileArray[index] = tile
+					index = self.tileToArray(tile.x,tile.y)
+					print index
+					tile.index = index
+					self.tileArray[index - 1] = tile
 
 	def buildvertexToArray(self):
 		for row in self.vertices:
 			for v in row:
 				if v is not None:
-					index = self.vertexToArray(v.x,v.y) - 1
-					v.index = index + 1
-					self.vertexArray[index] = v
-
-	#debugging function
-	def printEdges(self):
-		for row in self.edges:
-			print ','.join([str(e.x) + ',' + str(e.y) if e is not None else "None" for e in row])
+					index = self.vertexToArray(v.x,v.y)
+					print index
+					v.index = index
+					self.vertexArray[index - 1] = v
 
 	def buildedgeToArray(self):
 		for row in self.edges:
 			for e in row:
 				if e is not None:
-					index = self.edgeToArray(e.x,e.y) - 1
-					e.index = index + 1
-					self.edgeArray[index] = e
+					index = self.edgeToArray(e.x,e.y)
+					print index
+					e.index = index
+					self.edgeArray[index - 1] = e
+
+	#debugging function
+	def printEdges(self):
+		for row in self.edges:
+			print ','.join([str(e.x) + ',' + str(e.y) if e is not None else "None" for e in row])
 
 	def createBatchCSV(self, players):
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
