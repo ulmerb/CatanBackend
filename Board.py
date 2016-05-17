@@ -258,7 +258,6 @@ class board:
 					print "Location is out of bounds."
 			except EOFError:
 				print "Invalid location"
-
 		return 0
 
 	def rollDice(self):
