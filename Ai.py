@@ -3,7 +3,7 @@ import Player
 
 class ai:
     
-    def __init__(self, board):
+    def __init__(self):
         self.AI = Player.player()
         #weights for features
         self.centrality = []
@@ -14,7 +14,6 @@ class ai:
         self.vp = 1.0
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
-        self.board = board
         
     def getBuildLocations(self):
         pass
@@ -74,8 +73,8 @@ class ai:
     				turnCost = val
    	return turnCost
             
-    def evaluateLocationBenefit(self, vert):
-        tiles = self.board.getVertexToTiles(vert)
+    def evaluateLocationBenefit(self, vert, board):
+        tiles = board.getVertexToTiles(vert)
         exReturn =  {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         for tile in tiles:
             tileType = tile.getType()
@@ -85,7 +84,7 @@ class ai:
         return exReturn
     
     #still doesnt handle other players roads that block paths
-    def findPlayableLocations(self, vert, x):
+    def findPlayableLocations(self, vert, x, board):
         trash = set()
         cur = [vert]
         #we use sets to keep the spots unique in case of longer distances
@@ -95,20 +94,20 @@ class ai:
             temp = set()
             for v in cur:
                 #this board function should return all of a vertex's neighbors
-                for n in self.board.getVertexToVertices(v):
+                for n in board.getVertexToVertices(v):
                     #we dont want to back track hence the trash list
                     if n not in trash:
                         #if we're one road away from the spots we're looking we don't
                         #need to consider neighbors of an owned vetex
-                        if i == x-2 and n.getOwner != None:
+                        if i == x-2 and n.getOwner() != None:
                             continue
                         temp.add(n)
             trash = trash.union(cur)
             cur = temp
         #this check is still needeed despite above neighbor check, should be more efficient to have both as is
         for v in cur:
-            for n in self.board.getVertexToVertices(v):
-                if n.getOwner != None:
+            for n in board.getVertexToVertices(v):
+                if n.getOwner() != None:
                     cur.remove(v)
                     break
         return cur            
