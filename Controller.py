@@ -87,16 +87,20 @@ def handleRobber(curPlayer, players, board):
 	print "Robber"
 	locations = board.getAllTiles()
 	print "Choose a location: "
+	location_dict = {}
 	for l in locations:
-		print l
+		goalTag = board.tileToAscii(l.x,l.y)
+		location_dict[goalTag] = l
+		print goalTag
 	locationForRobber = 0
 	try:
-		locationForRobber = raw_input("")
+		locationForRobber = raw_input("Enter a location (e.g. 12T)")
 	except EOFError:
 		locationForRobber = Location.Tile()
 		print  ""
-	board.moveRobber(locationForRobber)
-	targets = board.playersToStealFrom(locationForRobber)
+	newRobberLocation = location_dict[locationForRobber]
+	board.moveRobber(newRobberLocation)
+	targets = board.playersToStealFrom(newRobberLocation)
 	print "Choose a player to steal from:"
 	for t in targets:
 		print t

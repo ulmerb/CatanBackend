@@ -314,7 +314,8 @@ class board:
 		tiles = []
 		for row in self.tiles:
 			for tile in row:
-				tiles.append(tile)
+				if(tile is not None):
+					tiles.append(tile)
 		return tiles
 
 	def moveRobber(self, tile):
@@ -332,7 +333,7 @@ class board:
 		targets = []
 		for vertex in relatedVertices:
 			if vertex.getOwner() is not None:
-				targets.add(vertex.getOwner())
+				targets.append(vertex.getOwner())
 		return set(targets)
 
 	def getPotentialRoadLocs(self, curPlayer, players):
