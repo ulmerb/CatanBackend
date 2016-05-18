@@ -156,6 +156,9 @@ class board:
 					e.index = index
 					self.edgeArray[index - 1] = e
 
+	def modifyAsciiToTile(self, ascii, tile, newAscii):
+		return 0
+
 	#debugging function
 	def printEdges(self):
 		for row in self.edges:

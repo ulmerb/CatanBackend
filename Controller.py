@@ -192,8 +192,8 @@ def initialPlacement(curPlayer, players, board):
 				print "error, invalid ascii"
 			else:
 				roadLoc = board.asciiToEdge[asciiRoadLoc]
-				if roadLoc not in board.getVertexToEdges(settlementLoc):
-					print "Error, that road location is not a neighbor of your settlement location, ", asciiVertexLoc
+				if roadLoc not in board.getVertexToEdges(settlementLoc) or roadLoc.getOwner() is not None:
+					print "Error, that road location is not a neighbor of your settlement location, ", asciiVertexLoc, " or is already owned"
 				else:
 					break
 	except EOFError:
