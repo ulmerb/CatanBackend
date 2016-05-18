@@ -480,7 +480,23 @@ app.post('/user', function (request, response) {
 //new functions:
 app.post('/gameState', function (request, response) {
     console.log('/gameState request.session info'+ JSON.stringify(request.session));
-    response.status(200).send('blah blah');
+    response.status(200).send('HELLORHLEOO');
+    var options = {
+        hostname: 'hostaddress',
+        port: '8000',
+        path: '/djangotest/',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': values.length
+        }
+    };
+    var req = http.request(options, function(res){
+        console.log(res);
+    });
+    console.log("HEPOSIDFLSDJF");
+    console.log(req);
+    req.end();
     //query jungo and get back game state:
     //response.status(200).send(dataGameState);
 });
