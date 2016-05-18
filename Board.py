@@ -162,7 +162,10 @@ class board:
 	#debugging function
 	def printEdges(self):
 		for row in self.edges:
-			print ','.join([str(e.x) + ',' + str(e.y) if e is not None else "None" for e in row])
+			print ','.join([str(e.index) if e is not None else "None" for e in row])
+        def printVerts(self):
+		for row in self.vertices:
+			print ','.join([str(e.index) if e is not None else "None" for e in row])
 
 	def createBatchCSV(self, players):
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
