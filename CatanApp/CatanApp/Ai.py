@@ -117,7 +117,16 @@ class ai:
         
     def decideMove(self, players, board, True):
         print "The Ai was caught sleeping, it does nothing"
-               
+    
+    def placeRobber(self, board):
+        newRobberLocation = board.asciiToTile['01T']
+        board.moveRobber(newRobberLocation)
+        targets = board.playersToStealFrom(newRobberLocation)
+        if len(targets) > 0:
+            return targets[0]
+        else:
+            return None
+
     def updateIncome(self, vert):
         #anytime we build on a location whether adding a settlment or changing to city
         #our income increases by one settlment of expected value so we can levarge our
@@ -125,6 +134,8 @@ class ai:
         gain = self.evaluateLocationBenefit(vert)
         for res in gain:
             self.income[res] += gain[res]
+    def addResource(self, res, amount):
+        self.AI.addResource(res, amount)
         
     def tests(self):
         print self.AI.roadsRemaining

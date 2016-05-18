@@ -55,11 +55,16 @@ def playMainGame(numPlayers, players, board, AiNum = -1):
 	        if (curPlayer == AiNum):
 	            isAi = True
 	        if (isAi):
+	            diceRoll = board.rollDice()
+	            if diceRoll is CONST_ROBBER:
+		        handleRobber(curPlayer, players, board, AiNum)
+		    else:
+		        board.assignResources(diceRoll, players)
 	            gameEnd = players[AiNum].decideMove(players, board, False)
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 10:
+		if gameEnd or turnCounter >= 20:
 			break
 		turnCounter += 1
 
@@ -69,7 +74,7 @@ def playTurn(curPlayer, players, board, AiNum = -1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
 		#print "Robber not handled"
-		handleRobber(curPlayer, players, board)
+		handleRobber(curPlayer, players, board, AiNum)
 	else:
 		print str(diceRoll) + " was rolled"
 		board.assignResources(diceRoll, players)
@@ -101,7 +106,7 @@ def build(curPlayer, players, board):
 			print " Not building, on sublime"
 			break
 
-def handleRobber(curPlayer, players, board):
+def handleRobber(curPlayer, players, board, AiNum = -1):
 	print "Robber"
 	locations = board.getAllTiles()
 	print "Choose a location: "
@@ -110,6 +115,12 @@ def handleRobber(curPlayer, players, board):
 		goalTag = board.tileToAscii(l.x,l.y)
 		location_dict[goalTag] = l
 		print goalTag
+        if (curPlayer == AiNum):
+            target = players[curPlayer].placeRobber(board)
+            if target != None:
+                steal(players[int(target)], curPlayer,players)
+            print "The ai has moved the robber"
+	    return
 	locationForRobber = 0
 	try:
 		locationForRobber = raw_input("Enter a location (e.g. 12T)")
@@ -184,18 +195,11 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	            players[AiNum].decideMove(players, board, True)
 	            continue
 	 	initialPlacement(i, players, board)
- 	for i in range (0, numPlayers):
- 	        player = players[i]
-	        if (i == AiNum):
-	            player.AI.resources['wood'] += 2
-          	    player.AI.resources['brick'] += 2
-          	    player.AI.resources['grain'] += 2
-          	    player.AI.resources['sheep'] += 2
-	        else:
-          	    player.resources['wood'] += 2
-          	    player.resources['brick'] += 2
-          	    player.resources['grain'] += 2
-          	    player.resources['sheep'] += 2
+	for player in players:
+          	    player.addResource('wood', 2)
+          	    player.addResource('brick', 2)
+          	    player.addResource('grain', 2)
+          	    player.addResource('sheep', 2)
 	board.createBatchCSV(players)
 	board.batchUpdate()
 
