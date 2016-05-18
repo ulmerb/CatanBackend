@@ -481,7 +481,7 @@ app.post('/user', function (request, response) {
 app.post('/gameState', function (request, response) {
     console.log('/gameState request.session info'+ JSON.stringify(request.session));
     response.status(200).send('blah blah');
-    //query jungo and get back game state:
+    //query Django and get back game state:
     //response.status(200).send(dataGameState);
 });
 
