@@ -477,6 +477,13 @@ app.post('/user', function (request, response) {
 
 });
 
+//new functions:
+app.post('/gameState', function (request, response) {
+    console.log('/gameState request.session info'+ JSON.stringify(request.session));
+    response.status(200).send('blah blah');
+    //query jungo and get back game state:
+    //response.status(200).send(dataGameState);
+});
 
 var server = app.listen(3000, function () {
     var port = server.address().port;
