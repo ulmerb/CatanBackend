@@ -203,10 +203,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.getGameState = function() {
             var userRes = $resource("/gameState");
-            userRes.save({},  
+            userRes.save({'action':'build'},  
                 function (model){
                     $scope.main.message_to_user = "data passed successfully!";
-                    console.log("success");
+                    console.log("model:");
                     console.log(model);
                     //update all variables on UI
                 }, function errorHandling(err) {

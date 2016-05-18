@@ -49,6 +49,10 @@ var bodyParser = require('body-parser');
 var multer = require('multer');
 var processFormBody = multer({storage: multer.memoryStorage()}).single('uploadedphoto');
 
+//added for communication w/ django
+var http = require('http');
+var querystring = require('querystring');
+
 mongoose.connect('mongodb://localhost/cs142project6');
 
 // We have the express static module (http://expressjs.com/en/starter/static-files.html) do all
@@ -479,24 +483,38 @@ app.post('/user', function (request, response) {
 
 //new functions:
 app.post('/gameState', function (request, response) {
-    console.log('/gameState request.session info'+ JSON.stringify(request.session));
-    response.status(200).send('HELLORHLEOO');
-    var options = {
-        hostname: 'hostaddress',
-        port: '8000',
-        path: '/djangotest/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': values.length
-        }
-    };
-    var req = http.request(options, function(res){
-        console.log(res);
+    // response.status(200).send(response.cookie);
+    var post_data = querystring.stringify({
+      'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
+      'output_format': 'json',
+      'output_info': 'compiled_code',
+        'warning_level' : 'QUIET',
+        'js_resp' : response
     });
-    console.log("HEPOSIDFLSDJF");
-    console.log(req);
-    req.end();
+
+    var post_options = {
+      host: '127.0.0.1',
+      port: '8000',
+      path: '/djangotest/',
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      }
+  };
+
+    console.log(request);
+
+    // Set up the request
+    var post_req = http.request(post_options, function(res) {
+      res.setEncoding('utf8');
+      res.on('data', function (chunk) {
+          response.status(200).send(JSON.stringify(chunk));
+      }).on('error', function(err) {
+        console.log(err);
+      });
+  });
+    post_req.write(post_data);
+    post_req.end();
 
     //response.status(200).send(dataGameState);
 });
@@ -505,5 +523,3 @@ var server = app.listen(3000, function () {
     var port = server.address().port;
     console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
 });
-
-
