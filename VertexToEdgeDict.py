@@ -54,3 +54,12 @@ VertexToEdgeDict = {
 53: [71, 72], 
 54: [66, 72] 
 }
+
+array1 = []
+for list1 in VertexToEdgeDict.values():
+	for item in list1:
+		array1.append(item)
+
+for i in xrange(1,73):
+	if array1.count(i) != 2:
+		print "incorrect on edge: ", i
