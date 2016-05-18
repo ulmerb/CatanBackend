@@ -35,19 +35,35 @@ def main():
 	# players[0].buildDevCard(devCardsDeck)
 	# print players[0].devCardsHeld
 	# print devCardsDeck.getNumDevCards()
-	firstPlacement(numPlayers, players, board)
-	playMainGame(numPlayers, players, board)
+	AiNum = -1
+	try:
+            response = raw_input("Add an Ai player?")
+            if response == "Yes" or response == "yes" or response == "y":
+                AiNum = len(players)			
+                players.append(Ai.ai(AiNum))
+                numPlayers +=1
+	except EOFError:
+		print " Not building, on sublime"
+	firstPlacement(numPlayers, players, board, AiNum)
+	playMainGame(numPlayers, players, board, AiNum)
 
-def playMainGame(numPlayers, players, board):
+def playMainGame(numPlayers, players, board, AiNum = -1):
 	turnCounter = 0
 	while (True):
-		gameEnd = playTurn(turnCounter % numPlayers, players, board)
+	        curPlayer = turnCounter % numPlayers
+	        isAi = False
+	        if (curPlayer == AiNum):
+	            isAi = True
+	        if (isAi):
+	            gameEnd = players[AiNum].decideMove(players, board, False)
+	        else:
+		  gameEnd = playTurn(curPlayer, players, board, AiNum)
 		#remove the turnCounter>= 10 when full implementation
 		if gameEnd or turnCounter >= 10:
 			break
 		turnCounter += 1
 
-def playTurn(curPlayer, players, board):
+def playTurn(curPlayer, players, board, AiNum = -1):
 	print  "Player " + str(curPlayer) + " turn"
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
@@ -59,7 +75,7 @@ def playTurn(curPlayer, players, board):
 		board.assignResources(diceRoll, players)
 	for player in players:
 		print player
-	trade(curPlayer, players)
+	trade(curPlayer, players, AiNum)
 	build(curPlayer, players, board)
 	return players[curPlayer].hasWon()
 
@@ -154,16 +170,32 @@ def buildDevCard(curPlayer, players, board):
 	else:
 		print "You can't build a dev card"
 
-def firstPlacement(numPlayers, players, board):
+def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range (0, numPlayers):
+	        if (i == AiNum):
+	            print i
+	            players[AiNum].decideMove(players, board, True)
+	            continue
 		initialPlacement(i, players, board)
-	for i in range(numPlayers, 0, -1):
-	 	initialPlacement(i-1, players, board)
- 	for player in players:
-		player.resources['wood'] += 2
-		player.resources['brick'] += 2
-		player.resources['grain'] += 2
-		player.resources['sheep'] += 2
+	print numPlayers
+	for i in range(numPlayers -1, -1, -1):
+	        print i
+	        if (i == AiNum):
+	            players[AiNum].decideMove(players, board, True)
+	            continue
+	 	initialPlacement(i, players, board)
+ 	for i in range (0, numPlayers):
+ 	        player = players[i]
+	        if (i == AiNum):
+	            player.AI.resources['wood'] += 2
+          	    player.AI.resources['brick'] += 2
+          	    player.AI.resources['grain'] += 2
+          	    player.AI.resources['sheep'] += 2
+	        else:
+          	    player.resources['wood'] += 2
+          	    player.resources['brick'] += 2
+          	    player.resources['grain'] += 2
+          	    player.resources['sheep'] += 2
 	board.createBatchCSV(players)
 	board.batchUpdate()
 
@@ -279,7 +311,7 @@ def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
         print "Player " + str(partner) + "has rejected the trade."
     return False
 
-def trade(curPlayer, players):
+def trade(curPlayer, players, AiNum = -2):
         print "Trading phase"
         trading = True
         while(trading):
@@ -301,12 +333,18 @@ def trade(curPlayer, players):
                         print "Proposing trade to player: ", partner
                     else:
                         print "No partner or invalid partner inserted, proposing trade to all players"
-                if partner != -1:
+                if (partner == AiNum and AiNum != -2):
+                    players[AiNum].evaluateTrade(offer, recieve)
+                elif partner != -1:
                     tradeLogicHelper(curPlayer, partner, players, offer, recieve)
                 else:
                     for i in xrange(len(players)):
                         if i == curPlayer:
                             continue
+                        if i == AiNum:
+                            executed = players[AiNum].evaluateTrade(offer, recieve)
+                            if (executed):
+                                break
                         else:
                             executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
                             if (executed):

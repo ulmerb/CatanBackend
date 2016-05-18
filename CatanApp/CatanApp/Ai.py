@@ -3,8 +3,8 @@ import Player
 
 class ai:
     
-    def __init__(self):
-        self.AI = Player.player()
+    def __init__(self, i):
+        self.AI = Player.player(i)
         #weights for features
         self.centrality = []
         self.incomeIncrease = 1.0
@@ -111,10 +111,12 @@ class ai:
                     cur.remove(v)
                     break
         return cur            
+    def evaluateTrade(self, offer, recieve):
+        print "The AI is too naiive to trade right now"
+        return False
         
-        
-    def decideMove(self):
-        pass
+    def decideMove(self, players, board, True):
+        print "The Ai was caught sleeping, it does nothing"
                
     def updateIncome(self, vert):
         #anytime we build on a location whether adding a settlment or changing to city
