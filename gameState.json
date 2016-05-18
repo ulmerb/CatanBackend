@@ -1,0 +1,44 @@
+{
+  "numPlayers": "1",
+  "currentPlayer": "1",
+  "message": "null",
+  "robberTileLocation": "null",
+  "players": [
+    {
+      "hasLongestRoad": false,
+      "hasLargestArmy": false,
+      "victoryPoints": "0",
+      "resources": {
+        "wood": "0",
+        "brick": "0",
+        "grain": "0",
+        "sheep": "0",
+        "ore": "0"
+      },
+      "devCards": {
+        "yearOfPlenty": "0",
+        "roadBuilding": "0",
+        "knight": "0",
+        "monopoly": "0",
+        "victoryPoint": "0"
+      },
+      "ports": [
+        "1"
+      ]
+    }
+  ],
+  "board": {
+    "cities": [
+      "03V-04R-04V"
+    ],
+    "roads": [
+      "03V-04R-04V"
+    ],
+    "settlements": [
+      "03V-04R-04V"
+    ],
+    "a": "b",
+    "c": "d",
+    "e": "f"
+  }
+}
