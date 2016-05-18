@@ -497,7 +497,7 @@ app.post('/gameState', function (request, response) {
     console.log("HEPOSIDFLSDJF");
     console.log(req);
     req.end();
-    //query jungo and get back game state:
+
     //response.status(200).send(dataGameState);
 });
 

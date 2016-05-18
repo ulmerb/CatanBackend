@@ -60,6 +60,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.hasLargestArmy = false
         $scope.main.victoryPointCardsPlayed = 0
         $scope.main.portsControlled = 0
+        
         $scope.main.isUserLoggedIn = false
         $scope.main.userAlreadyRolledDieThisTurn = false
         $scope.main.lastDieRollValue = 0
