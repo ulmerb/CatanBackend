@@ -3,5 +3,5 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def djangotest(request):
-	print request
+	print request.POST
 	return HttpResponse("somestring")

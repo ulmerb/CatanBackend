@@ -476,7 +476,6 @@ app.post('/user', function (request, response) {
             response.status(400).send("Login Name already exists please choose a different login name.");
             return;
         }
-        
     });
 
 });
@@ -491,14 +490,15 @@ app.post('/gameState', function (request, response) {
       'warning_level' : 'QUIET',
       'js_resp' : JSON.stringify(request.body)
     });
-
+    console.log(Buffer.byteLength(post_data));
     var post_options = {
       host: '127.0.0.1',
       port: '8000',
       path: '/djangotest/',
       method: 'POST',
       headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Content-Length': Buffer.byteLength(post_data)
       }
     };
 
