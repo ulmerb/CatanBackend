@@ -4,166 +4,119 @@ import random
 import ASCII.catan_ascii_functions as asc
 import csv
 import math
+import VertexToVertexDict
+import VertexToEdgeDict
+import TileToVertexDict
+import VertexToTileDict
+import EdgeToVertexDict
+import EdgeToEdgeDict
 
 class board:
-	#http://stackoverflow.com/questions/1838656/how-do-i-represent-a-hextile-hex-grid-in-memory
 
 	def __init__(self):
 		self.BOARD_LENGTH = 5
-		self.robberX = None
-		self.robberY = None
-		spacesLength = 2 * self.BOARD_LENGTH + 2
-		self.edges = [[Location.Edge(i,j) for j in range(spacesLength)] for i in range(spacesLength - 1)]
-		self.vertices = [[Location.Vertex(i,j) for j in range(spacesLength)] for i in range(spacesLength/2)]
-		self.tiles = [[Location.Tile(i,j) for j in range(self.BOARD_LENGTH)] for i in range(self.BOARD_LENGTH)]
+		self.robberTile = None
 		self.asciiToTile = {}
+		self.tileToAscii = {}
 		self.asciiToVertex = {}
+		self.vertexToAscii = {}
 		self.asciiToEdge = {}
-		self.fillEmpty()
+		self.edgeToAscii = {}
+		self.vertexToVertexMap = VertexToVertexDict.getMap()
+		self.vertexToEdgeMap = VertexToEdgeDict.getMap()
+		self.vertexToTileMap = VertexToTileDict.getMap()
+		self.tileToVertexMap = TileToVertexDict.getMap()
+		self.edgeToVertexMap = EdgeToVertexDict.getMap()
+		self.edgeToEdgeMap = EdgeToEdgeDict.getMap()
 		self.currentBoardNumber = 1
-		self.tileArray = [0] * 19
-		self.vertexArray = [0] * 54
-		self.edgeArray = [0] * 72
+		self.tiles = [Location.Tile(i) for i in range(20)]
+		self.tiles[0] = None
+		self.vertices = [Location.Vertex(i) for i in range(55)]
+		self.vertices[0] = None
+		self.edges = [Location.Edge(i) for i in range(73)]
+		self.edges[0] = None
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
-		for i in range(self.BOARD_LENGTH):
-			for j in range(self.BOARD_LENGTH):
-				if self.tiles[i][j] is not None:
-					givenType = types.pop()
-					self.tiles[i][j].setType(givenType)
-					self.tiles[i][j].setX(i)
-					self.tiles[i][j].setY(j)
-					if givenType != "desert":
-						self.tiles[i][j].setNumber(numbers.pop())
-						self.robberX = i
-						self.robberY = j
-					else:
-						self.tiles[i][j].setRobber(True)
-		
-		# This sets non-playable edges and vertices(ones not boarding any tile i.e. the ocean) to None
-		verts = []
-  		edges = []
-		for row in self.tiles:
-		    for hex in row:
-		      if hex is not None:
-		        vs = self.getTileToVertices(hex)
-		        es = self.getTileToEdges(hex)
-		        verts += vs
-		        edges += es
-		        #hexes.append(hex)
-	  	playableEdges = set(edges)
-	  	for i in range(spacesLength - 1):
-	  		for j in range(spacesLength):
-	  			if self.edges[i][j] not in playableEdges:
-	  				self.edges[i][j] = None
-	  	playableVertices = set(verts)
-	  	for i in range(spacesLength/2):
-	  		for j in range(spacesLength):
-	  			if self.vertices[i][j] not in playableVertices:
-	  				self.vertices[i][j] = None
-
-	  	# Maps the initial board ascii to the tile, edge, or vertex it refers to. Will be updated
-	  	# everytime a structure is built
+		for i in range(19):
+			index = i + 1
+			givenType = types.pop()
+			self.tiles[index].setType(givenType)
+			self.tiles[index].setIndex(i)
+			if givenType != "desert":
+				self.tiles[index].setNumber(numbers.pop())
+			else:
+				self.tiles[index].setRobber(True)
+				self.robberTile = self.tiles[index]
 	  	self.buildASCIIGridMaps()
-	# formulas generated using lagragian interpolation
-	# Takes in a tile's grid coordinates and outputs the appropriate ascii string
-	def tileToAscii(self,x,y):
-		result = int(round(x**4/float(6) - (3*x**3)/float(2) + (13*x**2)/float(3) + y))
-		if result < 10:
-			return '0' + str(result) + 'T'
-		return str(result) + 'T'
-
-	def tileToArray(self,x,y):
-		return int(round(x**4/float(6) - (3*x**3)/float(2) + (13*x**2)/float(3) + y))
-
-
-	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
-	def vertexToAscii(self,x,y):
-		result = int(round(x**5/float(60) - (5/float(24))*x**4 + 
-			(2/float(3))*x**3 + (5/float(24))*x**2 + (439/float(60))*x - 1 + y))
-		if result < 10:
-			return '0' + str(result) + 'V'
-		return str(result) + 'V'
-
-	def vertexToArray(self,x,y):
-		return int(round(x**5/float(60) - (5/float(24))*x**4 + 
-			(2/float(3))*x**3 + (5/float(24))*x**2 + (439/float(60))*x - 1 + y))
-
-	# Takes in a vertex's grid coordinates and outputs the appropriate ascii string
-	def edgeToAscii(self,x,y):
-		result = 0
-		if x % 2 == 0:
-			result = int(round(x**5/float(640) - (float(5)/128)*x**4 + (float(7)/24)*x**3 - (float(15)/32)*x**2 + (float(667)/120)*x - 1 + y))
-		else:
-			result = int(round(x**4/float(192) - x**3/float(6) + (float(151)/96)*x**2 + (float(13)/6)*x + 1.421875 + math.ceil(0.5*y)))
-		if result < 10:
-			return '0' + str(result) + 'R'
-		return str(result) + 'R'
-
-	def edgeToArray(self,x,y):
-		if x % 2 == 0:
-			return int(round(x**5/float(640) - (float(5)/128)*x**4 + (float(7)/24)*x**3 - (float(15)/32)*x**2 + (float(667)/120)*x - 1 + y))
-		else:
-			return int(round(x**4/float(192) - x**3/float(6) + (float(151)/96)*x**2 + (float(13)/6)*x + 1.421875 + math.ceil(0.5*y)))
 
 	def buildASCIIGridMaps(self):
 		self.buildASCIIToTiles()
 		self.buildASCIIToVertices()
 		self.buildASCIIToEdges()
-		self.buildtileToArray()
-		self.buildvertexToArray()
-		self.buildedgeToArray()
 
 	def buildASCIIToTiles(self):
-		for row in self.tiles:
-			for tile in row:
-				if tile is not None:
-					self.asciiToTile[self.tileToAscii(tile.x, tile.y)] = tile
+		for tile in self.tiles:
+			if tile is not None:
+				asciiKey = str(tile.index) + "T"
+				if tile.index < 10:
+					asciiKey = "0" + asciiKey
+				self.asciiToTile[asciiKey] = tile
+				self.tileToAscii[tile] = asciiKey
 
 	def buildASCIIToVertices(self):
-		for row in self.vertices:
-			for v in row:
-				if v is not None:
-					self.asciiToVertex[self.vertexToAscii(v.x, v.y)] = v
+		for vertex in self.vertices:
+			if vertex is not None:
+				asciiKey = str(vertex.index) + "V"
+				if vertex.index < 10:
+					asciiKey = "0" + asciiKey
+				self.asciiToVertex[asciiKey] = vertex
+				self.vertexToAscii[vertex] = asciiKey
 
 	def buildASCIIToEdges(self):
-		for row in self.edges:
-			for e in row:
-				if e is not None:
-					self.asciiToEdge[self.edgeToAscii(e.x, e.y)] = e
+		for edge in self.edges:
+			if edge is not None and edge.index != 0:
+				asciiKey = str(edge.index) + "R"
+				if edge.index < 10:
+					asciiKey = "0" + asciiKey
+				self.asciiToEdge[asciiKey] = edge
+				self.edgeToAscii[edge] = asciiKey
 
-	def buildtileToArray(self):
-		for row in self.tiles:
-			for tile in row:
-				if tile is not None:
-					index = self.tileToArray(tile.x,tile.y)
-					tile.index = index
-					self.tileArray[index - 1] = tile
+	def modifyAsciiToEdge(self, ascii, edge, newAscii):
+		if edge is None:
+			edge = self.asciiToEdge[ascii]
+		elif ascii is None:
+			ascii = self.edgeToAscii[edge]
+		del self.asciiToEdge[ascii]
+		del self.edgeToAscii[edge]
+		self.asciiToEdge[newAscii] = edge
+		self.edgeToAsciiMap[edge] = newAscii	
 
-	def buildvertexToArray(self):
-		for row in self.vertices:
-			for v in row:
-				if v is not None:
-					index = self.vertexToArray(v.x,v.y)
-					v.index = index
-					self.vertexArray[index - 1] = v
-
-	def buildedgeToArray(self):
-		for row in self.edges:
-			for e in row:
-				if e is not None:
-					index = self.edgeToArray(e.x,e.y)
-					e.index = index
-					self.edgeArray[index - 1] = e
+	def modifyAsciiToVertex(self, ascii, vertex, newAscii):
+		if vertex is None:
+			vertex = self.asciiToVertex[ascii]
+		elif ascii is None:
+			ascii = self.vertexToAscii[vertex]
+		del self.asciiToVertex[ascii]
+		del self.vertexToAscii[vertex]
+		self.asciiToVertex[newAscii] = vertex
+		self.vertexToAsciiMap[vertex] = newAscii	
 
 	def modifyAsciiToTile(self, ascii, tile, newAscii):
-		return 0
+		if tile is None:
+			tile = self.asciiToTile[ascii]
+		elif ascii is None:
+			ascii = self.tileToAscii[tile]
+		del self.asciiToTile[ascii]
+		del self.tileToAscii[tile]
+		self.asciiToTile[newAscii] = tile
+		self.tileToAsciiMap[tile] = newAscii	
 
 	#debugging function
 	def printEdges(self):
 		for row in self.edges:
 			print ','.join([str(e.index) if e is not None else "None" for e in row])
-        def printVerts(self):
+
+	def printVerts(self):
 		for row in self.vertices:
 			print ','.join([str(e.index) if e is not None else "None" for e in row])
 
@@ -171,33 +124,30 @@ class board:
 		with open('ASCII/latest_update.csv', 'wb') as csvfile:
 			writer = csv.writer(csvfile, delimiter=',')
 			# THIS DISPLAYS THE INITINALIZED TILES - matt
-			for row in self.tiles:
-				for tile in row:
-					if tile is not None:
-						tileAscii = self.tileToAscii(tile.x,tile.y)
-						goalTag = ""
-						if(tile.getType() == "desert"):
-							goalTag = "ROB"
+			for tile in self.tiles:
+				if tile is not None and tile.index != 0:
+					tileAscii = self.tileToAscii[tile]
+					goalTag = ""
+					if(tile.getType() == "desert"):
+						goalTag = "ROB"
+					else:
+						goalTag = str(tile.getType()[0]).capitalize()
+						if(tile.getNumber() < 10):
+							goalTag += "0"+ str(tile.getNumber())
 						else:
-							goalTag = str(tile.getType()[0]).capitalize()
-							if(tile.getNumber() < 10):
-								goalTag += "0"+ str(tile.getNumber())
-							else:
-								goalTag += str(tile.getNumber())
-						# print goalTag
-						writer.writerow([tileAscii,goalTag])
+							goalTag += str(tile.getNumber())
+					# print goalTag
+					writer.writerow([tileAscii,goalTag])
 
-			for row in self.vertices:
-				for vert in row:
-					if vert is not None and vert.getOwner() is not None:
-						vertAscii = self.vertexToAscii(vert.x, vert.y)
-						writer.writerow([vertAscii, str(vert.settleNum) + "S" + str(vert.getOwner())])
+			for vertex in self.vertices:
+				if vertex is not None and vertex.getOwner() is not None:
+					vertexAscii = self.vertexToAscii[vertex]
+					writer.writerow([vertexAscii, str(vertex.settleNum) + "S" + str(vertex.getOwner())])
 
-			for row in self.edges:
-				for edge in row:
-					if edge is not None and edge.getOwner() is not None:
-						edgeAscii = self.edgeToAscii(edge.x,edge.y)
-						writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
+			for edge in self.edges:
+				if edge is not None and edge.getOwner() is not None:
+					edgeAscii = self.edgeToAscii[edge]
+					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
 						
 
 	def batchUpdate(self):
@@ -207,14 +157,6 @@ class board:
 	def printBoard(self):
 		asc.printBoard(self.currentBoardNumber)
 
-
-	def fillEmpty(self):
-		self.tiles[0][0] = None
-		self.tiles[0][4] = None
-		self.tiles[1][0] = None
-		self.tiles[3][0] = None
-		self.tiles[4][0] = None
-		self.tiles[4][4] = None
 
 	def getShuffledNumbers(self):
 		numbers = []
@@ -246,203 +188,85 @@ class board:
 		types.append("desert")
 		random.shuffle(types)
 		return types
-	
-	def initialPlacement(self, i, players):
-		while True:
-			try:
-				settleLoc = input('Player ' + str(i) + ', enter a settlement location: ')
-				x,y = settleLoc
-				if self.vertexInBounds(x,y):
-					okLocs = self.getPotentialSettlementLocs(i, players, True)
-					if self.vertices[x][y] in okLocs:
-						self.buildSettlement(i, players, self.vertices[x][y])
-						print self.vertices[x][y]
-						break
-					else:
-						print "You may not build there"
-				else:
-					print "Location is out of bounds."
-			except EOFError:
-				print "Invalid location"
-		return 0
+
 
 	def rollDice(self):
 		return (random.randint(1, 6) + random.randint(1, 6))
 
 	def assignResources(self, diceRoll, players):
 		resourceMap = {}
-		for row in self.tiles:
-			for tile in row:
-				if tile is not None and tile.getNumber() == diceRoll:
-					for vertex in self.getTileToVertices(tile):
-						amount = 0
-						if vertex.getSettlement() is not None:
-							amount = 1
-						if vertex.getCity() is not None:
-							amount = 2
-						if amount != 0:
-						        players[vertex.getOwner()].addResource(tile.getType(), amount)
-
-	def getTileToTiles(self, tile):
-		result = []
-		x = tile.getX()
-		y = tile.getY()
-		offset = -1
-		if x % 2 == 0:
-			offset = 1
-		if y + 1 < len(self.tiles[0]):
-			if self.tiles[x][y+1] is not None:
-				result.append(self.tiles[x][y+1])
-		if y > 0:
-			if self.tiles[x][y-1] is not None:
-				result.append(self.tiles[x][y-1])
-		if x+1 < len(self.tiles):
-			if self.tiles[x+1][y] is not None:
-				result.append(self.tiles[x+1][y])
-		if x>0:
-			if self.tiles[x-1][y] is not None:
-				result.append(self.tiles[x-1][y])
-		if y+offset >= 0 and y+offset < len(self.tiles[0]):
-			if x+1 < len(self.tiles):
-				if self.tiles[x+1][y+offset] is not None:
-					result.append(self.tiles[x+1][y+offset])
-			if x>0:
-				if self.tiles[x-1][y+offset] is not None:
-					result.append(self.tiles[x-1][y+offset])
-		return result
+		for tile in self.tiles:
+			if tile is not None and tile.index != 0 and tile.getNumber() == diceRoll:
+				for vertex in self.getTileToVertices(tile):
+					amount = 0
+					if vertex.getSettlement() is not None:
+						amount = 1
+					if vertex.getCity() is not None:
+						amount = 2
+					if amount != 0:
+						players[vertex.getOwner()].addResource(tile.getType(), amount)
 
 	def getVertexToVertices(self, vertex):
 		result = []
-		x = vertex.x
-		y = vertex.y
-		offset = 1 if x % 2 == y % 2 else -1
-		if y+1 < len(self.vertices[0]) and self.vertices[x][y+1] is not None:
-			result.append(self.vertices[x][y+1])
-		if y > 0 and self.vertices[x][y-1] is not None:
-			result.append(self.vertices[x][y-1])
-		if x+offset >= 0 and x+offset < len(self.vertices) and self.vertices[x+offset][y] is not None:
-			result.append(self.vertices[x+offset][y])
+		index = vertex.getIndex()
+		for neighbor in self.vertexToVertexMap[index]:
+			result.append(self.vertices[neighbor])
 		return result
 
 	def getTileToVertices(self, tile):
 		result = []
-		x = tile.x
-		y = tile.y
-		offset = (x % 2)*-1
-		result.append(self.vertices[x][2*y+offset])
-		result.append(self.vertices[x][2*y+offset+1])
-		result.append(self.vertices[x][2*y+offset+2])
-		result.append(self.vertices[x+1][2*y+offset])
-		result.append(self.vertices[x+1][2*y+offset+1])
-		result.append(self.vertices[x+1][2*y+offset+2])
-		return result
-
-	def getTileToEdges(self, tile):
-		result = []
-		x = tile.getX()
-		y = tile.getY()
-		offset = (x % 2)*-1
-		result.append(self.edges[2*x][2*y+offset])
-		result.append(self.edges[2*x][2*y+offset+1])
-		result.append(self.edges[2*x+1][2*y+offset+2])
-		result.append(self.edges[2*x+1][2*y+offset])
-		result.append(self.edges[2*x+2][2*y+offset])
-		result.append(self.edges[2*x+2][2*y+offset+1])
+		index = tile.getIndex()
+		for neighbor in self.tileToVertexMap[index]:
+			result.append(self.vertices[neighbor])
 		return result
 
 	def getVertexToEdges(self, vertex):
-		vertexEdges = []
-		x = vertex.x
-		y = vertex.y
-		offset = -1
-		if x % 2 == y % 2: offset = 1
-		edgeOne = self.edges[x*2][y-1]
-		edgeTwo = self.edges[x*2][y]
-		edgeThree = self.edges[x*2+offset][y]
-		if edgeOne != None: vertexEdges.append(edgeOne)
-		if edgeTwo != None: vertexEdges.append(edgeTwo)
-		if edgeThree != None: vertexEdges.append(edgeThree)
-		return vertexEdges
-		# result = []
-		# x = vertex.getX()
-		# y = vertex.getY()
-		# offset = 1
-		# if x%2 != y%2:
-		# 	offset = -1
-		# if self.edges[x*2][y] is not None:
-		# 	result.append(self.edges[x*2][y])
-		# if self.edges[x*2][y-1] is not None:
-		# 	result.append(self.edges[x*2][y-1])
-		# if self.edges[x*2+offset][y] is not None:
-		# 	result.append(self.edges[x*2+offset][y])
-		# return result
-
-	def getEdgeToVertices(self, edge):
-	    x = edge.x
-	    y = edge.y
-	    vertexOne = self.vertices[(x-1)/2][y]
-	    vertexTwo = self.vertices[(x+1)/2][y]
-	    if x%2 == 0:
-	      vertexOne = self.vertices[x/2][y]
-	      vertexTwo = self.vertices[x/2][y+1]
-	    return (vertexOne, vertexTwo)
+		result = []
+		index = vertex.getIndex()
+		for neighbor in self.vertexToEdgeMap[index]:
+			result.append(self.edges[neighbor])
+		return result 
 
 	def getEdgeToEdges(self, edge):
-		edges = set()
-		endpoints = self.getEdgeToVertices(edge)
-		for v in endpoints:
-			for e in self.getVertexToEdges(v):
-				if e is not edge:
-					edges.add(e)
-		return edges
+		result = []
+		index = edge.getIndex()
+		for neighbor in self.edgeToEdgeMap[index]:
+			result.append(self.edges[neighbor])
+		return result
+
+	def getEdgeToVertices(self, edge):
+	    result = []
+	    index = edge.getIndex()
+	    for neighbor in self.edgeToVertexMap[index]:
+	    	result.append(self.vertices[neighbor])
+	    return result
 
 	def getVertexToTiles(self, vertex):
 		result = []
-		x = vertex.getX()
-		y = vertex.getY()
-		xOffset = x % 2
-		yOffset = y % 2
-		if x < len(self.tiles) and y/2 < len(self.tiles[x]):
-			if self.tiles[x][y/2] is not None:
-				result.append(self.tiles[x][y/2])
-
-		if x > 0 and x < len(self.tiles) and y/2 < len(self.tiles[x]):
-			if self.tiles[x-1][y/2] is not None:
-				return result
-
-		xMod = x
-		if xOffset + yOffset == 1:
-			xMod -=1
-		yMod = y/2
-		if yOffset == 1:
-			yMod += 1
-		else:
-			yMod -=1
-		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMod < len(self.tiles[0]):
-			if self.tiles[xMod][yMod] is not None:
-				result.append(self.tiles[xMod][yMod])
+		index = vertex.getIndex()
+		for neighbor in self.vertexToTileMap[index]:
+			result.append(self.tiles[neighbor])
 		return result
 
 	def getAllTiles(self):
 		tiles = []
-		for row in self.tiles:
-			for tile in row:
-				if(tile is not None):
-					tiles.append(tile)
+		for tile in self.tiles:
+			if tile is not None and tile.index != 0:
+				tiles.append(tile)
 		return tiles
 
 	def moveRobber(self, tile):
-		self.tiles[self.robberX][self.robberY].setRobber(False)
+		self.robberTile.setRobber(False)
+		self.robberTile = None
 		print "Robber moved to " + str(tile)
 		if tile is not None:
 			tile.setRobber(True)
-			self.robberX = tile.getX()
-			self.robberY = tile.getY()
+			self.robberTile = tile
 		else:
 			print "Invalid location"
 
 	def playersToStealFrom(self, players):
-		relatedVertices = self.getTileToVertices(self.tiles[self.robberX][self.robberY])
+		relatedVertices = self.getTileToVertices(self.robberTile)
 		targets = []
 		for vertex in relatedVertices:
 			if vertex.getOwner() is not None:
@@ -451,22 +275,21 @@ class board:
 
 	def getPotentialRoadLocs(self, curPlayer, players):
 		result = []
-		for row in self.vertices:
-			for vertex in row:
-				if vertex.getOwner() == curPlayer:
-					roadLocs = self.getVertexToEdges(vertex)
-					for road in roadLocs:
-						if road.getOwner() is None:
-							result.append(road)
+		for vertex in self.vertices:
+			if vertex is not None and vertex.getOwner() == curPlayer:
+				roadLocs = self.getVertexToEdges(vertex)
+				for road in roadLocs:
+					if road.getOwner() is None:
+						result.append(road)
 		return set(result)
 
-	def getPotentialSettlementLocs(self, curPlayer, players, initializing):
-		def neighborsUnclaimed(vertex):
-			for neighb in self.getVertexToVertices(vertex):
-				if neighb.getOwner() is not None:
-					return False
-			return True
+	def neighborsUnclaimed(vertex):
+		for neighbor in self.getVertexToVertices(vertex):
+			if neighbor.getOwner() is not None:
+				return False
+		return True
 
+	def getPotentialSettlementLocs(self, curPlayer, players, initializing):
 		locs = set()
 		if not initializing:
 			edges = players[curPlayer].structures['roads']
@@ -486,10 +309,9 @@ class board:
 
 	def getPotentialCityLocs(self, curPlayer, players):
 		result = []
-		for row in self.vertices:
-			for vertex in row:
-				if vertex is not None and vertex.getSettlement() == curPlayer:
-					result.append(vertex)
+		for vertex in self.vertices:
+			if vertex is not None and vertex.getSettlement() == curPlayer:
+				result.append(vertex)
 		return result
 
 	def buildRoad(self, curPlayer, players, edge):

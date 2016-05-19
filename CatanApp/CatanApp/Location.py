@@ -1,30 +1,22 @@
 class Location:
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
+	def __init__(self, index):
+		self.index = x
 
 	def __str__(self):
 		return "Location"
 
-	def setX(self, x):
-		self.x = x
+	def setIndex(self, index):
+		self.index = index
 
-	def setY(self, y):
-		self.y = y
-
-	def getX(self):
-		return self.x
-
-	def getY(self):
-		return self.y
+	def getIndex(self):
+		return self.index
 
 class Tile(Location):
-	def __init__(self, x, y):
+	def __init__(self, index):
 		self.type = None
 		self.number = None
 		self.robber = False
-		self.x = x
-		self.y = y
+		self.index = index
 
 	def __str__(self):
 		return "Tile"
@@ -44,11 +36,16 @@ class Tile(Location):
 	def setRobber(self, val):
 		self.robber = val
 
+	def setIndex(self, index):
+		self.index = index
+
+	def getIndex(self):
+		return self.index
+
 
 class Edge(Location):
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
+	def __init__(self, index):
+		self.index = index
 		self.owner = None
 
 	def __str__(self):
@@ -60,11 +57,15 @@ class Edge(Location):
 	def getOwner(self):
 		return self.owner
 
+	def setIndex(self, index):
+		self.index = index
+
+	def getIndex(self):
+		return self.index
 
 class Vertex(Location):
-	def __init__(self, x, y):
-		self.x = x
-		self.y = y
+	def __init__(self, index):
+		self.index = index
 		self.settlement = None
 		self.city = None
 
@@ -101,3 +102,9 @@ class Vertex(Location):
 
 	def getType(self):
 		return self.type
+
+	def setIndex(self, index):
+		self.index = index
+
+	def getIndex(self):
+		return self.index

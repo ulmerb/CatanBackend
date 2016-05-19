@@ -69,6 +69,7 @@ def playMainGame(numPlayers, players, board, AiNum = -1):
 		turnCounter += 1
 
 def playTurn(curPlayer, players, board, AiNum = -1):
+	board.printBoard()
 	print  "Player " + str(curPlayer) + " turn"
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
@@ -112,7 +113,7 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	print "Choose a location: "
 	location_dict = {}
 	for l in locations:
-		goalTag = board.tileToAscii(l.x,l.y)
+		goalTag = board.tileToAscii[l]
 		location_dict[goalTag] = l
 		print goalTag
         if (curPlayer == AiNum):
@@ -164,17 +165,14 @@ def steal(target, curPlayer,players):
 def buildRoad(curPlayer, players, board):
 	roadLocation = askPlayerForRoadLocation(board)
 	players[curPlayer].buildRoad(roadLocation, board)
-	board.buildRoad(curPlayer, players, roadLocation)
 
 def buildSettlement(curPlayer, players, board):
 	settlementLocation = askPlayerForSettlementLocation(board)
 	players[curPlayer].buildSettlement(settlementLocation, board)
-	board.buildSettlement(curPlayer, players, settlementLocation)
 
 def buildCity(curPlayer, players, board):
 	cityLocation = askPlayerForCityLocation()
 	players[curPlayer].buildCity(cityLocation, board)
-	board.buildCity(curPlayer, players, cityLocation)
 
 def buildDevCard(curPlayer, players, board):
 	if players[curPlayer].canBuildDevCard():
@@ -215,7 +213,6 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	board.batchUpdate()
 
 def initialPlacement(curPlayer, players, board):
-	#Note: This presumes the board.acii maps are kept up to date, which they aren't
 	print curPlayer, " is placing their initial settlement and road"
 	settlementLoc = None
 	asciiVertexLoc = None
@@ -225,13 +222,21 @@ def initialPlacement(curPlayer, players, board):
 			asciiVertexLoc = raw_input("Enter the ascii for the location you want to build your settlement: ")
 			if asciiVertexLoc not in board.asciiToVertex:
 				print "error, invalid ascii"
+			elif board.asciiToVertex[asciiVertexLoc].getOwner() != None:
+				print "error, already has an owner"
 			else:
-				settlementLoc = board.asciiToVertex[asciiVertexLoc]
-				break
+				vertex = board.asciiToVertex[asciiVertexLoc]
+				available = True
+				for neighbor in board.getVertexToVertices(vertex):
+					if neighbor.getOwner() != None:
+						available = False
+				if available:
+					settlementLoc = board.asciiToVertex[asciiVertexLoc]
+					break
+				else:
+					print "error, you must build at least two away from a built city"
 	except EOFError:
-		print "On sublime, naively building"
-		possibleLocations = board.getPossibleSettlementLocations(i, players, True)
-		settlementLoc = possibleLocations[0]
+		print "On sublime, not building"
 	try:
 		while (True):
 			asciiRoadLoc = raw_input("Enter the ascii for the location you want to build your road: ")
@@ -244,9 +249,7 @@ def initialPlacement(curPlayer, players, board):
 				else:
 					break
 	except EOFError:
-		print "On sublime, naively building"
-		possibleLocations = board.getVertexToEdges(board, settlementLoc)
-		roadLoc = possibleLocations[0]
+		print "On sublime, not building"
 	players[curPlayer].buildSettlement(settlementLoc, board)
 	players[curPlayer].buildRoad(roadLoc, board)
 

@@ -1,4 +1,4 @@
-VertexToVertexDict = {
+mapping = {
 1: [2, 9], 
 2: [1, 3], 
 3: [2, 4, 11], 
@@ -55,9 +55,13 @@ VertexToVertexDict = {
 54: [46, 53]
 }
 
-for key in VertexToVertexDict:
-	foundList = VertexToVertexDict[key]
-	for item in foundList:
-		secondList = VertexToVertexDict[item]
-		if key in secondList:
-			print key, item
+def getMap():
+	return mapping
+
+def test():
+	for key in VertexToVertexDict:
+		foundList = VertexToVertexDict[key]
+		for item in foundList:
+			secondList = VertexToVertexDict[item]
+			if key in secondList:
+				print key, item

@@ -1,4 +1,4 @@
-VertexToEdgeDict = {
+mapping = {
 1: [1, 7], 
 2: [1, 2],
 3: [2, 3, 8],
@@ -55,11 +55,14 @@ VertexToEdgeDict = {
 54: [66, 72] 
 }
 
-array1 = []
-for list1 in VertexToEdgeDict.values():
-	for item in list1:
-		array1.append(item)
+def getMap():
+	return mapping
 
-for i in xrange(1,73):
-	if array1.count(i) != 2:
-		print "incorrect on edge: ", i
+def test():
+	array1 = []
+	for list1 in VertexToEdgeDict.values():
+		for item in list1:
+			array1.append(item)
+	for i in xrange(1,73):
+		if array1.count(i) != 2:
+			print "incorrect on edge: ", i

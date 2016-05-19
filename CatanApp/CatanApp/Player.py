@@ -59,9 +59,15 @@ class player:
 		return True
 
 	def canBuildRoad(self, location, board):
+		print board.edgeToAscii[location], location.index
+		for edge in board.edges:
+			if edge is not None and edge.index != 0:
+				print edge.index, edge.getOwner()
 		if location.getOwner() is not None:
+			print "already owned"
 			return False
 		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0):
+			print "Not enough resources"
 			return False
 		for neighbV in board.getEdgeToVertices(location):
 			if neighbV.getOwner() == self.playerNumber:
@@ -69,6 +75,7 @@ class player:
 		for neigbE in board.getEdgeToEdges(location):
 			if neigbE.getOwner() == self.playerNumber:
 				return True
+				print "Success!"
 		return False
 
 	def canBuildDevCard(self):
