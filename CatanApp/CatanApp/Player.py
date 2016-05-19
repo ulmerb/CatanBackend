@@ -45,14 +45,17 @@ class player:
 			return False
 		adjRoads = board.getVertexToEdges(gridLoc)
 		playerHasRoad = False
-		for road in self.structures['roads']:
-			if road in adjRoads:
+		for adjRoad in adjRoads:
+			index = adjRoad.index
+			if index in self.structures['roads']:
 				playerHasRoad = True
 				break
 		if not playerHasRoad:
+			print "No linking roads"
 			return False
 		for n in board.getVertexToVertices(gridLoc):
 			if n.getOwner() is not None:
+				print "Settlements need to be at least 2 away"
 				return False
 		else:
 			print self, " cannot play there"
@@ -133,7 +136,6 @@ class player:
 		    self.structures['settlements'].remove(location.index)
 		    self.structures['cities'].append(location.index)
 		    location.buildCity(self.playerNumber)
-
 		else:
 		    print "You cannot build a city there"
 

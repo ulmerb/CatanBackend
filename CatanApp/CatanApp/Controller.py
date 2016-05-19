@@ -69,7 +69,8 @@ def playMainGame(numPlayers, players, board, AiNum = -1):
 		turnCounter += 1
 
 def playTurn(curPlayer, players, board, AiNum = -1):
-	board.printBoard()
+	board.createBatchCSV(players)
+	board.batchUpdate()
 	print  "Player " + str(curPlayer) + " turn"
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
