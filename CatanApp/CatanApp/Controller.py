@@ -125,7 +125,7 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	    return
 	locationForRobber = 0
 	try:
-		while (true):
+		while (True):
 			locationForRobber = raw_input("Enter a location (e.g. 12T)")
 			if locationForRobber not in location_dict:
 				print "Not a valid location. Try again"
