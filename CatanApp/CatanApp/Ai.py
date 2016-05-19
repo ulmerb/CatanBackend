@@ -137,6 +137,12 @@ class ai:
     def addResource(self, res, amount):
         self.AI.addResource(res, amount)
         
+    def loseResource(self, res, amount, verbose = False):
+        self.AI.loseResource(res, amount)
+        
+    def loseRandomCard(self):
+        self.AI.loseRandomCard()   
+             
     def tests(self):
         print self.AI.roadsRemaining
     
