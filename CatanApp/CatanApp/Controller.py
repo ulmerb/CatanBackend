@@ -125,7 +125,7 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	    return
 	locationForRobber = 0
 	try:
-		while (True):
+		while True:
 			locationForRobber = raw_input("Enter a location (e.g. 12T)")
 			if locationForRobber not in location_dict:
 				print "Not a valid location. Try again"
@@ -177,7 +177,7 @@ def buildSettlement(curPlayer, players, board):
 	players[curPlayer].buildSettlement(settlementLocation, board)
 
 def buildCity(curPlayer, players, board):
-	cityLocation = askPlayerForCityLocation()
+	cityLocation = askPlayerForCityLocation(curPlayer, players, board)
 	players[curPlayer].buildCity(cityLocation, board)
 
 def buildDevCard(curPlayer, players, board):
@@ -283,8 +283,13 @@ def askPlayerForSettlementLocation(board):
 		else:
 			print 'That location does not exist'
 
-def askPlayerForCityLocation():
-	return 0
+def askPlayerForCityLocation(curPlayer, players, board):
+	while True:
+		asciiLoc = raw_input('Enter the location where you want to build: ')
+		if asciiLoc in board.asciiToVertex:
+			return board.asciiToVertex[asciiLoc]
+		else:
+			print 'That location does not exist'
 
 def tradeHelper(trade, curResources, rec = False):
     for r in trade:
