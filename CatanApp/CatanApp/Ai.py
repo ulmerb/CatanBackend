@@ -161,6 +161,17 @@ class ai:
 # Start at each settlement, search for spots 2 away, if not enough, 
 # search further, etc. UNTIL we find N+ (start with N=5)
       #don't ignore the update income if something is built
+        curDistanceAway = 2
+        options = {"devCard": {},"pass": {} }
+
+        curSettlements = self.ai.structures[settlements]
+        for settlement in curSettlements
+          playableLocations = findPlayableLocations(settlement,curDistanceAway,board)
+          for playableS in playableLocations:
+            options[str(playableS)] = {}
+        if (options.size() < 5 ):
+          pass
+          #need to add more options and expand the curDistanceAway
         print "The Ai was caught sleeping, it does nothing"
     
     def placeRobber(self, board):
