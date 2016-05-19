@@ -476,7 +476,7 @@ app.post('/user', function (request, response) {
             response.status(400).send("Login Name already exists please choose a different login name.");
             return;
         }
-
+        
     });
 
 });
