@@ -1,4 +1,33 @@
 # -*- coding: utf-8 -*-
+# Feature discussion
+# Weighting of resources
+#   Ovearll Best
+#   Availability
+#   What's in your hand
+#   What's in your income
+
+# Vertex Cost Location
+#   Turns away
+#   Resources used
+
+
+# Vertex Reward Valuation
+#   Centraility
+#   Income increase
+#   Resource Weighting (from above)
+#   Ports
+#   Variability (not in alpha)
+#   Vertex Cost (from above)
+#   Current VP (when at 9VP, cost is all that matters)
+#   Total Turns remaaining in the game (not in 1-player)
+
+
+ 
+
+
+
+
+
 import Player
 
 class ai:
@@ -116,6 +145,22 @@ class ai:
         return False
         
     def decideMove(self, players, board, True):
+# Look at spots available to build on (settlement locations)
+# What does it take to get there (how many turns?) expected value
+# This is a cost
+# Cost vs reward for each spot
+# Learned by getting to 10
+# Manually change a ratio parameter
+# Additional value for ports
+# Centrality value
+# Longest road length
+# At 7+ points different math
+# ignore robber at first
+# Add ability to automatically branch the game
+# ignore trading at first
+# Start at each settlement, search for spots 2 away, if not enough, 
+# search further, etc. UNTIL we find N+ (start with N=5)
+      #don't ignore the update income if something is built
         print "The Ai was caught sleeping, it does nothing"
     
     def placeRobber(self, board):
