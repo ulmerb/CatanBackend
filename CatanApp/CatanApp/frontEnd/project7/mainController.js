@@ -207,8 +207,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 function (model){
                     $scope.main.message_to_user = "data passed successfully!";
                     console.log("model:");
-                    console.log(model);
+                    // console.log(model);
                     //update all variables on UI
+                    $scope.updateBoardBasedOnRecievedGameState(model)
                 }, function errorHandling(err) {
                     $scope.login_name = "";
                     $scope.password = "";
@@ -219,7 +220,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         }
 
         $scope.updateBoardBasedOnRecievedGameState = function(model) {
-            
+            console.log("JSON data is: ");
+            console.log(model);
+            console.log(model.message);
+            console.log(model.numPlayers);
         }
 
 

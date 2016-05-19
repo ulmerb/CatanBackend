@@ -506,7 +506,9 @@ app.post('/gameState', function (request, response) {
     var post_req = http.request(post_options, function(res) {
       res.setEncoding('utf8');
       res.on('data', function (chunk) {
-          response.status(200).send(JSON.stringify(chunk));
+            console.log(chunk); //stringfied json
+          //response.status(200).send(JSON.stringify(chunk));
+          response.status(200).send(chunk);
       }).on('error', function(err) {
         console.log(err);
       });
