@@ -218,6 +218,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
+        $scope.updateBoardBasedOnRecievedGameState = function(model) {
+            
+        }
+
 
     }]);
 
