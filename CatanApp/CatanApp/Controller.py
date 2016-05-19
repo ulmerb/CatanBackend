@@ -195,11 +195,16 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		board.batchUpdate()
 	print numPlayers
 	for i in range(numPlayers -1, -1, -1):
-	        print i
-	        if (i == AiNum):
-	            players[AiNum].decideMove(players, board, True)
-	            continue
+		print i
+		if (i == AiNum):
+			players[AiNum].decideMove(players, board, True)
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			continue
+		board.printBoard()
 	 	initialPlacement(i, players, board)
+	 	board.createBatchCSV(players)
+		board.batchUpdate()
 	for player in players:
           	    player.addResource('wood', 2)
           	    player.addResource('brick', 2)
