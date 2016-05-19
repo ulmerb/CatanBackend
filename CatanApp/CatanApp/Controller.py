@@ -125,7 +125,12 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	    return
 	locationForRobber = 0
 	try:
-		locationForRobber = raw_input("Enter a location (e.g. 12T)")
+		while (true):
+			locationForRobber = raw_input("Enter a location (e.g. 12T)")
+			if locationForRobber not in location_dict:
+				print "Not a valid location. Try again"
+			else:
+				break
 	except EOFError:
 		locationForRobber = Location.Tile()
 		print  ""
