@@ -418,7 +418,7 @@ class board:
 			yMod += 1
 		else:
 			yMod -=1
-		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMOd < len(self.tiles[0]):
+		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMod < len(self.tiles[0]):
 			if self.tiles[xMod][yMod] is not None:
 				result.append(self.tiles[xMod][yMod])
 		return result
