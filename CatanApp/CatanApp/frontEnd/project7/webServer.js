@@ -488,8 +488,8 @@ app.post('/gameState', function (request, response) {
       'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
       'output_format': 'json',
       'output_info': 'compiled_code',
-        'warning_level' : 'QUIET',
-        'js_resp' : response
+      'warning_level' : 'QUIET',
+      'js_resp' : JSON.stringify(request.body)
     });
 
     var post_options = {
@@ -500,9 +500,7 @@ app.post('/gameState', function (request, response) {
       headers: {
           'Content-Type': 'application/json',
       }
-  };
-
-    console.log(request);
+    };
 
     // Set up the request
     var post_req = http.request(post_options, function(res) {
@@ -512,7 +510,7 @@ app.post('/gameState', function (request, response) {
       }).on('error', function(err) {
         console.log(err);
       });
-  });
+    });
     post_req.write(post_data);
     post_req.end();
 
