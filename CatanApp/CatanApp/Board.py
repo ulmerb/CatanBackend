@@ -418,7 +418,7 @@ class board:
 			yMod += 1
 		else:
 			yMod -=1
-		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMOd < len(self.tiles[0]):
+		if xMod >= 0 and xMod < len(self.tiles) and yMod >= 0 and yMod < len(self.tiles[0]):
 			if self.tiles[xMod][yMod] is not None:
 				result.append(self.tiles[xMod][yMod])
 		return result
@@ -470,7 +470,8 @@ class board:
 		locs = set()
 		if not initializing:
 			edges = players[curPlayer].structures['roads']
-			for edge in edges:
+			for edgeNum in edges:
+				edge = self.edgeArray[edgeNum]
 				v1, v2 = self.getEdgeToVertices(edge)
 				if v1 is not None and v1.getOwner() is None and neighborsUnclaimed(v1):
 					locs.add(v1)

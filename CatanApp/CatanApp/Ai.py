@@ -35,12 +35,7 @@ class ai:
     def __init__(self, i):
         self.AI = Player.player(i)
         #weights for features
-        self.centrality = []
-        self.incomeIncrease = 1.0
-        self.costInTurns = 1.0
-        self.costInRes = 1.0
-        self.port = 1.0
-        self.vp = 1.0
+        self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 1.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         
@@ -104,6 +99,7 @@ class ai:
             
     def evaluateLocationBenefit(self, vert, board):
         tiles = board.getVertexToTiles(vert)
+        print len(tiles)
         exReturn =  {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         for tile in tiles:
             tileType = tile.getType()
@@ -144,7 +140,7 @@ class ai:
         print "The AI is too naiive to trade right now"
         return False
         
-    def decideMove(self, players, board, True):
+    def decideMove(self, players, board, firstTurn):
 # Look at spots available to build on (settlement locations)
 # What does it take to get there (how many turns?) expected value
 # This is a cost
@@ -161,23 +157,66 @@ class ai:
 # Start at each settlement, search for spots 2 away, if not enough, 
 # search further, etc. UNTIL we find N+ (start with N=5)
       #don't ignore the update income if something is built
+      if firstTurn:
+          locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
+          maxIncome = 0
+          bestloc = 0
+          for i in xrange(len(locs)):
+            benefit = self.evaluateLocationBenefit(locs[i], board)
+            gain = 0.0
+            for r in benefit:
+                gain += benefit[r]
+            print "*******"
+            print locs[i].index
+            print benefit
+            print "******"
+            if gain > maxIncome:
+                bestloc = i
+                maxIncome = gain
+          self.AI.buildSettlement(locs[bestloc], board)
+      else:
         curDistanceAway = 2
-        options = {"devCard": {},"pass": {} }
-
-        curSettlements = self.ai.structures[settlements]
-        for settlement in curSettlements
-          playableLocations = findPlayableLocations(settlement,curDistanceAway,board)
-          for playableS in playableLocations:
-            options[str(playableS)] = {}
-        if (options.size() < 5 ):
-          pass
+        devCardCost = sum(self.getResourceCost('devCard', 0).values())
+        options = {"devCard": {'costInRes' : devCardCost},"pass": {} }
+        curSettlements = self.AI.structures['settlements']
+        while(True):
+            for settlement in curSettlements:
+                s = board.vertexArray[settlement]
+                playableLocations = self.findPlayableLocations(s,curDistanceAway,board)
+                for playableS in playableLocations:
+                    #ideally object to ascii
+                    benefit = self.evaluateLocationBenefit(playableS, board)
+                    turnCost = self.getCostInTurns('settlement', curDistanceAway, self.income)
+                    resCost = sum(self.getResourceCost('settlement', curDistanceAway).values())
+                    options[str(board.vertexToAscii(playableS.x, playableS.y))] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
+            if (len(options) >= 5 or curDistanceAway >= 5):
+                break
+            curDistanceAway += 1
+        for settle in self.AI.structures['settlements']:
+            s = board.vertexArray[settle]
+            benefit = self.evaluateLocationBenefit(s, board)
+            turnCost = self.getCostInTurns('city', 0, self.income)
+            resCost = sum(self.getResourceCost('city', 0).values())
+            options[str(board.vertexToAscii(s.x, s.y))] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
           #need to add more options and expand the curDistanceAway
+        print options
+        print self.evaluateOptions(options)
         print "The Ai was caught sleeping, it does nothing"
-    
+    def evaluateOptions(self, options):
+        bestOption = ""
+        bestScore = -float('inf')
+        for opt in options:
+            score = 0.0
+            for field in options[opt]:
+                    score += options[opt][field] * self.weights[field]
+            if score > bestScore:
+                bestOption = opt
+                bestScore = score
+        return bestOption, bestScore
     def placeRobber(self, board):
         newRobberLocation = board.asciiToTile['01T']
         board.moveRobber(newRobberLocation)
-        targets = board.playersToStealFrom(newRobberLocation)
+        targets = list(board.playersToStealFrom(newRobberLocation))
         if len(targets) > 0:
             return targets[0]
         else:

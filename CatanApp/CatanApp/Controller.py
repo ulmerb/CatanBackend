@@ -117,7 +117,7 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 		print goalTag
         if (curPlayer == AiNum):
             target = players[curPlayer].placeRobber(board)
-            if target != None:
+            if target != None and target != curPlayer:
                 steal(players[int(target)], curPlayer,players)
             print "The ai has moved the robber"
 	    return
@@ -158,7 +158,8 @@ def askPlayerIfDevCard(curPlayer, players, board):
 
 def steal(target, curPlayer,players):
 	stolen = target.loseRandomCard()
-	players[curPlayer].addResource(stolen, 1)
+	if stolen != None:
+	   players[curPlayer].addResource(stolen, 1)
 
 def buildRoad(curPlayer, players, board):
 	roadLocation = askPlayerForRoadLocation(board)
