@@ -183,11 +183,16 @@ def buildDevCard(curPlayer, players, board):
 
 def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range (0, numPlayers):
-	        if (i == AiNum):
-	            print i
-	            players[AiNum].decideMove(players, board, True)
-	            continue
+		if (i == AiNum):
+			print i
+			players[AiNum].decideMove(players, board, True)
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			continue
+		board.printBoard()	            
 		initialPlacement(i, players, board)
+		board.createBatchCSV(players)
+		board.batchUpdate()
 	print numPlayers
 	for i in range(numPlayers -1, -1, -1):
 	        print i
