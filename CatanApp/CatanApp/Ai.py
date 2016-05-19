@@ -1,10 +1,39 @@
 # -*- coding: utf-8 -*-
+# Feature discussion
+# Weighting of resources
+#   Ovearll Best
+#   Availability
+#   What's in your hand
+#   What's in your income
+
+# Vertex Cost Location
+#   Turns away
+#   Resources used
+
+
+# Vertex Reward Valuation
+#   Centraility
+#   Income increase
+#   Resource Weighting (from above)
+#   Ports
+#   Variability (not in alpha)
+#   Vertex Cost (from above)
+#   Current VP (when at 9VP, cost is all that matters)
+#   Total Turns remaaining in the game (not in 1-player)
+
+
+ 
+
+
+
+
+
 import Player
 
 class ai:
     
-    def __init__(self):
-        self.AI = Player.player()
+    def __init__(self, i):
+        self.AI = Player.player(i)
         #weights for features
         self.centrality = []
         self.incomeIncrease = 1.0
@@ -111,11 +140,49 @@ class ai:
                     cur.remove(v)
                     break
         return cur            
+    def evaluateTrade(self, offer, recieve):
+        print "The AI is too naiive to trade right now"
+        return False
         
-        
-    def decideMove(self):
-        pass
-               
+    def decideMove(self, players, board, True):
+# Look at spots available to build on (settlement locations)
+# What does it take to get there (how many turns?) expected value
+# This is a cost
+# Cost vs reward for each spot
+# Learned by getting to 10
+# Manually change a ratio parameter
+# Additional value for ports
+# Centrality value
+# Longest road length
+# At 7+ points different math
+# ignore robber at first
+# Add ability to automatically branch the game
+# ignore trading at first
+# Start at each settlement, search for spots 2 away, if not enough, 
+# search further, etc. UNTIL we find N+ (start with N=5)
+      #don't ignore the update income if something is built
+        curDistanceAway = 2
+        options = {"devCard": {},"pass": {} }
+
+        curSettlements = self.ai.structures[settlements]
+        for settlement in curSettlements
+          playableLocations = findPlayableLocations(settlement,curDistanceAway,board)
+          for playableS in playableLocations:
+            options[str(playableS)] = {}
+        if (options.size() < 5 ):
+          pass
+          #need to add more options and expand the curDistanceAway
+        print "The Ai was caught sleeping, it does nothing"
+    
+    def placeRobber(self, board):
+        newRobberLocation = board.asciiToTile['01T']
+        board.moveRobber(newRobberLocation)
+        targets = board.playersToStealFrom(newRobberLocation)
+        if len(targets) > 0:
+            return targets[0]
+        else:
+            return None
+
     def updateIncome(self, vert):
         #anytime we build on a location whether adding a settlment or changing to city
         #our income increases by one settlment of expected value so we can levarge our
@@ -123,7 +190,15 @@ class ai:
         gain = self.evaluateLocationBenefit(vert)
         for res in gain:
             self.income[res] += gain[res]
+    def addResource(self, res, amount):
+        self.AI.addResource(res, amount)
         
+    def loseResource(self, res, amount, verbose = False):
+        self.AI.loseResource(res, amount)
+        
+    def loseRandomCard(self):
+        self.AI.loseRandomCard()   
+             
     def tests(self):
         print self.AI.roadsRemaining
     
