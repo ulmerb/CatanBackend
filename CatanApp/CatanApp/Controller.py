@@ -141,12 +141,20 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	for t in targets:
 		print t
 	target = 0
-	try:
-		target = raw_input("")
-	except EOFError:
-		target = 0
-		print  ""
-	steal(players[int(target)], curPlayer,players)
+	if len(targets) != 0:
+		try:
+			while True:
+				target = raw_input("")
+				if int(target) not in targets:
+					print "Not a valid selection, try again"
+				else:
+					break
+		except EOFError:
+			target = 0
+			print  ""
+		steal(players[int(target)], curPlayer,players)
+	else:
+		print "There are no settlements bordering that tile, stealing phase skipped"
 
 def askPlayerIfDevCard(curPlayer, players, board):
 	useCard = 0
