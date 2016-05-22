@@ -69,6 +69,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.buildSettlementLocation = ""
         $scope.main.buildCityLocation = ""
         $scope.main.robberLocation = ""
+        //test:
+        $scope.main.resources = []
 
         /*
         * FetchModel - Fetch a model from the web server.
@@ -222,8 +224,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.updateBoardBasedOnRecievedGameState = function(model) {
             console.log("JSON data is: ");
             console.log(model);
-            console.log(model.message);
+            //console.log(model.message);
+            console.log(JSON.parse(model));
             console.log(model.numPlayers);
+            //console.log(model.players[0].resources);
         }
 
 
