@@ -44,6 +44,9 @@ def main():
                 numPlayers +=1
 	except EOFError:
 		print " Not building, on sublime"
+	board.createBatchCSV(players)
+	board.batchUpdate()
+	board.printBoard()
 	firstPlacement(numPlayers, players, board, AiNum)
 	playMainGame(numPlayers, players, board, AiNum)
 

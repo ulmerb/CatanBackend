@@ -43,7 +43,7 @@ class board:
 			index = i + 1
 			givenType = types.pop()
 			self.tiles[index].setType(givenType)
-			self.tiles[index].setIndex(i)
+			self.tiles[index].setIndex(index)
 			if givenType != "desert":
 				self.tiles[index].setNumber(numbers.pop())
 			else:
