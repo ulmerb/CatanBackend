@@ -159,6 +159,10 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 		print "There are no settlements bordering that tile, stealing phase skipped"
 
 def askPlayerIfDevCard(curPlayer, players, board):
+	if not players[curPlayer].canPlayDevCard():
+		print "You don't have any dev cards, this step is skippped"
+		return 0
+
 	useCard = 0
 	try:
 		useCard = raw_input("Do you want to play a dev card?")
