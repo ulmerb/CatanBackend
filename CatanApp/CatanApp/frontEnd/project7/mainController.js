@@ -51,9 +51,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.get_grain = 0
         $scope.main.get_sheep = 0
 
-        $scope.main.currentPlayer = 1
+        $scope.main.currentPlayer = 0
         //temp
-        $scope.main.numPlayers = 2
+        $scope.main.numPlayers = 0
         $scope.main.devCards = []
         $scope.main.players = []
         $scope.main.hasLongestRoad = false
@@ -224,13 +224,17 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.updateBoardBasedOnRecievedGameState = function(model) {
             console.log("JSON data is: ");
             console.log(model);
-            //console.log(model.message);
-            console.log(JSON.parse(model));
-            console.log(model.numPlayers);
-            //console.log(model.players[0].resources);
+            $scope.main.currentPlayer = model.currentPlayer
+            $scope.main.numPlayers = model.numPlayers
+
+            console.log($scope.main.currentPlayer)
+            console.log($scope.main.numPlayers)
+            console.log(model.message)
+            console.log(model.players[0])
+            console.log(model.players[0].hasLongestRoad)
+            console.log(model.players[1].hasLongestRoad)
+
         }
-
-
     }]);
 
     
