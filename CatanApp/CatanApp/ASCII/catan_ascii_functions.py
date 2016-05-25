@@ -17,7 +17,7 @@ def replaceText(old,new,currentBoardNum):
 	f = open(filein,'r')
 	filedata = f.read()
 	f.close()
-	print "old", old, 'new ', new
+	# print "old", old, 'new ', new
 	newdata = filedata.replace(old,new)
 	f = open(fileout,'w')
 	f.write(newdata)
