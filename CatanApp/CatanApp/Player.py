@@ -63,9 +63,9 @@ class player:
 
 	def canBuildRoad(self, location, board):
 		print board.edgeToAscii[location], location.index
-		for edge in board.edges:
-			if edge is not None and edge.index != 0:
-				print edge.index, edge.getOwner()
+		# for edge in board.edges:
+		# 	if edge is not None and edge.index != 0:
+		# 		print edge.index, edge.getOwner()
 		if location.getOwner() is not None:
 			print "already owned"
 			return False

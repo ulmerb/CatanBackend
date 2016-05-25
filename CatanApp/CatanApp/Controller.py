@@ -89,26 +89,26 @@ def playTurn(curPlayer, players, board, AiNum = -1):
 	return players[curPlayer].hasWon()
 
 def build(curPlayer, players, board):
-	print "Player " + str(curPlayer) + " is building"
-	while(True):		
-		try:
-			response = raw_input("Do you want to build?")
-			if response == "Yes" or response == "yes" or response == "y":
-				toBuild = raw_input("What do you want to build? ")
-				if toBuild == "road":
-					buildRoad(curPlayer, players, board)
-				elif toBuild == "settlement":
-					buildSettlement(curPlayer, players, board)
-				elif toBuild == "city":
-					buildCity(curPlayer, players, board)
-				elif toBuild == "devCard":
-					buildDevCard(curPlayer, players, board)
-				break
-			else:
-				break
-		except EOFError:
-			print " Not building, on sublime"
-			break
+	print "Player " + str(curPlayer) + " is in building phase"
+	building = True
+	while(building):
+		response = raw_input("Do you want to build?")
+		if response == "Yes" or response == "yes" or response == "y":
+			toBuild = raw_input("What do you want to build? ")
+			if toBuild == "road":
+				buildRoad(curPlayer, players, board)
+			elif toBuild == "settlement":
+				buildSettlement(curPlayer, players, board)
+			elif toBuild == "city":
+				buildCity(curPlayer, players, board)
+			elif toBuild == "devCard":
+				buildDevCard(curPlayer, players, board)
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			board.printBoard()
+		else:
+			building = False
+
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
 	print "Robber"
