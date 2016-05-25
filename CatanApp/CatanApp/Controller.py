@@ -104,26 +104,27 @@ def playTurn(curPlayer, players, board, AiNum = -1):
 	return players[curPlayer].hasWon()
 
 def build(curPlayer, players, board):
-	print "Player " + str(curPlayer) + " is building"
-	while(True):		
-		try:
-			response = raw_input("Do you want to build?")
-			if response == "Yes" or response == "yes" or response == "y":
-				toBuild = raw_input("What do you want to build? ")
-				if toBuild == "road":
-					buildRoad(curPlayer, players, board)
-				elif toBuild == "settlement":
-					buildSettlement(curPlayer, players, board)
-				elif toBuild == "city":
-					buildCity(curPlayer, players, board)
-				elif toBuild == "devCard":
-					buildDevCard(curPlayer, players, board)
-				break
-			else:
-				break
-		except EOFError:
-			print " Not building, on sublime"
-			break
+	print "Player " + str(curPlayer) + " is in building phase"
+	building = True
+	while(building):
+		response = raw_input("Do you want to build?")
+		if response == "Yes" or response == "yes" or response == "y":
+			toBuild = raw_input("What do you want to build? ")
+			if toBuild == "road":
+				buildRoad(curPlayer, players, board)
+			elif toBuild == "settlement":
+				buildSettlement(curPlayer, players, board)
+			elif toBuild == "city":
+				buildCity(curPlayer, players, board)
+			elif toBuild == "devCard":
+				buildDevCard(curPlayer, players, board)
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			board.printBoard()
+			print players[curPlayer]
+		else:
+			building = False
+
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
 	print "Robber"
@@ -174,6 +175,10 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 		print "There are no settlements bordering that tile, stealing phase skipped"
 
 def askPlayerIfDevCard(curPlayer, players, board):
+	if not players[curPlayer].canPlayDevCard():
+		print "You don't have any dev cards, this step is skippped"
+		return 0
+
 	useCard = 0
 	try:
 		useCard = raw_input("Do you want to play a dev card?")
@@ -387,6 +392,8 @@ def trade(curPlayer, players, AiNum = -2):
                         print "Proposing trade to player: ", partner
                     else:
                         print "No partner or invalid partner inserted, proposing trade to all players"
+                else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
+                	AiNum = -2
                 if (partner == AiNum and AiNum != -2):
                     players[AiNum].evaluateTrade(offer, recieve)
                 elif partner != -1:

@@ -304,7 +304,7 @@ class board:
 						result.append(road)
 		return set(result)
 
-	def neighborsUnclaimed(vertex):
+	def neighborsUnclaimed(self, vertex):
 		for neighbor in self.getVertexToVertices(vertex):
 			if neighbor.getOwner() is not None:
 				return False
@@ -317,15 +317,14 @@ class board:
 			for edgeNum in edges:
 				edge = self.edgeArray[edgeNum]
 				v1, v2 = self.getEdgeToVertices(edge)
-				if v1 is not None and v1.getOwner() is None and neighborsUnclaimed(v1):
+				if v1 is not None and v1.getOwner() is None and self.neighborsUnclaimed(v1):
 					locs.add(v1)
-				if v2 is not None and v2.getOwner() is None and neighborsUnclaimed(v2):
+				if v2 is not None and v2.getOwner() is None and self.neighborsUnclaimed(v2):
 					locs.add(v2)
 		else:
-			for row in self.vertices:
-				for vertex in row:
-					if vertex is not None and vertex.getOwner() is None and neighborsUnclaimed(vertex):
-						locs.add(vertex)
+			for vertex in self.vertices:
+				if vertex is not None and vertex.getOwner() is None and self.neighborsUnclaimed(vertex):
+					locs.add(vertex)
 		return locs
 
 	def getPotentialCityLocs(self, curPlayer, players):
