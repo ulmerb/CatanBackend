@@ -106,6 +106,7 @@ def build(curPlayer, players, board):
 			board.createBatchCSV(players)
 			board.batchUpdate()
 			board.printBoard()
+			print players[curPlayer]
 		else:
 			building = False
 

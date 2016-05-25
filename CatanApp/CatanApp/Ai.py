@@ -99,7 +99,7 @@ class ai:
             
     def evaluateLocationBenefit(self, vert, board):
         tiles = board.getVertexToTiles(vert)
-        print len(tiles)
+        # print len(tiles)
         exReturn =  {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         for tile in tiles:
             tileType = tile.getType()
@@ -166,14 +166,20 @@ class ai:
             gain = 0.0
             for r in benefit:
                 gain += benefit[r]
-            print "*******"
-            print locs[i].index
-            print benefit
-            print "******"
+            # print "*******"
+            # print locs[i].index
+            # print benefit
+            # print "******"
             if gain > maxIncome:
                 bestloc = i
                 maxIncome = gain
           self.AI.buildSettlement(locs[bestloc], board)
+          builtSettlementSpot = locs[bestloc].getIndex()
+          roadOptions = board.vertexToEdgeMap[builtSettlementSpot]
+          print builtSettlementSpot, "roadOptions", roadOptions
+          print "currently just choosing the first road on the list" # Currentliy just building at the first option
+          roadChoice = board.edges[roadOptions[0]]
+          self.AI.buildRoad(roadChoice, board) 
       else:
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
