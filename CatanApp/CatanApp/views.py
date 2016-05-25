@@ -1,7 +1,13 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import Controller
+import Player
 import Board
+import Location
+import Devcards
+import Ai
+import ASCII.catan_ascii_functions as asc
 
 @csrf_exempt
 def djangotest(request):
@@ -95,7 +101,12 @@ def djangotest(request):
 # Intialize unique game
 @csrf_exempt
 def initialize(request):
-	b = Board.board()
+	info = json.loads(request.POST['js_resp'])
+	numPlayers = info['numPlayers']
+	AI = info['AI']
+	board, players, newNumPlayers = Controller.tileInitialization(numPlayers, AI)
+	# convert board, players, newNum into json response
+	print board, players, newNumPlayers
 	return HttpResponse("initialize in progress")
 
 @csrf_exempt

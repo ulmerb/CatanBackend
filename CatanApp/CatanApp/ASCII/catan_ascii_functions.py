@@ -1,19 +1,25 @@
-
 import os
 import sys
 import fileinput
 import json
+from CatanApp import settings
+
+# IS_RUNNING is True when the django server is running
+if settings.IS_RUNNING:
+	asciiPath = os.path.join(settings.BASE_DIR, "ASCII/")
+else:
+	asciiPath = "ASCII/"
 
 def printBoard(currentBoardNum):
- 	filein = "ASCII/catan_example" + str(currentBoardNum) + ".txt"
+ 	filein = asciiPath + "catan_example" + str(currentBoardNum) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	print filedata
 	f.close()
 
 def replaceText(old,new,currentBoardNum):
-	filein = "ASCII/catan_example" + str(currentBoardNum) + ".txt"
-	fileout = "ASCII/catan_example" + str(currentBoardNum + 1) + ".txt"
+	filein = asciiPath + "catan_example" + str(currentBoardNum) + ".txt"
+	fileout = asciiPath + "catan_example" + str(currentBoardNum + 1) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	f.close()
@@ -25,7 +31,7 @@ def replaceText(old,new,currentBoardNum):
 	f.close()
 
 def verify(boardNum):
-	filein ="ASCII/catan_example" + str(boardNum) + ".txt"
+	filein = asciiPath + "catan_example" + str(boardNum) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
 	# roads
@@ -72,7 +78,7 @@ def verify(boardNum):
 	f.close()
 
 def batchUpdate(curBoardNum):
-	fileData = open("ASCII/latest_update.csv",'r')
+	fileData = open(asciiPath + "latest_update.csv",'r')
 	lines = [line.rstrip('\n').rstrip('\r') for line in fileData]
 	fileData.close()
 	for line in lines:
@@ -85,8 +91,8 @@ def batchUpdate(curBoardNum):
 	return curBoardNum
 
 def undo(curBoardNum):
-	current = "ASCII/catan_example" + str(curBoardNum) + ".txt"
-	previous = "ASCII/catan_example" + str(curBoardNum - 1) + ".txt"
+	current = asciiPath + "catan_example" + str(curBoardNum) + ".txt"
+	previous = asciiPath + "catan_example" + str(curBoardNum - 1) + ".txt"
 	f = open(previous,'r')
 	filedata = f.read()
 	f.close()

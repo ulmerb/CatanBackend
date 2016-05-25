@@ -10,6 +10,9 @@ import TileToVertexDict
 import VertexToTileDict
 import EdgeToVertexDict
 import EdgeToEdgeDict
+import os
+from settings import IS_RUNNING, BASE_DIR
+# IS_RUNNING is True when the django server is running
 
 class board:
 
@@ -120,7 +123,11 @@ class board:
 			print ','.join([str(e.index) if e is not None else "None" for e in row])
 
 	def createBatchCSV(self, players):
-		with open('ASCII/latest_update.csv', 'wb') as csvfile:
+		if IS_RUNNING:
+			path = os.path.join(BASE_DIR, 'ASCII/latest_update.csv')
+		else:
+			path = 'ASCII/latest_update.csv'
+		with open(path, 'wb') as csvfile:
 			writer = csv.writer(csvfile, delimiter=',')
 			# THIS DISPLAYS THE INITINALIZED TILES - matt
 			for tile in self.tiles:
