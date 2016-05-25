@@ -376,6 +376,8 @@ def trade(curPlayer, players, AiNum = -2):
                         print "Proposing trade to player: ", partner
                     else:
                         print "No partner or invalid partner inserted, proposing trade to all players"
+                else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
+                	AiNum = -2
                 if (partner == AiNum and AiNum != -2):
                     players[AiNum].evaluateTrade(offer, recieve)
                 elif partner != -1:
