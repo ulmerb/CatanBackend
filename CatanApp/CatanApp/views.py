@@ -16,3 +16,7 @@ def djangotest(request):
   "robberTileLocation": "null"})
 	)
 
+# Intialize unique game
+@csrf_exempt
+def initializeGame(request):
+	pass
