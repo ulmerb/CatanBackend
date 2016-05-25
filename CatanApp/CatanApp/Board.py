@@ -22,6 +22,8 @@ class board:
 		self.vertexToAscii = {}
 		self.asciiToEdge = {}
 		self.edgeToAscii = {}
+		self.settlements = {}
+		#create a mapping of settlement ascii to vertex ascii
 		self.vertexToVertexMap = VertexToVertexDict.getMap()
 		self.vertexToEdgeMap = VertexToEdgeDict.getMap()
 		self.vertexToTileMap = VertexToTileDict.getMap()
@@ -89,7 +91,6 @@ class board:
 		del self.asciiToEdge[ascii]
 		del self.edgeToAscii[edge]
 		self.asciiToEdge[newAscii] = edge
-		self.edgeToAsciiMap[edge] = newAscii	
 
 	def modifyAsciiToVertex(self, ascii, vertex, newAscii):
 		if vertex is None:
@@ -99,7 +100,6 @@ class board:
 		del self.asciiToVertex[ascii]
 		del self.vertexToAscii[vertex]
 		self.asciiToVertex[newAscii] = vertex
-		self.vertexToAsciiMap[vertex] = newAscii	
 
 	def modifyAsciiToTile(self, ascii, tile, newAscii):
 		if tile is None:
@@ -109,7 +109,6 @@ class board:
 		del self.asciiToTile[ascii]
 		del self.tileToAscii[tile]
 		self.asciiToTile[newAscii] = tile
-		self.tileToAsciiMap[tile] = newAscii	
 
 	#debugging function
 	def printEdges(self):
@@ -138,17 +137,20 @@ class board:
 							goalTag += str(tile.getNumber())
 					# print goalTag
 					writer.writerow([tileAscii,goalTag])
-
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
 					vertexAscii = self.vertexToAscii[vertex]
-					writer.writerow([vertexAscii, str(vertex.settleNum) + "S" + str(vertex.getOwner())])
-
+					writer.writerow([vertexAscii, self.vertexSettlementAscii(vertex)])
 			for edge in self.edges:
 				if edge is not None and edge.getOwner() is not None:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
-						
+
+	def vertexSettlementAscii(self, vertex):
+		if vertex.getCity() is not None:
+			return str(vertex.cityNum) + "C" + str(vertex.getOwner())
+		else:
+			return str(vertex.settleNum) + "S" + str(vertex.getOwner()) 
 
 	def batchUpdate(self):
 		newBoardNumber = asc.batchUpdate(self.currentBoardNumber)
@@ -157,6 +159,18 @@ class board:
 	def printBoard(self):
 		asc.printBoard(self.currentBoardNumber)
 
+	def addSettlement(self, location):
+		settlementAscii = self.vertexSettlementAscii(location)
+		self.settlements[str(settlementAscii)] = self.vertexToAscii[location]
+		print settlementAscii, " associated with ", self.vertexToAscii[location]
+
+	def getSettlementFromAscii(self, ascii):
+		return self.settlements[str(ascii)]
+
+	def validCityLoc(self, locationAscii):
+		if str(locationAscii) in self.settlements:
+			return True
+		return False
 
 	def getShuffledNumbers(self):
 		numbers = []

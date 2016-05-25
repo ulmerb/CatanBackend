@@ -80,9 +80,10 @@ class Vertex(Location):
 		self.settlement = player
 		self.settleNum = settlementNumber
 
-	def buildCity(self, player):
+	def buildCity(self, player, cityNumber):
 		self.settlement = None
 		self.city = player
+		self.cityNum = cityNumber
 
 	def getSettlement(self):
 		return self.settlement

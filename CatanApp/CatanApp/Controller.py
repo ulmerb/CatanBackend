@@ -294,8 +294,8 @@ def askPlayerForSettlementLocation(board):
 def askPlayerForCityLocation(curPlayer, players, board):
 	while True:
 		asciiLoc = raw_input('Enter the location where you want to build: ')
-		if asciiLoc in board.asciiToVertex:
-			return board.asciiToVertex[asciiLoc]
+		if board.validCityLoc(asciiLoc):
+			return board.asciiToVertex[board.getSettlementFromAscii(asciiLoc)]
 		else:
 			print 'That location does not exist'
 
