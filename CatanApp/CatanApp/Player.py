@@ -5,7 +5,7 @@ class player:
 
 	def __init__(self, i):
 	        self.score =  0
-	        self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 4, 'grain' : 4}
+	        self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 6, 'grain' : 4}
 	        self.roadsRemaining = 15
 	        self.citiesRemaining = 4
 	        self.settlementsRemaining = 5
@@ -34,7 +34,7 @@ class player:
 	def canBuildCity(self, location):
    	    if self.resources['grain'] >= 2 and self.resources['ore'] >= 3 and self.citiesRemaining > 0:
    	        if location.index in self.structures['settlements']:
-   	            return True
+   	        	return True
 		return False
 		
 	def canBuildSettlement(self, board, gridLoc):
@@ -123,6 +123,7 @@ class player:
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location.index)
 		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
+		    board.addSettlement(location)
 		else:
 		    print "You cannot build a settlement there"
 
@@ -135,7 +136,7 @@ class player:
 		    self.resources['grain'] -= 2
 		    self.structures['settlements'].remove(location.index)
 		    self.structures['cities'].append(location.index)
-		    location.buildCity(self.playerNumber)
+		    location.buildCity(self.playerNumber, len(self.structures['cities']))
 		else:
 		    print "You cannot build a city there"
 
@@ -177,5 +178,6 @@ class player:
 	#I added these two mostly for testing but could be useful
 	def checkResources(self):
 	        return self.resources
+
 	def checkStructures(self):
 	        return self.structures
