@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import Board
 
 @csrf_exempt
 def djangotest(request):
@@ -93,5 +94,11 @@ def djangotest(request):
 
 # Intialize unique game
 @csrf_exempt
-def initializeGame(request):
+def initialize(request):
+	b = Board.board()
+	return HttpResponse("initialize in progress")
+
+@csrf_exempt
+def build(request):
 	pass
+

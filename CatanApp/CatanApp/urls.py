@@ -19,5 +19,7 @@ from views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^djangotest/', djangotest)
+    url(r'^djangotest/', djangotest),
+    url(r'^initialize/', initialize),
+    url(r'^build/',build)
 ]

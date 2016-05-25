@@ -481,8 +481,8 @@ app.post('/user', function (request, response) {
 });
 
 //new functions:
-app.post('/gameState', function (request, response) {
-    // response.status(200).send(response.cookie);
+
+var postDjango = function(request, response, path, cb) {
     var post_data = querystring.stringify({
       'compilation_level' : 'ADVANCED_OPTIMIZATIONS',
       'output_format': 'json',
@@ -490,33 +490,40 @@ app.post('/gameState', function (request, response) {
       'warning_level' : 'QUIET',
       'js_resp' : JSON.stringify(request.body)
     });
-    console.log(Buffer.byteLength(post_data));
     var post_options = {
       host: '127.0.0.1',
       port: '8000',
-      path: '/djangotest/',
+      path: '/' + path + '/',
       method: 'POST',
       headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           'Content-Length': Buffer.byteLength(post_data)
       }
     };
-
-    // Set up the request
     var post_req = http.request(post_options, function(res) {
       res.setEncoding('utf8');
       res.on('data', function (chunk) {
-            console.log(chunk); //stringfied json
-          //response.status(200).send(JSON.stringify(chunk));
-          response.status(200).send(chunk);
+            cb(chunk);
       }).on('error', function(err) {
         console.log(err);
       });
     });
     post_req.write(post_data);
     post_req.end();
+}
 
-    //response.status(200).send(dataGameState);
+app.post('/newGame', function(request, response) {
+    postDjango(request, response, 'initialize', function(chunk) {
+        console.log(chunk);
+        response.status(200).send(chunk);
+    })
+});
+
+app.post('/gameState', function (request, response) {
+    postDjango(request, response, 'intialize', function(chunk) {
+        console.log(chunk);
+        response.status(200).send(chunk);
+    });
 });
 
 var server = app.listen(3000, function () {

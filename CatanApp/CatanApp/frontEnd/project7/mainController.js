@@ -129,48 +129,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             });
         };
 
-        //Uploading the photos:
-
-        var selectedPhotoFile;   // Holds the last file selected by the user
-
-        // Called on file selection - we simply save a reference to the file in selectedPhotoFile
-        $scope.inputFileNameChanged = function (element) {
-            selectedPhotoFile = element.files[0];
-        };
-
-        // Has the user selected a file?
-        $scope.inputFileNameSelected = function () {
-            return !!selectedPhotoFile;
-        };
-
-        // Upload the photo file selected by the user using a post request to the URL /photos/new
-        $scope.uploadPhoto = function () {
-            console.log("uploadPhoto button clicked");
-            if (!$scope.inputFileNameSelected()) {
-                console.error("uploadPhoto called will no selected file");
-                return;
-            }
-            console.log('fileSubmitted', selectedPhotoFile);
-
-            // Create a DOM form and add the file to it under the name uploadedphoto
-            var domForm = new FormData();
-            domForm.append('uploadedphoto', selectedPhotoFile);
-
-            // Using $http to POST the form
-            $http.post('/photos/new', domForm, {
-                transformRequest: angular.identity,
-                headers: {'Content-Type': undefined}
-            }).success(function(newPhoto){
-                // The photo was successfully uploaded. XXX - Do whatever you want on success.
-                console.log("photo was successfully uploaded");
-                //do a broad cast;
-            }).error(function(err){
-                // Couldn't upload the photo. XXX  - Do whatever you want on failure.
-                console.error('ERROR uploading photo', err);
-            });
-
-        };
-
         $scope.readTextFile = function(file)
         {
             var rawFile = new XMLHttpRequest();
@@ -221,6 +179,23 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
+        $scope.newGame = function() {
+            var userRes = $resource("/newGame");
+            userRes.save({'newgame':'newgame'},
+                function (model){
+                    console.log("model:");
+                    console.log(model);
+                    //update all variables on UI
+                    //$scope.updateBoardBasedOnRecievedGameState(model)
+                }, function errorHandling(err) {
+                    $scope.login_name = "";
+                    $scope.password = "";
+                    $scope.error_text = "Error: "+ err.data;
+                    $scope.main.message_to_user = "Error: "+ err.data;
+                }
+            )
+        }
+
         $scope.updateBoardBasedOnRecievedGameState = function(model) {
             console.log("JSON data is: ");
             console.log(model);
@@ -236,14 +211,3 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         }
     }]);
-
-    
-
-
- 
-
-
-
-
-
-
