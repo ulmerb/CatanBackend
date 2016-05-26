@@ -119,7 +119,6 @@ def build(curPlayer, players, board, devCardsDeck):
 				buildDevCard(curPlayer, players, board, devCardsDeck)
 			board.createBatchCSV(players)
 			board.batchUpdate()
-			board.printBoard()
 			print players[curPlayer]
 		else:
 			building = False
