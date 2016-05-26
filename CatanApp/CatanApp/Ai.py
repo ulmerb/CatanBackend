@@ -117,7 +117,7 @@ class ai:
         #this dictates how many steps away we look (ie, x = 2 means we look for all spots 2 away)
         for i in xrange(x):
             temp = set()
-            for v in cur.copy():
+            for v in cur:
                 #this board function should return all of a vertex's neighbors
                 for n in board.getVertexToVertices(v):
                     #we dont want to back track hence the trash list
@@ -130,14 +130,16 @@ class ai:
             trash = trash.union(cur)
             cur = temp
         #this check is still needeed despite above neighbor check, should be more efficient to have both as is
+        cur = list(cur)
         for v in cur:
+            print "v", v.getIndex()
             for n in board.getVertexToVertices(v):
                 if n.getOwner() != None:
                     cur.remove(v)
                     break
         return cur            
     def evaluateTrade(self, offer, recieve):
-        print "The AI is too naiive to trade right now"
+        print "The AI is too naive to trade right now"
         return False
         
     def decideMove(self, players, board, firstTurn):
@@ -194,18 +196,19 @@ class ai:
                     benefit = self.evaluateLocationBenefit(playableS, board)
                     turnCost = self.getCostInTurns('settlement', curDistanceAway, self.income)
                     resCost = sum(self.getResourceCost('settlement', curDistanceAway).values())
-                    options[str(board.vertexToAscii(playableS.x, playableS.y))] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
+                    asciiRepresentation = str(board.vertexToAscii[playableS])
+                    options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
             if (len(options) >= 5 or curDistanceAway >= 5):
-                break
-            curDistanceAway += 1
+              curDistanceAway += 1
         for settle in self.AI.structures['settlements']:
-            s = board.vertexArray[settle]
+            s = board.vertices[settle]
             benefit = self.evaluateLocationBenefit(s, board)
             turnCost = self.getCostInTurns('city', 0, self.income)
             resCost = sum(self.getResourceCost('city', 0).values())
-            options[str(board.vertexToAscii(s.x, s.y))] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
+            options[str(board.vertexToAscii[playableS])] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
           #need to add more options and expand the curDistanceAway
-        print options
+        for option in options:
+          print option
         print self.evaluateOptions(options)
         print "The Ai was caught sleeping, it does nothing"
     def evaluateOptions(self, options):
