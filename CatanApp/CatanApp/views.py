@@ -123,7 +123,7 @@ def initialJsonify(board, players):
 			pInfo[key] = p.structures[key]
 		data["players"].append(pInfo)
 
-	return json.dumps(data)
+	return json.dumps(data) 
 	# return "yayo"
 
 # Intialize game
