@@ -513,12 +513,13 @@ var postDjango = function(request, response, path, cb) {
     post_req.end();
 }
 
-app.post('/newGame', function(request, response) {
-    postDjango(request, response, 'initialize', function(chunk) {
-        console.log("INITIAL CHUNK:")
-        console.log(chunk);
-        response.status(200).send(chunk);
-    })
+app.post('/newGame', function (request, response) {
+    console.log("hello")
+    // postDjango(request, response, 'initialize', function(chunk) {
+    //     console.log("INITIAL CHUNK:")
+    //     console.log(chunk);
+    //     response.status(200).send(chunk);
+    // });
 });
 
 app.post('/gameState', function (request, response) {

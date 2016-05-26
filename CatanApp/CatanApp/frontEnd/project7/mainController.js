@@ -163,17 +163,18 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.getGameState = function() {
             var userRes = $resource("/gameState");
+            console.log("calling: getGameState");
             userRes.save({'action':'build'},  
                 function (model){
                     $scope.main.message_to_user = "data passed successfully!";
-                    console.log("model:");
+                    console.log("model: success");
                     // console.log(model);
                     //update all variables on UI
                     $scope.updateBoardBasedOnRecievedGameState(model)
                 }, function errorHandling(err) {
                     $scope.login_name = "";
                     $scope.password = "";
-                    $scope.error_text = "Error: "+ err.data;
+                    $scope.error_text = "Error: "+ err;
                     $scope.main.message_to_user = "Error: "+ err.data;
                 }
             )
