@@ -147,17 +147,20 @@ class board:
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
 					vertexAscii = self.vertexToAscii[vertex]
-					writer.writerow([vertexAscii, self.vertexSettlementAscii(vertex)])
+					if vertex.getCity() is not None:
+						writer.writerow([self.vertexSettlementAscii(vertex), self.vertexCityAscii(vertex)])
+					else:
+						writer.writerow([vertexAscii, self.vertexSettlementAscii(vertex)])
 			for edge in self.edges:
 				if edge is not None and edge.getOwner() is not None:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
 
 	def vertexSettlementAscii(self, vertex):
-		if vertex.getCity() is not None:
-			return str(vertex.cityNum) + "C" + str(vertex.getOwner())
-		else:
-			return str(vertex.settleNum) + "S" + str(vertex.getOwner()) 
+		return str(vertex.settleNum) + "S" + str(vertex.getOwner()) 
+
+	def vertexCityAscii(self,vertex):
+		return str(vertex.cityNum) + "C" + str(vertex.getOwner())
 
 	def batchUpdate(self):
 		newBoardNumber = asc.batchUpdate(self.currentBoardNumber)

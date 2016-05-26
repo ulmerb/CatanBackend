@@ -117,7 +117,7 @@ class ai:
         #this dictates how many steps away we look (ie, x = 2 means we look for all spots 2 away)
         for i in xrange(x):
             temp = set()
-            for v in cur:
+            for v in cur.copy():
                 #this board function should return all of a vertex's neighbors
                 for n in board.getVertexToVertices(v):
                     #we dont want to back track hence the trash list
@@ -187,7 +187,7 @@ class ai:
         curSettlements = self.AI.structures['settlements']
         while(True):
             for settlement in curSettlements:
-                s = board.vertexArray[settlement]
+                s = board.vertices[settlement]
                 playableLocations = self.findPlayableLocations(s,curDistanceAway,board)
                 for playableS in playableLocations:
                     #ideally object to ascii
