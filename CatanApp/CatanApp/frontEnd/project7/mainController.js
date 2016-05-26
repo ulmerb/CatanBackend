@@ -181,7 +181,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.newGame = function() {
             var userRes = $resource("/newGame");
-            userRes.save({'newgame':'newgame', 'numPlayers': 5, 'AI':false},
+            userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
                 function (model){
                     console.log("model:");
                     console.log(model);
