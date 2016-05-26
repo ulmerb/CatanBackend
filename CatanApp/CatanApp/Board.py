@@ -167,7 +167,7 @@ class board:
 		self.currentBoardNumber = newBoardNumber
 
 	def printBoard(self):
-		asc.printBoard(self.currentBoardNumber)
+		return asc.printBoard(self.currentBoardNumber)
 
 	def addSettlement(self, location):
 		settlementAscii = self.vertexSettlementAscii(location)

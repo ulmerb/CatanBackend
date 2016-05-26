@@ -107,6 +107,7 @@ def initialJsonify(board, players):
 	data['currentPlayer'] = 0
 	data["robberTileLocation"] = board.tileToAscii[board.robberTile]
 	data["players"] = []
+	data["boardString"] = board.printBoard()
 	print players
 	for p in players:
 		# These should all be 0, but for validations sake,
@@ -127,7 +128,6 @@ def initialJsonify(board, players):
 		data["players"].append(pInfo)
 
 	return json.dumps(data)
-	# return "yayo"
 
 # Intialize game
 @csrf_exempt

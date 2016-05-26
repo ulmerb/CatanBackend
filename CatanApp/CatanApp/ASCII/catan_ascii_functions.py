@@ -19,6 +19,7 @@ def printBoard(currentBoardNum):
 	filedata = f.read()
 	print filedata
 	f.close()
+	return filedata
 
 def replaceText(old,new,currentBoardNum):
 	filein = asciiPath + "catan_example" + str(currentBoardNum) + ".txt"
