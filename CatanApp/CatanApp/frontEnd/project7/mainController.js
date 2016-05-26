@@ -184,8 +184,16 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var userRes = $resource("/newGame");
             userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
                 function (model){
-                    console.log("model:");
-                    console.log(model);
+                    var arr = model["boardString"].split("\n");
+                    var newArr = [];
+                    for(var i = 0; i < arr.length; i++) {
+                        if(arr[i] !== "") {
+                            var z = arr[i] + '\n';
+                            newArr.push(z);
+                        }
+                    }
+                    console.log(newArr);
+                    $scope.main.map = newArr;
                     //update all variables on UI
                     //$scope.updateBoardBasedOnRecievedGameState(model)
                 }, function errorHandling(err) {
