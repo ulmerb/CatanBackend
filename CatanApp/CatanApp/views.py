@@ -100,6 +100,9 @@ def djangotest(request):
 
 def initialJsonify(board, players):
 	data = {}
+	data['message'] = "initialize"
+	data['boardText'] = "O"
+	data['currentDiceRoll'] = 0
 	data['numPlayers'] = len(players)
 	data['currentPlayer'] = 0
 	data["robberTileLocation"] = board.tileToAscii[board.robberTile]
@@ -123,7 +126,7 @@ def initialJsonify(board, players):
 			pInfo[key] = p.structures[key]
 		data["players"].append(pInfo)
 
-	return json.dumps(data) 
+	return json.dumps(data)
 	# return "yayo"
 
 # Intialize game
