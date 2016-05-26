@@ -2,7 +2,7 @@ import os
 import sys
 import fileinput
 import json
-#import settings
+# import settings
 # ^Use import settings when server is not running
 # otherwise use from CatanApp import settings
 from CatanApp import settings

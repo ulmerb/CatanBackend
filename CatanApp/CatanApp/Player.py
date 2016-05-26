@@ -82,7 +82,7 @@ class player:
 		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0):
 			print "Not enough resources"
 			return False
-		return validSpaceForRoad(self, location, board)
+		return self.validSpaceForRoad(location, board)
 
 	def canBuildDevCard(self):
 	    if self.resources['sheep'] >= 1 and self.resources['grain'] >= 1 and self.resources['ore'] >= 1:
