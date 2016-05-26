@@ -2,13 +2,13 @@ import os
 import sys
 import fileinput
 import json
-from CatanApp import settings
+#from CatanApp import settings
 
 # IS_RUNNING is True when the django server is running
-if settings.IS_RUNNING:
-	asciiPath = os.path.join(settings.BASE_DIR, "ASCII/")
-else:
-	asciiPath = "ASCII/"
+# if settings.IS_RUNNING:
+# 	asciiPath = os.path.join(settings.BASE_DIR, "ASCII/")
+# else:
+asciiPath = "ASCII/"
 
 def printBoard(currentBoardNum):
  	filein = asciiPath + "catan_example" + str(currentBoardNum) + ".txt"
