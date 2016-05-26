@@ -2,9 +2,9 @@ import os
 import sys
 import fileinput
 import json
-#import settings
+import settings
 # ^Use import settings when server is not running
-from CatanApp import settings
+# from CatanApp import settings
 
 # IS_RUNNING is True when the django server is running
 if settings.IS_RUNNING:
