@@ -61,9 +61,9 @@ def main():
 	board.batchUpdate()
 	board.printBoard()
 	firstPlacement(numPlayers, players, board, AiNum)
-	playMainGame(numPlayers, players, board, AiNum)
+	playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
-def playMainGame(numPlayers, players, board, AiNum = -1):
+def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 0
 	while (True):
 	        curPlayer = turnCounter % numPlayers
@@ -78,13 +78,13 @@ def playMainGame(numPlayers, players, board, AiNum = -1):
 		        board.assignResources(diceRoll, players)
 	            gameEnd = players[AiNum].decideMove(players, board, False)
 	        else:
-		  gameEnd = playTurn(curPlayer, players, board, AiNum)
+		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
 		if gameEnd or turnCounter >= 20:
 			break
 		turnCounter += 1
 
-def playTurn(curPlayer, players, board, AiNum = -1):
+def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	board.createBatchCSV(players)
 	board.batchUpdate()
 	print  "Player " + str(curPlayer) + " turn"
@@ -99,10 +99,10 @@ def playTurn(curPlayer, players, board, AiNum = -1):
 	for player in players:
 		print player
 	trade(curPlayer, players, AiNum)
-	build(curPlayer, players, board)
+	build(curPlayer, players, board, devCardsDeck)
 	return players[curPlayer].hasWon()
 
-def build(curPlayer, players, board):
+def build(curPlayer, players, board, devCardsDeck):
 	print "Player " + str(curPlayer) + " is in building phase"
 	building = True
 	while(building):
@@ -115,8 +115,8 @@ def build(curPlayer, players, board):
 				buildSettlement(curPlayer, players, board)
 			elif toBuild == "city":
 				buildCity(curPlayer, players, board)
-			elif toBuild == "devCard":
-				buildDevCard(curPlayer, players, board)
+			elif toBuild == "devCard" or toBuild == "devcard":
+				buildDevCard(curPlayer, players, board, devCardsDeck)
 			board.createBatchCSV(players)
 			board.batchUpdate()
 			board.printBoard()
@@ -178,13 +178,15 @@ def askPlayerIfDevCard(curPlayer, players, board):
 		print "You don't have any dev cards, this step is skippped"
 		return 0
 
-	useCard = 0
+	selection = 0
 	try:
-		useCard = raw_input("Do you want to play a dev card?")
-		if useCard == "Yes" or useCard == "yes" or useCard == "y":
+		selection = raw_input("Do you want to play a dev card?")
+		if selection == "Yes" or selection == "yes" or selection == "y":
 			if players[curPlayer].canPlayDevCard():
-				potentialDevCards = player.getDevCards
+				potentialDevCards = players[curPlayer].getDevCards()
 				chosenCard = selectDevCard(potentialDevCards)
+				if chosenCard == False:
+					return 0
 				useCard(curPlayer, players, board, chosenCard)
 			else:
 				print "You can't play a dev card"
@@ -209,7 +211,7 @@ def buildCity(curPlayer, players, board):
 	cityLocation = askPlayerForCityLocation(curPlayer, players, board)
 	players[curPlayer].buildCity(cityLocation, board)
 
-def buildDevCard(curPlayer, players, board):
+def buildDevCard(curPlayer, players, board, devCardsDeck):
 	if players[curPlayer].canBuildDevCard():
 		players[curPlayer].buildDevCard(devCardsDeck)
 	else:
@@ -290,10 +292,78 @@ def initialPlacement(curPlayer, players, board):
 
 
 def selectDevCard(potentialDevCards):
-	return 0
+	print "You have: "
+	for devCard in potentialDevCards:
+		print devCard
+	try:
+		while (True):
+			selection = raw_input("Which dev card to you want to play (enter 'No' if you don't want to play a dev card'? ")
+			if selection == 'No' or selection == 'no':
+				return False
+			if selection not in potentialDevCards:
+				print "Not a valid selection, try again"
+			else:
+				return selection
+	except EOFError:
+		print "Sublime error"
 
-def useCard(curPlayer, chosenCard):
-	return 0
+def useCard(curPlayer, players, board, chosenCard):
+	if chosenCard == "knight":
+		print "You played a knight!"
+		handleRobber(curPlayer, players, board)
+	if chosenCard == "victoryPoint":
+		players[curPlayer].incrementScore()
+		print "You got a victory point!"
+	if chosenCard == "roadBuild":
+		print "You can build two free roads!"
+		roadOne = askPlayerForRoadLocation(board)
+		while True:
+			if players[curPlayer].validSpaceForRoad(roadOne, board):
+				break
+			else:
+				print "Not a valid space. Try again"
+				roadOne = askPlayerForRoadLocation(board)
+		roadOne.buildRoad(curPlayer)
+		players[curPlayer].structures['roads'].append(roadOne.index)
+		roadTwo = askPlayerForRoadLocation(board)
+		while True:
+			if players[curPlayer].validSpaceForRoad(roadTwo, board):
+				break
+			else:
+				print "Not a valid space. Try again"
+		roadTwo.buildRoad(curPlayer)
+		players[curPlayer].structures['roads'].append(roadTwo.index)
+	if chosenCard == "monopoly":
+		resource = ""
+		try: 
+			while (True):
+				resource = raw_input("What resource do you want to steal?")
+				if resource != "wood" and resource != "sheep" and resource != "brick" and resource != "ore" and resource != "grain":
+					print "not a valid resource"
+				else:
+					break
+
+		except EOFError:
+			print "Sublime error"
+		for player in players:
+			numResource = player.numResources(resource)
+			player.loseResource(resource, numResource)
+			players[curPlayer].addResource(resource, numResource)
+	if chosenCard == "yearOfPlenty":
+		numChosen = 0
+		try:
+			while True:
+				if numChose == 2:
+					break
+				resource = raw_input("What resource do you want to get?")
+				if resource != "wood" and resource != "sheep" and resource != "brick" and resource != "ore" and resource != "grain":
+					print "Not a valid resource"
+					continue
+				numChose += 1
+				players[curPlayer].addResource(resource, 1)
+		except EOFError:
+			print "Sublime error"
+
 
 # convert some string or index into location object
 def askPlayerForRoadLocation(board):
@@ -392,10 +462,10 @@ def trade(curPlayer, players, AiNum = -2):
                     else:
                         print "No partner or invalid partner inserted, proposing trade to all players"
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
-                	AiNum = -2
+                	partner = -3
                 if (partner == AiNum and AiNum != -2):
                     players[AiNum].evaluateTrade(offer, recieve)
-                elif partner != -1:
+                elif partner != -1 and partner != -3:
                     tradeLogicHelper(curPlayer, partner, players, offer, recieve)
                 else:
                     for i in xrange(len(players)):
