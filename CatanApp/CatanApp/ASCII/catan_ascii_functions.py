@@ -2,7 +2,7 @@ import os
 import sys
 import fileinput
 import json
-from CatanApp import settings
+import settings
 
 # IS_RUNNING is True when the django server is running
 if settings.IS_RUNNING:
