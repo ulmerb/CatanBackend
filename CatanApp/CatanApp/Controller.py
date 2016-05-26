@@ -393,10 +393,10 @@ def trade(curPlayer, players, AiNum = -2):
                     else:
                         print "No partner or invalid partner inserted, proposing trade to all players"
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
-                	AiNum = -2
+                	partner = -3
                 if (partner == AiNum and AiNum != -2):
                     players[AiNum].evaluateTrade(offer, recieve)
-                elif partner != -1:
+                elif partner != -1 and partner != -3:
                     tradeLogicHelper(curPlayer, partner, players, offer, recieve)
                 else:
                     for i in xrange(len(players)):

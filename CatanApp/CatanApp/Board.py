@@ -282,7 +282,7 @@ class board:
 	def moveRobber(self, tile):
 		self.robberTile.setRobber(False)
 		self.robberTile = None
-		print "Robber moved to " + str(self.tileToAscii(tile))
+		print "Robber moved to " + str(self.tileToAscii[tile])
 		if tile is not None:
 			tile.setRobber(True)
 			self.robberTile = tile

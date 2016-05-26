@@ -138,7 +138,19 @@ class ai:
                     cur.remove(v)
                     break
         return cur            
-    def evaluateTrade(self, offer, recieve):
+    def evaluateTrade(self, gain, lose):
+        print "gain",gain,"lose",lose
+        currentResources  = self.AI.resources
+        print "currentResources",currentResources
+        available = False
+        difference = {key: currentResources[key] - lose.get(key, 0) for key in currentResources.keys()}
+        print difference
+        
+        gainTotal = sum(gain.values())
+        loseTotal = sum(lose.values())
+
+
+        print "gainTotal", gainTotal, "loseTotal",loseTotal
         print "The AI is too naive to trade right now"
         return False
         
@@ -187,7 +199,7 @@ class ai:
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost},"pass": {} }
         curSettlements = self.AI.structures['settlements']
-        while(True):
+        while(False):
             for settlement in curSettlements:
                 s = board.vertices[settlement]
                 playableLocations = self.findPlayableLocations(s,curDistanceAway,board)
@@ -205,7 +217,8 @@ class ai:
             benefit = self.evaluateLocationBenefit(s, board)
             turnCost = self.getCostInTurns('city', 0, self.income)
             resCost = sum(self.getResourceCost('city', 0).values())
-            options[str(board.vertexToAscii[playableS])] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
+            asciiRepresentation = ""#str(board.vertexSettlementAscii[settle])
+            options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
           #need to add more options and expand the curDistanceAway
         for option in options:
           print option
