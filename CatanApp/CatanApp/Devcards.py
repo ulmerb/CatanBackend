@@ -24,19 +24,19 @@ class devcards:
 				self.devCardsArr.append("monopoly")
 			else:
 				self.devCardsArr.append("yearOfPlenty")
-
+		random.shuffle(self.devCardsArr)
 
 	def getRandomDevCard(self):
 		if len(self.devCardsArr) == 0:
 			return "no more dev cards"
 		else: 
 			self.numDevCards -= 1
-			cardName = self.devCardsArr.pop(0)
+			cardName = self.devCardsArr.pop()
 			print cardName
 			return cardName
 
 	def getNumDevCards(self):
 		return self.numDevCards
-
+		
 
 

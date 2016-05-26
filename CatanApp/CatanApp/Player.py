@@ -4,16 +4,16 @@ import random
 class player:
 
 	def __init__(self, i):
-	        self.score =  0
-	        self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 6, 'grain' : 4}
-	        self.roadsRemaining = 15
-	        self.citiesRemaining = 4
-	        self.settlementsRemaining = 5
+		self.score =  0
+		self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 6, 'grain' : 4}
+		self.roadsRemaining = 15
+		self.citiesRemaining = 4
+		self.settlementsRemaining = 5
 	        #we may want to handle this differently but it seems useful for the player to have internal knowledge
 	        #of where its built, for now initialize as an empty list for each that can be filled to match board 
 	        #loactions however we choose to store those
-	        self.structures = {'roads' : [], 'settlements' : [], 'cities' : [], 'ports' : []}
-	        self.playerNumber = i
+		self.structures = {'roads' : [], 'settlements' : [], 'cities' : [], 'ports' : []}
+		self.playerNumber = i
 		self.devCardsHeld = []
 		self.devCardsPlayed = []
 
@@ -21,10 +21,10 @@ class player:
 		return str(self.playerNumber) + " resources:" + str(self.resources) + " score: " + str(self.score)
 	
 	def getScore(self):
-                 return self.score   
+		return self.score   
                 
-        def incrementScore(self, s = 1):
-                 self.score += s
+	def incrementScore(self, s = 1):
+		self.score += s
                  
 	def hasWon(self):
 	        if self.score >= 10:
@@ -61,16 +61,9 @@ class player:
 			print self, " cannot play there"
 		return True
 
-	def canBuildRoad(self, location, board):
-		print board.edgeToAscii[location], location.index
-		# for edge in board.edges:
-		# 	if edge is not None and edge.index != 0:
-		# 		print edge.index, edge.getOwner()
+	def validSpaceForRoad(self, location, board):
 		if location.getOwner() is not None:
 			print "already owned"
-			return False
-		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0):
-			print "Not enough resources"
 			return False
 		for neighbV in board.getEdgeToVertices(location):
 			if neighbV.getOwner() == self.playerNumber:
@@ -81,26 +74,39 @@ class player:
 				print "Success!"
 		return False
 
+	def canBuildRoad(self, location, board):
+		print board.edgeToAscii[location], location.index
+		# for edge in board.edges:
+		# 	if edge is not None and edge.index != 0:
+		# 		print edge.index, edge.getOwner()
+		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.roadsRemaining > 0):
+			print "Not enough resources"
+			return False
+		return validSpaceForRoad(self, location, board)
+
 	def canBuildDevCard(self):
-	        if self.resources['sheep'] >= 1 and self.resources['grain'] >= 1 and self.resources['ore'] >= 1:
-	           return True
+	    if self.resources['sheep'] >= 1 and self.resources['grain'] >= 1 and self.resources['ore'] >= 1:
+	    	return True
 		return False
 
 	def canPlayDevCard(self, card = ""):
 	        #option to check for specific devCard, controller should handle not allowing
 	        #player to play multiple devCards on a turn if thats a rule
-	        if card == "":
-	            return len(self.devCardsHeld) != 0
-	        else:
-	            return card in self.devCardsHeld
-        def playDevCard(self, card):
-            if self.canPlayDevCard(card):
-                #we'll need to program in effects of different cards here
-                self.devCardsHeld.remove(card)
-                self.devCardsPlayed.append(card)
-                print "you have played: ", card
-            else:
-                print "You don't have that card"
+		if card == "":
+		    return len(self.devCardsHeld) != 0
+	   	else:
+	  		return True
+
+	def getDevCards(self):
+		return self.devCardsHeld
+	def playDevCard(self, card):
+ 		if self.canPlayDevCard(card):
+       	  	#we'll need to program in effects of different cards here
+			self.devCardsHeld.remove(card)
+			self.devCardsPlayed.append(card)
+			print "you have played: ", card
+		else:
+			print "You don't have that card"
             
 	def buildRoad(self, location, board):
 		if self.canBuildRoad(location, board):
@@ -111,7 +117,7 @@ class player:
 		    self.structures['roads'].append(location.index)
 		    location.buildRoad(self.playerNumber)
 		else:
-		    print "You cannot build a road there"
+			print "You cannot build a road there"
 
 	def buildSettlement(self, location, board):
 		if self.canBuildSettlement(board, location) or (self.settlementsRemaining > 3 and self.citiesRemaining == 4):
@@ -144,6 +150,7 @@ class player:
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
+		    print "You have build ", nameCard
 		    self.devCardsHeld.append(nameCard)
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
@@ -181,3 +188,6 @@ class player:
 
 	def checkStructures(self):
 	        return self.structures
+
+	def numResources(self, resource):
+		return self.resources[resource]
