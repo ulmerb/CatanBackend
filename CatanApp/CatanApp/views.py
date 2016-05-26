@@ -98,16 +98,44 @@ def djangotest(request):
 	   })
 	)
 
-# Intialize unique game
+def initialJsonify(board, players):
+	data = {}
+	data['numPlayers'] = len(players)
+	data['currentPlayer'] = 0
+	data["robberTileLocation"] = board.tileToAscii[board.robberTile]
+	data["players"] = []
+	print players
+	for p in players:
+		# These should all be 0, but for validations sake,
+		# I'm filling them in using properties
+		pInfo = {"victoryPoints":p.score}
+		pInfo['resources'] = p.resources
+		pInfo["devCards"] = {}
+		for card in p.devCardsHeld:
+			if card in pInfo["devCards"]:
+				pInfo["devCards"][card] += 1
+			else:
+				pInfo["devCards"][card] = 1
+		# stubs to be updated
+		pInfo["hasLongestRoad"] = False
+		pInfo["hasLongestArmy"] = False
+		for key in p.structures:
+			pInfo[key] = p.structures[key]
+		data["players"].append(pInfo)
+
+	return json.dumps(data)
+	# return "yayo"
+
+# Intialize game
 @csrf_exempt
 def initialize(request):
 	info = json.loads(request.POST['js_resp'])
 	numPlayers = info['numPlayers']
 	AI = info['AI']
-	board, players, newNumPlayers = Controller.tileInitialization(numPlayers, AI)
+	board, players = Controller.tileInitialization(numPlayers, AI)
 	# convert board, players, newNum into json response
-	print board, players, newNumPlayers
-	return HttpResponse("initialize in progress")
+	resp = initialJsonify(board, players)
+	return HttpResponse(resp)
 
 @csrf_exempt
 def build(request):

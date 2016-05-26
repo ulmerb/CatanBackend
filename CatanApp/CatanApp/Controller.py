@@ -16,7 +16,6 @@ CONST_ROBBER = 7
 def tileInitialization(numPlayers, ai):
 	board = Board.board()
 	devCardsDeck = Devcards.devcards()
-	numPlayers = 0
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
@@ -26,7 +25,7 @@ def tileInitialization(numPlayers, ai):
 		numPlayers +=1
 	board.createBatchCSV(players)
 	board.batchUpdate()
-	return board, players, numPlayers
+	return board, players
 
 def main():
 	board = Board.board()
@@ -421,4 +420,4 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-main()
+# main()

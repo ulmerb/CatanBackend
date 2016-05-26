@@ -515,6 +515,7 @@ var postDjango = function(request, response, path, cb) {
 
 app.post('/newGame', function(request, response) {
     postDjango(request, response, 'initialize', function(chunk) {
+        console.log("INITIAL CHUNK:")
         console.log(chunk);
         response.status(200).send(chunk);
     })
