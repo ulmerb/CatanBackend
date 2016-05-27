@@ -240,10 +240,4 @@ def endOfTurn(request):
 	info = json.loads(request.POST['js_resp'])
 	info['currentPlayer'] = (info['currentPlayer'] + 1) % info['numPlayers']
 
-@csrf_exempt
-def rollDie(request):
-	print settings.B
-	print settings.PLAYERS
-	print settings.SHET
-
 
