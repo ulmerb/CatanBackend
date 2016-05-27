@@ -72,12 +72,13 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.isUserLoggedIn = false
         $scope.main.userAlreadyRolledDieThisTurn = false
         $scope.main.lastDieRollValue = 0
+        
         /*send this to the backend when filled*/
         $scope.main.buildRoadLocation = ""
         $scope.main.buildSettlementLocation = ""
         $scope.main.buildCityLocation = ""
         $scope.main.robberLocation = ""
-        
+        $scope.main.buyDevCard = "" 
 
         //test:
         
@@ -157,20 +158,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             rawFile.send(null);
         }
 
-        $scope.sendTradeMessageToUserMessage = function(){
-            $scope.main.message_to_user = "This is your offer: Ore:"+$scope.main.give_ore+", Brick:"+ $scope.main.give_brick
-                 + ",Grain:" + $scope.main.give_grain + ", Wood: " + $scope.main.give_wood + ", Sheep:" +$scope.main.give_sheep+". "
-                 + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
-                 + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
-        }
-
         //New functions:
-
-        $scope.rollDieButtonPressed = function() {
-            $scope.main.userAlreadyRolledDieThisTurn = true
-            $scope.main.lastDieRollValue = 0 //remove later
-        }
-
         $scope.getGameState = function() {
             var userRes = $resource("/gameState");
             console.log("calling: getGameState");
@@ -245,4 +233,120 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             }
 
         }
+        //***************************
+        //Functions for Game actions:
+        //***************************
+        $scope.endTurnPressed = function () {  
+            var userRes = $resource("/endOfTurn");
+            userRes.save({},
+                function (model){
+                    //TODO: set up the board for the next player
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: endTurnPressed failed";
+                }
+            )
+        }
+
+        $scope.rollDieButtonPressed = function() {
+            var userRes = $resource("/rollADie");
+            userRes.save({},
+                function (model){
+                    $scope.main.userAlreadyRolledDieThisTurn = true
+                    $scope.main.lastDieRollValue = model.currentDiceRoll
+                    $scope.main.message_to_user = "Dice roll result: " + model.currentDiceRoll
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: rollDieButtonPressed failed";
+                }
+            )
+        }
+
+        //TODO: connect ot back end
+        $scope.sendTradeMessageToUserMessage = function(){
+            $scope.main.message_to_user = "This is your offer: Ore:"+$scope.main.give_ore+", Brick:"+ $scope.main.give_brick
+                 + ",Grain:" + $scope.main.give_grain + ", Wood: " + $scope.main.give_wood + ", Sheep:" +$scope.main.give_sheep+". "
+                 + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
+                 + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
+        }
+
+        $scope.buildRoadButtonPressed = function() {
+            var userRes = $resource("/buildRoad");
+            var suggestedEdgeForRoad = $scope.main.buildRoadLocation
+            userRes.save({'suggestedLocation':suggestedEdgeForRoad},
+                function (model){
+                    //TODO: if road can be built, build it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: buildRoadButtonPressed failed";
+                }
+            )
+        }
+
+        $scope.buildSettlementButtonPressed = function() {
+            var userRes = $resource("/buildSettlement");
+            var suggestedVertexForSettlement = $scope.main.buildSettlementLocation
+            userRes.save({'suggestedLocation':suggestedVertexForSettlement},
+                function (model){
+                    //TODO: if sett can be built, build it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: buildSettlementButtonPressed failed";
+                }
+            )
+        }
+
+        $scope.buildCityButtonPressed = function() {
+            var userRes = $resource("/buildCity");
+            var suggestedVertexForCity = $scope.main.buildCityLocation
+            userRes.save({'suggestedLocation':suggestedVertexForCity},
+                function (model){
+                    //TODO: if city can be built, build it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: buildCityButtonPressed failed";
+                }
+            )
+        }
+
+        $scope.buyDevCardButtonPressed = function() {
+            var userRes = $resource("/buyCard");
+            var devCardType = $scope.main.buyDevCard
+            userRes.save({'devCardType':devCardType},
+                function (model){
+                    //TODO: if card can be bought, build it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: buyDevCardButtonPressed failed";
+                }
+            )
+        }
+
+        $scope.playDevCardButtonPressed = function() {
+            var userRes = $resource("/playDevCard");
+            var devCardType = "***TYPE OF CARD to play***"
+            userRes.save({'devCardType':devCardType},
+                function (model){
+                    //TODO: if card can be played, build it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
+                }
+            )
+        }
+
+        $scope.setRobberPosition = function() {
+            var userRes = $resource("/setRobberPosition");
+            var tilePosition = $scope.main.robberLocation
+            userRes.save({'tilePosition':tilePosition},
+                function (model){
+                    //TODO: if robber can be moved , move it
+                    //else continue
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
+                }
+            )
+        }
+        //Functionality: not implemented yet!
+        $scope.exchangeResourcesWithBankButtonPressed = function() {}
+
+
     }]);

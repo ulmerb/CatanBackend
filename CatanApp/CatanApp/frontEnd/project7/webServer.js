@@ -530,6 +530,62 @@ app.post('/gameState', function (request, response) {
     });
 });
 
+//****************************************************
+//Functions to respond to user game actions:
+//****************************************************
+app.post('/endOfTurn', function (request, response) {
+    console.log("endOfTurn pressed")
+    response.status(200).send();
+});
+
+
+app.post('/rollADie', function (request, response) {
+    console.log("rollDieButton Pressed")
+    //TODO: send an updated game state with roll result
+    response.status(200).send();
+});
+
+app.post('/buildRoad', function (request, response) {
+    var roadLocation = request.body.suggestedLocation
+    console.log("buildRoad Pressed, location: "+ roadLocation)
+    response.status(200).send();
+});
+
+app.post('/buildSettlement', function (request, response) {
+    var settlementLocation = request.body.suggestedLocation
+    console.log("buildSettlement Pressed, location: "+ settlementLocation)
+    response.status(200).send();
+});
+
+app.post('/buildCity', function (request, response) {
+    var cityLocation = request.body.suggestedLocation
+    console.log("buildCity Pressed, location: "+ cityLocation)
+    response.status(200).send();
+});
+
+app.post('/buyCard', function (request, response) {
+    var devCardType = request.body.devCardType
+    console.log("buyCard Pressed, Type: "+ devCardType)
+    response.status(200).send();
+});
+
+app.post('/playDevCard', function (request, response) {
+    var devCardType = request.body.devCardType
+    console.log("playDevCard Pressed, Type: "+ devCardType)
+    response.status(200).send();
+});
+
+app.post('/setRobberPosition', function (request, response) {
+    var tilePosition = request.body.tilePosition
+    console.log("setRobberPosition Pressed, new position: "+ tilePosition)
+    response.status(200).send();
+});
+
+
+
+
+
+
 var server = app.listen(3000, function () {
     var port = server.address().port;
     console.log('Listening at http://localhost:' + port + ' exporting the directory ' + __dirname);
