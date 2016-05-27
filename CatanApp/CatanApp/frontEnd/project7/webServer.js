@@ -532,21 +532,32 @@ app.post('/gameState', function (request, response) {
 //Functions to respond to user game actions:
 //****************************************************
 app.post('/endOfTurn', function (request, response) {
+<<<<<<< Updated upstream
     postDjango(request, response, 'endOfTurn', function(chunk) {
         response.status(200).send(chunk);
     });
+=======
+    //1) increment user number
+    //2) assigning resources and update the JSON
+    //3) re-roll the die for next player
+    //4) message: "Player x turn"
+    postDjango(request, response, 'endOfTurn', function(chunk){
+        console.log("endOfTurn pressed")
+        response.status(200).send(chunk);    
+    })
+>>>>>>> Stashed changes
 });
 
 
-app.post('/rollADie', function (request, response) {
-    console.log("rollDieButton Pressed")
-    postDjango(request, response, 'rolldie', function(chunk) {
-        console.log(chunk);
-        response.status(200).send(chunk);
-    });
-});
+//deprecated
+// app.post('/rollADie', function (request, response) {
+//     console.log("rollDieButton Pressed")
+//     //TODO: send an updated game state with roll result
+//     response.status(200).send();
+// });
 
 app.post('/buildRoad', function (request, response) {
+    //1)  
     var roadLocation = request.body.suggestedLocation
     console.log("buildRoad Pressed, location: "+ roadLocation)
     response.status(200).send();
@@ -566,7 +577,7 @@ app.post('/buildCity', function (request, response) {
 
 app.post('/buyCard', function (request, response) {
     var devCardType = request.body.devCardType
-    console.log("buyCard Pressed, Type: "+ devCardType)
+    console.log("buyCard Pressed ")
     response.status(200).send();
 });
 
