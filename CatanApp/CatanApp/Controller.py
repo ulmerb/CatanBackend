@@ -176,7 +176,6 @@ def askPlayerIfDevCard(curPlayer, players, board):
 	if not players[curPlayer].canPlayDevCard():
 		print "You don't have any dev cards, this step is skippped"
 		return 0
-
 	selection = 0
 	try:
 		selection = raw_input("Do you want to play a dev card?")
@@ -307,6 +306,7 @@ def selectDevCard(potentialDevCards):
 		print "Sublime error"
 
 def useCard(curPlayer, players, board, chosenCard):
+	players[curPlayer].playDevCard(chosenCard)
 	if chosenCard == "knight":
 		print "You played a knight!"
 		handleRobber(curPlayer, players, board)
@@ -341,9 +341,9 @@ def useCard(curPlayer, players, board, chosenCard):
 					print "not a valid resource"
 				else:
 					break
-
 		except EOFError:
 			print "Sublime error"
+		totalStolen = 0
 		for player in players:
 			numResource = player.numResources(resource)
 			player.loseResource(resource, numResource)
@@ -352,7 +352,7 @@ def useCard(curPlayer, players, board, chosenCard):
 		numChosen = 0
 		try:
 			while True:
-				if numChose == 2:
+				if numChosen == 2:
 					break
 				resource = raw_input("What resource do you want to get?")
 				if resource != "wood" and resource != "sheep" and resource != "brick" and resource != "ore" and resource != "grain":

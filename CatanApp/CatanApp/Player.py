@@ -99,9 +99,9 @@ class player:
 
 	def getDevCards(self):
 		return self.devCardsHeld
+
 	def playDevCard(self, card):
  		if self.canPlayDevCard(card):
-       	  	#we'll need to program in effects of different cards here
 			self.devCardsHeld.remove(card)
 			self.devCardsPlayed.append(card)
 			print "you have played: ", card
