@@ -115,6 +115,9 @@ def djangotest(request):
 	      "hasLongestRoad": True,
 	      "hasLargestArmy": False,
 	      "victoryPoints": "1",
+	      "knightsPlayed": "1",
+      	  "lengthOfLongestRoad": "2",
+      	  "victoryPointCardsPlayed": "1",
 	      "resources": {
 	        "wood": "1",
 	        "brick": "2",
@@ -148,6 +151,9 @@ def djangotest(request):
 	      "hasLongestRoad": False,
 	      "hasLargestArmy": True,
 	      "victoryPoints": "1",
+	      "knightsPlayed": "3",
+      	  "lengthOfLongestRoad": "1",
+          "victoryPointCardsPlayed": "0",
 	      "resources": {
 	        "wood": "1",
 	        "brick": "0",

@@ -7,7 +7,7 @@
 	</div>
 
 <h3>Victory points</h3>
-	<p>you have {{main.victoryPoints}}</p>
+	<p>you have {{main.victoryPoints}} victory points</p>
 
 <h3>Current Resources</h3>
 	<div ng-if="main.resources.length != 0">
@@ -22,11 +22,11 @@
 <md-content flex id="currentDevCards">
 <h3>Current Dev Cards</h3>
 	<div ng-if="main.devCards.length != 0">
-		<p>Year of plenty: {{main.devCards[yearOfPlenty]}} </p>
-		<p>Road Building: {{main.devCards[roadBuilding]}} </p>
-		<p>Knight: {{main.devCards[knight]}} </p>
-		<p>Monopoly: {{main.devCards[monopoly]}} </p>
-		<p>Victory Point: {{main.devCards[victoryPoint]}} </p>
+		<p>Year of plenty: {{main.devCards.yearOfPlenty}} </p>
+		<p>Road Building: {{main.devCards.roadBuilding}} </p>
+		<p>Knight: {{main.devCards.knight}} </p>
+		<p>Monopoly: {{main.devCards.monopoly}} </p>
+		<p>Victory Point: {{main.devCards.victoryPoint}} </p>
 	</div>
 </md-content>
 
@@ -37,7 +37,7 @@
 		<h4>Knights Played</h4>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>Player number{{player}}: {{player.knightsPlayed}} knights</p>
+		<p>Player number{{$index + 1}}: {{player.knightsPlayed}} knights</p>
 	</div>
 
 	<div ng-if="main.hasLargestArmy">
@@ -46,9 +46,10 @@
 	<!-- Longest Road -->
 	<div>
 		<h4>Longest Road Info</h4>
+		<p>Your longest road length is: {{main.lengthOfLongestRoad}}</p>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>{{player.name}}: {{player.longestRoad}} roads</p>
+		<p> player {{$index + 1}} longest road: {{player.lengthOfLongestRoad}} roads</p>
 	</div>
 
 	<div ng-if="main.hasLongestRoad">
@@ -58,7 +59,7 @@
 	<!-- Current VP cards Played -->
 	<div><h4>Victory Point cards</h4></div>
 	<p>You've played {{main.victoryPointCardsPlayed}} victory point cards</p>
-	<!-- Current Settlements -->
+
 	<!-- Current cities -->
 	<div>
 		<h4>My Cities</h4>
@@ -94,7 +95,7 @@
 <!-- *** Player Actions ***-->
 <h3>Leader Board</h3>
 	<div ng-repeat="player in main.players">
-		<p>Player {{player}}: {{player.victoryPoints}}</p>
+		<p>Player {{$index + 1}} points: {{player.victoryPoints}}</p>
 	</div>
 </md-content>
 <md-content flex id="EndTurnbutton">

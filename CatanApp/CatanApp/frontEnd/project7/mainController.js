@@ -58,7 +58,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.players = []
         $scope.main.hasLongestRoad = false
         $scope.main.hasLargestArmy = false
-        $score.main.victoryPoints = 0
+        $scope.main.victoryPoints = 0
         $scope.main.victoryPointCardsPlayed = 0
         $scope.main.lengthOfLongestRoad = 0
         $scope.main.knightsPlayed = 0
@@ -168,7 +168,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.rollDieButtonPressed = function() {
             $scope.main.userAlreadyRolledDieThisTurn = true
-            $scope.main.lastDieRollValue = 7 //remove later
+            $scope.main.lastDieRollValue = 0 //remove later
         }
 
         $scope.getGameState = function() {
@@ -229,32 +229,20 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.resources = model.players[$scope.main.currentPlayer-1].resources
             $scope.main.hasLongestRoad = model.players[$scope.main.currentPlayer-1].hasLongestRoad
             $scope.main.hasLargestArmy = model.players[$scope.main.currentPlayer-1].hasLargestArmy
-            $score.main.victoryPoints = model.players[$scope.main.currentPlayer-1].victoryPoints
+            $scope.main.victoryPoints = model.players[$scope.main.currentPlayer-1].victoryPoints
             $scope.main.cities = model.players[$scope.main.currentPlayer-1].cities
             $scope.main.ports = model.players[$scope.main.currentPlayer-1].ports
             $scope.main.settlements = model.players[$scope.main.currentPlayer-1].settlements
             $scope.main.roads = model.players[$scope.main.currentPlayer-1].roads
-            $scope.main.victoryPointCardsPlayed = 0
-            $scope.main.lengthOfLongestRoad = 0
-            $scope.main.knightsPlayed = 0 
+            $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer-1].victoryPointCardsPlayed
+            $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer-1].lengthOfLongestRoad
+            $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer-1].knightsPlayed
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
             } else {
                 $scope.main.userAlreadyRolledDieThisTurn = true
             }
-
-            
-            console.log(model.currentPlayer)
-            console.log(model.players[$scope.main.currentPlayer-1].resources)
-            console.log(model.players[$scope.main.currentPlayer-1].resources.wood)
-            console.log(model.players[$scope.main.currentPlayer-1].resources.sheep)
-            console.log(model.players[$scope.main.currentPlayer-1].resources.ore)
-            console.log(model.players[$scope.main.currentPlayer-1].resources.grain)
-            console.log(model.players[$scope.main.currentPlayer-1].resources.brick)
-            console.log("sep")
-            console.log($scope.main.resources.wood)
-
 
         }
     }]);
