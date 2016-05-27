@@ -517,11 +517,7 @@ app.post('/newGame', function (request, response) {
     console.log("hello")
     postDjango(request, response, 'initialize', function(chunk) {
         console.log("INITIAL CHUNK:")
-<<<<<<< Updated upstream
-=======
         console.log(chunk);
-        //JSON.stringify
->>>>>>> Stashed changes
         response.status(200).send(chunk);
     });
 });
