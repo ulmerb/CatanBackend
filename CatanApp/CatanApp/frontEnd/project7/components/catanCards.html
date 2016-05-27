@@ -5,6 +5,14 @@
 	<div ng-if="main.userAlreadyRolledDieThisTurn">
 		<p>{{main.lastDieRollValue}}</p>
 	</div>
+	<!-- Moving the robber -->
+	<div ng-if="main.lastDieRollValue == 7">
+		<md-input-container>
+	        <label>Play Robber</label>
+	        <input ng-model="main.robberLocation">		        
+	        <md-button id="moveRobber" ng-click="setRobberPosition()">move robber</md-button>
+		</md-input-container>
+	</div>
 
 <h3>Victory points</h3>
 	<p>you have {{main.victoryPoints}} victory points</p>
@@ -53,7 +61,7 @@
 	</div>
 
 	<div ng-if="main.hasLongestRoad">
-		<p>You currently have the longestRoad worth 2 VP>
+		<p>You currently have the longestRoad worth 2 VPs </p>
 	</div> 
 
 	<!-- Current VP cards Played -->
@@ -128,18 +136,21 @@
 </div>
 </md-content>
 
-<!-- New: -->
+<!-- New: Play/Buy Dev card -->
 <md-content flex id="DevCardForm">
 <div>
-	<!-- Buying a dev card -->
+	<h4>Buy Dev Card</h4>
+    <md-button id="buyDevCard" ng-click="buyDevCardButtonPressed();">Buy dev Card</md-button>
+	
+	<!-- Playing a dev card -->
 	<md-input-container>
-	<h4>Buy a Development card</h4>
-	<input type="radio" name="devCardType" value="yearOfPlenty" ng-model="main.buyDevCard">yearOfPlenty<br>
-	<input type="radio" name="devCardType" value="roadBuilding" ng-model="main.buyDevCard">roadBuilding<br>
-	<input type="radio" name="devCardType" value="knight" ng-model="main.buyDevCard">knight<br>
-	<input type="radio" name="devCardType" value="monopoly" ng-model="main.buyDevCard">monopoly<br>
-	<input type="radio" name="devCardType" value="victoryPoint" ng-model="main.buyDevCard">victoryPoint<br>
-	<md-button id="devCardPlay" ng-click="buyDevCardButtonPressed();">Buy dev card</md-button>
+	<h4>Play a Development card</h4>
+	<input type="radio" name="devCardType" value="yearOfPlenty" ng-model="main.playDevCard">yearOfPlenty<br>
+	<input type="radio" name="devCardType" value="roadBuilding" ng-model="main.playDevCard">roadBuilding<br>
+	<input type="radio" name="devCardType" value="knight" ng-model="main.playDevCard">knight<br>
+	<input type="radio" name="devCardType" value="monopoly" ng-model="main.playDevCard">monopoly<br>
+	<input type="radio" name="devCardType" value="victoryPoint" ng-model="main.playDevCard">victoryPoint<br>
+	<!-- <md-button id="devCardPlay" ng-click="playDevCardButtonPressed();">Play dev card</md-button> -->
 	
 	<!-- Playing a dev card -->
 	<div ng-if="main.devCardMonopolyYOP">
@@ -165,17 +176,7 @@
 	<div ng-if="main.devCardKnight">
 		<label>Tile Number</label>
         <input ng-model="main.devCardKnightLocation">
-	</div>
-	<!-- Moving the robber -->
-	<div ng-if="main.lastDieRollValue == 7">
-		<md-input-container>
-	        <label>Play Robber</label>
-	        <input ng-model="main.robberLocation">		        
-	        <md-button id="moveRobber" ng-click="setRobberPosition()">move robber</md-button>
-		</md-input-container>
-		<!-- <label>Play Robber</label>		
-		<input ng-model="main.robberLocation">choose robber location -->
-	</div>
+	</div>	
 	<div ng-if="main.devCardRoadBuilding">
 		<label>Road Number 1</label>
         <input ng-model="main.devCardRoadLocation1">

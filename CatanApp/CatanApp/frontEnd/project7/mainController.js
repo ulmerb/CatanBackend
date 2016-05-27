@@ -79,8 +79,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.buildCityLocation = ""
         $scope.main.robberLocation = ""
         $scope.main.buyDevCard = "" 
-
-        //test:
+        $scope.main.playDevCard = ""
+        
+        //Dev cards booleans:
+        $scope.main.devCardMonopolyYOP = false
+        $scope.main.devCardKnight = false
+        $scope.main.devCardRoadBuilding = false
         
 
         /*
@@ -216,7 +220,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             console.log(model);
             
             //update variables:
-
             $scope.main.currentPlayer = model.currentPlayer
             $scope.main.numPlayers = model.numPlayers
             $scope.main.message_to_user = model.message
@@ -260,18 +263,18 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
-        $scope.rollDieButtonPressed = function() {
-            var userRes = $resource("/rollADie");
-            userRes.save({},
-                function (model){
-                    $scope.main.userAlreadyRolledDieThisTurn = true
-                    $scope.main.lastDieRollValue = model.currentDiceRoll
-                    $scope.main.message_to_user = "Dice roll result: " + model.currentDiceRoll
-                }, function errorHandling(err) {
-                    $scope.main.message_to_user = "Error: rollDieButtonPressed failed";
-                }
-            )
-        }
+        // $scope.rollDieButtonPressed = function() {
+        //     var userRes = $resource("/rollADie");
+        //     userRes.save({},
+        //         function (model){
+        //             $scope.main.userAlreadyRolledDieThisTurn = true
+        //             $scope.main.lastDieRollValue = model.currentDiceRoll
+        //             $scope.main.message_to_user = "Dice roll result: " + model.currentDiceRoll
+        //         }, function errorHandling(err) {
+        //             $scope.main.message_to_user = "Error: rollDieButtonPressed failed";
+        //         }
+        //     )
+        // }
 
         //TODO: connect ot back end
         $scope.sendTradeMessageToUserMessage = function(){
@@ -322,8 +325,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.buyDevCardButtonPressed = function() {
             var userRes = $resource("/buyCard");
-            var devCardType = $scope.main.buyDevCard
-            userRes.save({'devCardType':devCardType},
+            userRes.save({},
                 function (model){
                     //TODO: if card can be bought, build it
                     //else continue
