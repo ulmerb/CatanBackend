@@ -92,11 +92,13 @@
 <md-content flex id="leaderboard">
 
 
-<!-- *** Player Actions ***-->
+<!-- game scores -->
 <h3>Leader Board</h3>
 	<div ng-repeat="player in main.players">
 		<p>Player {{$index + 1}} points: {{player.victoryPoints}}</p>
 	</div>
+
+<!-- *** Player Actions ***-->
 </md-content>
 <md-content flex id="EndTurnbutton">
 	<md-button id="endTurnBtn" ng-click="endTurnPressed();">End Turn</md-button>
