@@ -1,5 +1,6 @@
 from Location import *
 from Board import *
+import json
 import Player
 import random
 
@@ -38,9 +39,17 @@ def test1():
         arr = [str(v.x) + "," + str(v.y) for v in b.getTileToTiles(tile)]
         print tile.x, tile.y, "tiles: ", ' '.join(arr)
 
-
+class c:
+  def __init__(self):
+    self.shit = "shit"
+    self.merde = 3
+    self.fuck = "fuck"
 
 def test2():
   b = board()
+  k = c()
+  ja = json.dumps(b, default=lambda o: o.__dict__)
+  print ja
+  print k.fuck
 # test1()
 test2()

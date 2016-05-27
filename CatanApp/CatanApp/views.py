@@ -8,6 +8,7 @@ import Location
 import Devcards
 import Ai
 import ASCII.catan_ascii_functions as asc
+import settings
 
 @csrf_exempt
 def djangotest(request):
@@ -224,6 +225,8 @@ def initialize(request):
 	numPlayers = info['numPlayers']
 	AI = info['AI']
 	board, players = Controller.tileInitialization(numPlayers, AI)
+	settings.BOARD = board
+	settings.PLAYERS = players
 	# convert board, players, newNum into json response
 	resp = initialJsonify(board, players)
 	return HttpResponse(resp)
@@ -231,4 +234,16 @@ def initialize(request):
 @csrf_exempt
 def build(request):
 	pass
+
+@csrf_exempt
+def endOfTurn(request):
+	info = json.loads(request.POST['js_resp'])
+	info['currentPlayer'] = (info['currentPlayer'] + 1) % info['numPlayers']
+
+@csrf_exempt
+def rollDie(request):
+	print settings.B
+	print settings.PLAYERS
+	print settings.SHET
+
 

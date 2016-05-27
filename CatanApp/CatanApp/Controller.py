@@ -27,6 +27,16 @@ def tileInitialization(numPlayers, ai):
 	board.batchUpdate()
 	return board, players
 
+def rollDice():
+	diceRoll = board.rollDice()
+	if diceRoll is CONST_ROBBER:
+		#print "Robber not handled"
+		handleRobber(curPlayer, players, board, AiNum)
+	else:
+		print str(diceRoll) + " was rolled"
+		board.assignResources(diceRoll, players)
+	
+## NON SERVER RELATED FUNCTIONS BELOW
 def main():
 	board = Board.board()
 	devCardsDeck = Devcards.devcards()

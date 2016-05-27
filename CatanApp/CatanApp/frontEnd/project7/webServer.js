@@ -541,8 +541,10 @@ app.post('/endOfTurn', function (request, response) {
 
 app.post('/rollADie', function (request, response) {
     console.log("rollDieButton Pressed")
-    //TODO: send an updated game state with roll result
-    response.status(200).send();
+    postDjango(request, response, 'rolldie', function(chunk) {
+        console.log(chunk);
+        response.status(200).send(chunk);
+    });
 });
 
 app.post('/buildRoad', function (request, response) {
