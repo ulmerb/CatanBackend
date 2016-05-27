@@ -108,7 +108,6 @@ def initialJsonify(board, players):
 	data["robberTileLocation"] = board.tileToAscii[board.robberTile]
 	data["players"] = []
 	data["boardString"] = board.printBoard()
-	print players
 	for p in players:
 		# These should all be 0, but for validations sake,
 		# I'm filling them in using properties

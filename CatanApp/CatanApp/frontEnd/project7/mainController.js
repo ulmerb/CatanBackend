@@ -192,7 +192,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                             newArr.push(z);
                         }
                     }
-                    console.log(newArr);
                     $scope.main.map = newArr;
                     //update all variables on UI
                     //$scope.updateBoardBasedOnRecievedGameState(model)

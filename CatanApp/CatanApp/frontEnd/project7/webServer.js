@@ -517,7 +517,6 @@ app.post('/newGame', function (request, response) {
     console.log("hello")
     postDjango(request, response, 'initialize', function(chunk) {
         console.log("INITIAL CHUNK:")
-        console.log(chunk);
         response.status(200).send(chunk);
     });
 });
