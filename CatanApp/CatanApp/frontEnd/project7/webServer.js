@@ -515,9 +515,7 @@ var postDjango = function(request, response, path, cb) {
 
 app.post('/newGame', function (request, response) {
     console.log("hello")
-    postDjango(request, response, 'initialize', function(chunk) {
-        console.log("INITIAL CHUNK:")
-        console.log(chunk);
+    postDjango(request, response, 'newGame', function(chunk) {
         response.status(200).send(chunk);
     });
 });
@@ -534,8 +532,9 @@ app.post('/gameState', function (request, response) {
 //Functions to respond to user game actions:
 //****************************************************
 app.post('/endOfTurn', function (request, response) {
-    console.log("endOfTurn pressed")
-    response.status(200).send();
+    postDjango(request, response, 'endOfTurn', function(chunk) {
+        response.status(200).send(chunk);
+    });
 });
 
 

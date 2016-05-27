@@ -188,13 +188,13 @@ def djangotest(request):
 	   })
 	)
 
-def initialJsonify(board, players):
+def makeJson(board, players, diceRoll=0, curPlayer=0):
 	data = {}
 	data['message'] = "initialize"
 	data['boardText'] = "O"
-	data['currentDiceRoll'] = 0
+	data['currentDiceRoll'] = diceRoll
 	data['numPlayers'] = len(players)
-	data['currentPlayer'] = 0
+	data['currentPlayer'] = curPlayer
 	data["robberTileLocation"] = board.tileToAscii[board.robberTile]
 	data["players"] = []
 	data["boardString"] = board.printBoard()
@@ -220,7 +220,7 @@ def initialJsonify(board, players):
 
 # Intialize game
 @csrf_exempt
-def initialize(request):
+def newGame(request):
 	info = json.loads(request.POST['js_resp'])
 	numPlayers = info['numPlayers']
 	AI = info['AI']
@@ -228,7 +228,7 @@ def initialize(request):
 	settings.BOARD = board
 	settings.PLAYERS = players
 	# convert board, players, newNum into json response
-	resp = initialJsonify(board, players)
+	resp = makeJson(board, players)
 	return HttpResponse(resp)
 
 @csrf_exempt
@@ -238,6 +238,10 @@ def build(request):
 @csrf_exempt
 def endOfTurn(request):
 	info = json.loads(request.POST['js_resp'])
-	info['currentPlayer'] = (info['currentPlayer'] + 1) % info['numPlayers']
+	print info['currentPlayer']
+	newCurPlayer = int(info['currentPlayer'] + 1) % len(settings.PLAYERS)
+	dRoll = Controller.rollDice(settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
+	resp = makeJson(settings.BOARD, settings.PLAYERS, dRoll, newCurPlayer)
+	return HttpResponse(resp)
 
 

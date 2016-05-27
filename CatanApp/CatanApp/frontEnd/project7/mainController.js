@@ -182,6 +182,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var userRes = $resource("/newGame");
             userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
                 function (model){
+                    console.log('new game model');
                     var arr = model["boardString"].split("\n");
                     var newArr = [];
                     for(var i = 0; i < arr.length; i++) {
@@ -213,18 +214,18 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.message_to_user = model.message
             $scope.main.players = model.players
             $scope.main.lastDieRollValue = model.currentDiceRoll
-            $scope.main.devCards = model.players[$scope.main.currentPlayer-1].devCards
-            $scope.main.resources = model.players[$scope.main.currentPlayer-1].resources
-            $scope.main.hasLongestRoad = model.players[$scope.main.currentPlayer-1].hasLongestRoad
-            $scope.main.hasLargestArmy = model.players[$scope.main.currentPlayer-1].hasLargestArmy
-            $scope.main.victoryPoints = model.players[$scope.main.currentPlayer-1].victoryPoints
-            $scope.main.cities = model.players[$scope.main.currentPlayer-1].cities
-            $scope.main.ports = model.players[$scope.main.currentPlayer-1].ports
-            $scope.main.settlements = model.players[$scope.main.currentPlayer-1].settlements
-            $scope.main.roads = model.players[$scope.main.currentPlayer-1].roads
-            $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer-1].victoryPointCardsPlayed
-            $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer-1].lengthOfLongestRoad
-            $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer-1].knightsPlayed
+            $scope.main.devCards = model.players[$scope.main.currentPlayer].devCards
+            $scope.main.resources = model.players[$scope.main.currentPlayer].resources
+            $scope.main.hasLongestRoad = model.players[$scope.main.currentPlayer].hasLongestRoad
+            $scope.main.hasLargestArmy = model.players[$scope.main.currentPlayer].hasLargestArmy
+            $scope.main.victoryPoints = model.players[$scope.main.currentPlayer].victoryPoints
+            $scope.main.cities = model.players[$scope.main.currentPlayer].cities
+            $scope.main.ports = model.players[$scope.main.currentPlayer].ports
+            $scope.main.settlements = model.players[$scope.main.currentPlayer].settlements
+            $scope.main.roads = model.players[$scope.main.currentPlayer].roads
+            $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer].victoryPointCardsPlayed
+            $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer].lengthOfLongestRoad
+            $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].knightsPlayed
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
@@ -238,9 +239,13 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         //***************************
         $scope.endTurnPressed = function () {  
             var userRes = $resource("/endOfTurn");
-            userRes.save({},
+            console.log('currentPlayer before' + $scope.main.currentPlayer);
+            userRes.save({'currentPlayer': $scope.main.currentPlayer},
                 function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model)
                     //TODO: set up the board for the next player
+                    console.log('updated resources and dice roll');
+                    console.log(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: endTurnPressed failed";
                 }
