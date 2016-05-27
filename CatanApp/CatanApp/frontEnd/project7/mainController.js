@@ -58,8 +58,16 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.players = []
         $scope.main.hasLongestRoad = false
         $scope.main.hasLargestArmy = false
+        $score.main.victoryPoints = 0
         $scope.main.victoryPointCardsPlayed = 0
+        $scope.main.lengthOfLongestRoad = 0
+        $scope.main.knightsPlayed = 0
         $scope.main.portsControlled = 0
+        $scope.main.resources = []
+        $scope.main.cities = []
+        $scope.main.ports = []
+        $scope.main.settlements = []
+        $scope.main.roads = []
         
         $scope.main.isUserLoggedIn = false
         $scope.main.userAlreadyRolledDieThisTurn = false
@@ -69,8 +77,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.buildSettlementLocation = ""
         $scope.main.buildCityLocation = ""
         $scope.main.robberLocation = ""
+        
+
         //test:
-        $scope.main.resources = []
+        
 
         /*
         * FetchModel - Fetch a model from the web server.
@@ -207,15 +217,44 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.updateBoardBasedOnRecievedGameState = function(model) {
             console.log("JSON data is: ");
             console.log(model);
+            
+            //update variables:
+
             $scope.main.currentPlayer = model.currentPlayer
             $scope.main.numPlayers = model.numPlayers
+            $scope.main.message_to_user = model.message
+            $scope.main.players = model.players
+            $scope.main.lastDieRollValue = model.currentDiceRoll
+            $scope.main.devCards = model.players[$scope.main.currentPlayer-1].devCards
+            $scope.main.resources = model.players[$scope.main.currentPlayer-1].resources
+            $scope.main.hasLongestRoad = model.players[$scope.main.currentPlayer-1].hasLongestRoad
+            $scope.main.hasLargestArmy = model.players[$scope.main.currentPlayer-1].hasLargestArmy
+            $score.main.victoryPoints = model.players[$scope.main.currentPlayer-1].victoryPoints
+            $scope.main.cities = model.players[$scope.main.currentPlayer-1].cities
+            $scope.main.ports = model.players[$scope.main.currentPlayer-1].ports
+            $scope.main.settlements = model.players[$scope.main.currentPlayer-1].settlements
+            $scope.main.roads = model.players[$scope.main.currentPlayer-1].roads
+            $scope.main.victoryPointCardsPlayed = 0
+            $scope.main.lengthOfLongestRoad = 0
+            $scope.main.knightsPlayed = 0 
+        
+            if ($scope.main.lastDieRollValue == 0) {
+                $scope.main.userAlreadyRolledDieThisTurn = false
+            } else {
+                $scope.main.userAlreadyRolledDieThisTurn = true
+            }
 
-            console.log($scope.main.currentPlayer)
-            console.log($scope.main.numPlayers)
-            console.log(model.message)
-            console.log(model.players[0])
-            console.log(model.players[0].hasLongestRoad)
-            console.log(model.players[1].hasLongestRoad)
+            
+            console.log(model.currentPlayer)
+            console.log(model.players[$scope.main.currentPlayer-1].resources)
+            console.log(model.players[$scope.main.currentPlayer-1].resources.wood)
+            console.log(model.players[$scope.main.currentPlayer-1].resources.sheep)
+            console.log(model.players[$scope.main.currentPlayer-1].resources.ore)
+            console.log(model.players[$scope.main.currentPlayer-1].resources.grain)
+            console.log(model.players[$scope.main.currentPlayer-1].resources.brick)
+            console.log("sep")
+            console.log($scope.main.resources.wood)
+
 
         }
     }]);

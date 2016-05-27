@@ -6,20 +6,27 @@
 		<p>{{main.lastDieRollValue}}</p>
 	</div>
 
+<h3>Victory points</h3>
+	<p>you have {{main.victoryPoints}}</p>
+
 <h3>Current Resources</h3>
-	<div ng-repeat="resource in main.resources">
-		<p>{{resource.name}} ({{resource.number}}) </p>
-	</div>
-	<div>
-		<p> Total Resource Cards: {{main.totalResources}}
+	<div ng-if="main.resources.length != 0">
+		<p>Wood: {{main.resources.wood}} </p>
+		<p>Brick: {{main.resources.brick}} </p>
+		<p>Ore: {{main.resources.ore}} </p>
+		<p>Grain: {{main.resources.grain}} </p>
+		<p>Sheep: {{main.resources.sheep}} </p>
 	</div>
 </md-content>
 
-
 <md-content flex id="currentDevCards">
 <h3>Current Dev Cards</h3>
-	<div ng-repeat="card in main.devCards">
-		<p>{{card.name}} ({{card.number}}) </p>
+	<div ng-if="main.devCards.length != 0">
+		<p>Year of plenty: {{main.devCards[yearOfPlenty]}} </p>
+		<p>Road Building: {{main.devCards[roadBuilding]}} </p>
+		<p>Knight: {{main.devCards[knight]}} </p>
+		<p>Monopoly: {{main.devCards[monopoly]}} </p>
+		<p>Victory Point: {{main.devCards[victoryPoint]}} </p>
 	</div>
 </md-content>
 
@@ -30,7 +37,7 @@
 		<h4>Knights Played</h4>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>{{player.name}}: {{player.knightsPlayed}} knights</p>
+		<p>Player number{{player}}: {{player.knightsPlayed}} knights</p>
 	</div>
 
 	<div ng-if="main.hasLargestArmy">
@@ -51,20 +58,43 @@
 	<!-- Current VP cards Played -->
 	<div><h4>Victory Point cards</h4></div>
 	<p>You've played {{main.victoryPointCardsPlayed}} victory point cards</p>
-
-<!-- Not sure on this syntax -->
-	<div ng-if="main.portsControlled > 0">
-		<div ng-repeat="port in main.portsControlled">
+	<!-- Current Settlements -->
+	<!-- Current cities -->
+	<div>
+		<h4>My Cities</h4>
+		<div ng-repeat="city in main.cities">
+			<p>{{city}}</p>
+		</div>
+	</div>
+	<!-- Current Settlements -->
+	<div>
+		<h4>My settlements</h4>
+		<div ng-repeat="settlement in main.settlements">
+			<p>{{settlement}}</p>
+		</div>
+	</div>
+	<!-- Current roads -->
+	<div>
+		<h4>My Roads</h4>
+		<div ng-repeat="road in main.roads">
+			<p>{{road}}</p>
+		</div>
+	</div>
+	<!-- Current Ports -->
+	<div>
+		<h4>My Ports</h4>
+		<div ng-repeat="port in main.ports">
 			<p>{{port}}</p>
 		</div>
 	</div>
-
 </md-content>
-
 <md-content flex id="leaderboard">
+
+
+<!-- *** Player Actions ***-->
 <h3>Leader Board</h3>
 	<div ng-repeat="player in main.players">
-		<p>{{player.name}}: {{player.victoryPoints}}</p>
+		<p>Player {{player}}: {{player.victoryPoints}}</p>
 	</div>
 </md-content>
 <md-content flex id="EndTurnbutton">
