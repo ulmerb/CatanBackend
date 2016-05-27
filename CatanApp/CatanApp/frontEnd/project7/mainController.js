@@ -192,6 +192,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                         }
                     }
                     $scope.main.map = newArr;
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.initialPlacement(model);
                     //update all variables on UI
                     //$scope.updateBoardBasedOnRecievedGameState(model)
                 }, function errorHandling(err) {
@@ -201,6 +203,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     $scope.main.message_to_user = "Error: "+ err.data;
                 }
             )
+        }
+
+        $scope.initialPlacement = function(model) {
+            for(var i =0; i < $scope.main.numPlayers; i++) {
+                
+            }
         }
 
         $scope.updateBoardBasedOnRecievedGameState = function(model) {

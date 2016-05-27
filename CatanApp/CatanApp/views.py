@@ -190,7 +190,7 @@ def djangotest(request):
 
 def makeJson(board, players, diceRoll=0, curPlayer=0):
 	data = {}
-	data['message'] = "initialize"
+	data['message'] = "Player 0 place your first settlement"
 	data['boardText'] = "O"
 	data['currentDiceRoll'] = diceRoll
 	data['numPlayers'] = len(players)
@@ -199,8 +199,6 @@ def makeJson(board, players, diceRoll=0, curPlayer=0):
 	data["players"] = []
 	data["boardString"] = board.printBoard()
 	for p in players:
-		# These should all be 0, but for validations sake,
-		# I'm filling them in using properties
 		pInfo = {"victoryPoints":p.score}
 		pInfo['resources'] = p.resources
 		pInfo["devCards"] = {}
@@ -243,5 +241,3 @@ def endOfTurn(request):
 	dRoll = Controller.rollDice(settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
 	resp = makeJson(settings.BOARD, settings.PLAYERS, dRoll, newCurPlayer)
 	return HttpResponse(resp)
-
-

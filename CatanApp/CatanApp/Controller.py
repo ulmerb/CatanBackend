@@ -234,7 +234,7 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 			board.createBatchCSV(players)
 			board.batchUpdate()
 			continue
-		board.printBoard()	            
+		board.printBoard()       
 		initialPlacement(i, players, board)
 		board.createBatchCSV(players)
 		board.batchUpdate()
