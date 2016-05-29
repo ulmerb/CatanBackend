@@ -532,11 +532,6 @@ app.post('/gameState', function (request, response) {
 //Functions to respond to user game actions:
 //****************************************************
 app.post('/endOfTurn', function (request, response) {
-<<<<<<< Updated upstream
-    postDjango(request, response, 'endOfTurn', function(chunk) {
-        response.status(200).send(chunk);
-    });
-=======
     //1) increment user number
     //2) assigning resources and update the JSON
     //3) re-roll the die for next player
@@ -544,8 +539,7 @@ app.post('/endOfTurn', function (request, response) {
     postDjango(request, response, 'endOfTurn', function(chunk){
         console.log("endOfTurn pressed")
         response.status(200).send(chunk);    
-    })
->>>>>>> Stashed changes
+    });
 });
 
 
