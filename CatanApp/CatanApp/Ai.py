@@ -110,6 +110,7 @@ class ai:
     
     #still doesnt handle other players roads that block paths
     def findPlayableLocations(self, vert, x, board):
+        print vert, x, board, "find plays 1"
         trash = set()
         cur = [vert]
         #we use sets to keep the spots unique in case of longer distances
@@ -132,11 +133,18 @@ class ai:
         #this check is still needeed despite above neighbor check, should be more efficient to have both as is
         cur = list(cur)
         for v in cur:
-            print "v", v.getIndex()
+            if v.getOwner() != None:
+                cur.remove(v)
+                print "v", v.getIndex(), "removed 1", v.getOwner()
+                continue
+            #print "v", v.getIndex()
             for n in board.getVertexToVertices(v):
                 if n.getOwner() != None:
                     cur.remove(v)
+                    print "v", v.getIndex(), "removed 2", n.getOwner()
                     break
+        for v in cur:
+            print "V", v.index
         return cur            
     def evaluateTrade(self, gain, lose):
         print "gain",gain,"lose",lose
@@ -199,7 +207,7 @@ class ai:
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost},"pass": {} }
         curSettlements = self.AI.structures['settlements']
-        while(False):
+        while(True):
             for settlement in curSettlements:
                 s = board.vertices[settlement]
                 playableLocations = self.findPlayableLocations(s,curDistanceAway,board)
@@ -210,8 +218,9 @@ class ai:
                     resCost = sum(self.getResourceCost('settlement', curDistanceAway).values())
                     asciiRepresentation = str(board.vertexToAscii[playableS])
                     options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
-            if (len(options) >= 5 or curDistanceAway >= 5):
-              curDistanceAway += 1
+            if (len(options) >= 7 or curDistanceAway >= 5):
+                break
+            curDistanceAway += 1
         for settle in self.AI.structures['settlements']:
             s = board.vertices[settle]
             benefit = self.evaluateLocationBenefit(s, board)
@@ -220,8 +229,7 @@ class ai:
             asciiRepresentation = ""#str(board.vertexSettlementAscii[settle])
             options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
           #need to add more options and expand the curDistanceAway
-        for option in options:
-          print option
+        print options
         print self.evaluateOptions(options)
         print "The Ai was caught sleeping, it does nothing"
     def evaluateOptions(self, options):
