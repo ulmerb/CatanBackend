@@ -201,7 +201,7 @@ class ai:
                     trash.append(v)
                     #print "v", v.getIndex(), "removed 2", n.getOwner()
                     break
-            print "v", v.getIndex(), "passed"
+            #print "v", v.getIndex(), "passed"
         for v in trash:
             cur.remove(v)
         #for v in cur:
@@ -307,7 +307,7 @@ class ai:
         #more advanced step
         #self.AI.resources =  {'wood':40, 'sheep':0, 'brick': 0, 'ore': 10, 'grain' : 10}
 
-        print "the ai is executing option", bestOption
+        print "the ai is executing option", bestOptionKey, bestOption
         if bestOption['backtrace'][0] == 'settlement':
             settleLoc = int(bestOptionKey[:2])
             path = self.findShortestPath(bestOption['backtrace'][1], settleLoc, bestOption['backtrace'][2], board)
