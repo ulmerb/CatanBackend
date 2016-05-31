@@ -32,6 +32,8 @@ class player:
 		return False
         #on all of these methods I'll leave the option to check a specific location for now
 	def canBuildCity(self, location):
+	    if location.city is not None:
+	        return False
    	    if self.resources['grain'] >= 2 and self.resources['ore'] >= 3 and self.citiesRemaining > 0:
    	        if location.index in self.structures['settlements']:
    	        	return True
