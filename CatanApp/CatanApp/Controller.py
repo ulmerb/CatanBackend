@@ -13,6 +13,7 @@ CONST_DEFAULT_NUM_PLAYERS = 2
 
 CONST_ROBBER = 7
 
+## Server related functions ##
 def tileInitialization(numPlayers, ai):
 	board = Board.board()
 	devCardsDeck = Devcards.devcards()
@@ -31,11 +32,29 @@ def rollDice(board, players, curPlayer, AiNum=-1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
 		#print "Robber not handled"
-		handleRobber(curPlayer, players, board, AiNum)
+		return diceRoll
 	else:
 		print str(diceRoll) + " was rolled"
 		board.assignResources(diceRoll, players)
-	return diceRoll
+		return diceRoll
+
+def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
+	if curPlayer == AiNum:
+		target = players[curPlayer].placeRobber(board)
+		if target != None and target != curPlayer:
+		    steal(players[int(target)], curPlayer,players)
+		print "The ai has moved the robber"
+	else:
+		newRobberLocation = board.asciiToTile[loc]
+		board.moveRobber(newRobberLocation)
+		targets = board.playersToStealFrom(newRobberLocation)
+		if len(targets) != 0:
+			if int(target) not in targets:
+				return "Invalid target"
+			else:
+				steal(players[int(target)], curPlayer, players)
+
+
 
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():

@@ -188,9 +188,9 @@ def djangotest(request):
 	   })
 	)
 
-def makeJson(board, players, diceRoll=0, curPlayer=0):
+def makeJson(board, players, message, diceRoll=0, curPlayer=0):
 	data = {}
-	data['message'] = "Player 0 place your first settlement"
+	data['message'] = message
 	data['boardText'] = "O"
 	data['currentDiceRoll'] = diceRoll
 	data['numPlayers'] = len(players)
@@ -226,7 +226,7 @@ def newGame(request):
 	settings.BOARD = board
 	settings.PLAYERS = players
 	# convert board, players, newNum into json response
-	resp = makeJson(board, players)
+	resp = makeJson(board, players, "Player 0, place your first settlement")
 	return HttpResponse(resp)
 
 @csrf_exempt
@@ -239,5 +239,18 @@ def endOfTurn(request):
 	print info['currentPlayer']
 	newCurPlayer = int(info['currentPlayer'] + 1) % len(settings.PLAYERS)
 	dRoll = Controller.rollDice(settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
-	resp = makeJson(settings.BOARD, settings.PLAYERS, dRoll, newCurPlayer)
+	if dRoll == 7:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Robber!", dRoll, newCurPlayer)
+
+@csrf_exempt
+def placeRobber(request):
+	info = json.loads(request.POST['js_resp'])
+	loc = int(info['robberLoc'])
+	target = int(info['robberTarget'])
+	curPlayer = int(info['currentPlayer'])
+	error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, board, -1)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 7, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " + str(newCurPlayer) + "'s turn", 7, curPlayer)
 	return HttpResponse(resp)
