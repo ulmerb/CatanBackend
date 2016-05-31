@@ -96,7 +96,8 @@ def main():
 	playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
 def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
-	turnCounter = 0
+	turnCounter = 1
+	robberCounter = 0
 	while (True):
 	        print turnCounter
 	        curPlayer = turnCounter % numPlayers
@@ -108,13 +109,20 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	            print "dice", diceRoll
 	            if diceRoll is CONST_ROBBER:
 		        handleRobber(curPlayer, players, board, AiNum)
+		        robberCounter += 1
 		    else:
 		        board.assignResources(diceRoll, players)
-	            gameEnd = players[AiNum].decideMove(players, board, False)
+	            gameEndVP = players[AiNum].decideMove(players, board, False)
+	            print gameEndVP
+	            if gameEndVP >= 10:
+	                print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
+	                gameEnd = True
+	            else:
+	                gameEnd = False
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 4:
+		if gameEnd or turnCounter >= 100:
 			break
 		turnCounter += 1
 

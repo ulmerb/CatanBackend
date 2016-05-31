@@ -129,6 +129,7 @@ class player:
 		    self.resources['grain'] -= 1
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location.index)
+		    self.score += 1
 		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
 		    board.addSettlement(location)
 		else:
@@ -143,6 +144,7 @@ class player:
 		    self.resources['grain'] -= 2
 		    self.structures['settlements'].remove(location.index)
 		    self.structures['cities'].append(location.index)
+		    self.score +=1
 		    location.buildCity(self.playerNumber, len(self.structures['cities']))
 		else:
 		    print "You cannot build a city there"
