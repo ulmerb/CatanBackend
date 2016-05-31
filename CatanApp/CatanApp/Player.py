@@ -41,6 +41,7 @@ class player:
 		
 	def canBuildSettlement(self, board, gridLoc):
 		if gridLoc.getOwner() is not None:
+		        print "already owned"
 			return False
 		if not (self.resources['brick'] >= 1 and self.resources['wood'] >= 1 and self.resources['grain'] >= 1 and self.resources['sheep'] >= 1 and self.settlementsRemaining > 0):
 			print "Insufficent resources, ", self.resources
@@ -59,8 +60,6 @@ class player:
 			if n.getOwner() is not None:
 				print "Settlements need to be at least 2 away"
 				return False
-		else:
-			print self, " cannot play there"
 		return True
 
 	def validSpaceForRoad(self, location, board):

@@ -8,6 +8,8 @@ import ASCII.catan_ascii_functions as asc
 reload(Player)
 reload(Board)
 reload(Ai)
+reload(asc)
+reload(Location)
 
 CONST_DEFAULT_NUM_PLAYERS = 2
 
@@ -96,12 +98,14 @@ def main():
 def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 0
 	while (True):
+	        print turnCounter
 	        curPlayer = turnCounter % numPlayers
 	        isAi = False
 	        if (curPlayer == AiNum):
 	            isAi = True
 	        if (isAi):
 	            diceRoll = board.rollDice()
+	            print "dice", diceRoll
 	            if diceRoll is CONST_ROBBER:
 		        handleRobber(curPlayer, players, board, AiNum)
 		    else:
@@ -110,7 +114,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 20:
+		if gameEnd or turnCounter >= 4:
 			break
 		turnCounter += 1
 
@@ -519,4 +523,4 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-# main()
+main()
