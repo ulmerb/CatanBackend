@@ -27,7 +27,7 @@
 
 
 
-
+import math
 import Player
 
 class ai:
@@ -75,7 +75,7 @@ class ai:
     
     def getVictoryPoints(self):
    	return self.AI.getScore();
-    
+    '''
     def getCostInTurns(self, buildType,roadsAway,incomeMap):
    	resCost = self.getResourceCost(buildType,roadsAway)
    	turnCost = 0.0 
@@ -96,7 +96,102 @@ class ai:
  			if (val > turnCost):
     				turnCost = val
    	return turnCost
-            
+   '''	
+    def findNeed(self, cost, income):
+        if len(cost) == 0:
+            return None
+        print cost
+        maxNeed = (0, 0)
+        need = cost.keys()[0]
+        for r in cost:
+            if income[r] == 0:
+                temp = (float('inf'), cost[r])
+            else:
+                temp = (cost[r]/income[r], cost[r])
+            if temp[0] > maxNeed[0] or ((temp[0] == maxNeed[0]) and(temp[1] > maxNeed[1])):
+                need = r
+                maxNeed = temp
+        return need
+
+    def getCostInTurns(self, buildType,roadsAway,incomeMap):
+        print "###############################3"
+        print buildType
+        print roadsAway
+        print self.AI.resources
+        print incomeMap, "income"
+   	resCost = self.getResourceCost(buildType,roadsAway)
+   	print resCost
+   	modResCost = {}
+   	turnCost = 0.0 
+   	ownedResources = self.AI.resources.copy()
+   	stockpile = ownedResources.copy()
+   	for r in stockpile:
+   	    stockpile[r] = 0
+   	baseTurns = 0
+   	baseTurnSet = False
+   	for res in resCost:
+   	    dif = 0
+   	    temp = resCost[res] - ownedResources[res]
+
+   	    if temp > dif:
+   	        dif = temp
+   	    else:
+   	        stockpile[res] = -temp
+   	    if temp <= 0:
+   	        baseTurnSet = True
+   	    if dif != 0:
+   	        modResCost[res] = dif
+        if not baseTurnSet:
+            baseTurnSet = float('inf')
+            for r in modResCost:
+                turns = int(math.ceil(modResCost[r] / incomeMap[r]))
+                if turns < baseTurnSet:
+                    baseTurnSet = turns
+   	#delete fields from needs increment while needs not empty
+   	#when we hit overflow give to largest gap
+   	#encode ports knowledge
+   	print baseTurns, "base turns"
+   	print stockpile, "stock1"
+   	print modResCost, "mod1"
+   	turnCost = baseTurns
+   	for r in incomeMap:
+   	    stockpile[r] += incomeMap[r] * baseTurns
+   	print incomeMap, "income"
+   	print stockpile, "stock2"  	
+   	while(len(modResCost) > 0):
+   	    for r in stockpile:
+   	        if r in modResCost:
+   	            if stockpile[r] >= 1:
+   	                if modResCost[r] <= stockpile[r]:
+   	                    stockpile[r] -= modResCost[r]
+   	                    modResCost.pop(r)
+   	                else:
+   	                    modResCost[r] -= int(stockpile[r])
+   	                    stockpile[r] -= int(stockpile[r])
+   	        elif stockpile[r] >= 4:
+   	            while(stockpile[r] >= 4):
+           	            exchange = self.findNeed(modResCost, incomeMap)
+           	            if exchange == None:
+           	                print turnCost, "<<<<<<<<<<<<<<<<<<"
+           	                return turnCost
+           	            print "exchanging", r, exchange
+           	            stockpile[r] -= 4
+           	            modResCost[exchange] -= 1
+           	            if modResCost[exchange] == 0:
+           	                modResCost.pop(exchange)
+   	    if len(modResCost) == 0:
+   	        break
+   	    if turnCost > 100:
+   	        break
+   	    turnCost +=1
+   	    for r in stockpile:
+   	        stockpile[r] += incomeMap[r]
+   	    print incomeMap, "income Map"
+   	    print stockpile, "stock loop"
+   	    print modResCost, "mod loop"
+   	print turnCost, "<<<<<<<<<<<<<<<<<<"
+   	return turnCost
+   	        
     def evaluateLocationBenefit(self, vert, board):
         tiles = board.getVertexToTiles(vert)
         # print len(tiles)
@@ -196,6 +291,7 @@ class ai:
                 bestloc = i
                 maxIncome = gain
           self.AI.buildSettlement(locs[bestloc], board)
+          self.updateIncome(locs[bestloc], board)
           builtSettlementSpot = locs[bestloc].getIndex()
           roadOptions = board.vertexToEdgeMap[builtSettlementSpot]
           print builtSettlementSpot, "roadOptions", roadOptions
@@ -203,7 +299,7 @@ class ai:
           roadChoice = board.edges[roadOptions[0]]
           self.AI.buildRoad(roadChoice, board) 
       else:
-        curDistanceAway = 2
+        curDistanceAway = 4
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost},"pass": {} }
         curSettlements = self.AI.structures['settlements']
@@ -252,11 +348,11 @@ class ai:
         else:
             return None
 
-    def updateIncome(self, vert):
+    def updateIncome(self, vert, board):
         #anytime we build on a location whether adding a settlment or changing to city
         #our income increases by one settlment of expected value so we can levarge our
         #benefit function
-        gain = self.evaluateLocationBenefit(vert)
+        gain = self.evaluateLocationBenefit(vert, board)
         for res in gain:
             self.income[res] += gain[res]
     def addResource(self, res, amount):
