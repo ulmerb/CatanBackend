@@ -100,7 +100,6 @@ class ai:
     def findNeed(self, cost, income):
         if len(cost) == 0:
             return None
-        print cost
         maxNeed = (0, 0)
         need = cost.keys()[0]
         for r in cost:
@@ -114,13 +113,7 @@ class ai:
         return need
 
     def getCostInTurns(self, buildType,roadsAway,incomeMap):
-        print "###############################3"
-        print buildType
-        print roadsAway
-        print self.AI.resources
-        print incomeMap, "income"
    	resCost = self.getResourceCost(buildType,roadsAway)
-   	print resCost
    	modResCost = {}
    	turnCost = 0.0 
    	ownedResources = self.AI.resources.copy()
@@ -150,14 +143,9 @@ class ai:
    	#delete fields from needs increment while needs not empty
    	#when we hit overflow give to largest gap
    	#encode ports knowledge
-   	print baseTurns, "base turns"
-   	print stockpile, "stock1"
-   	print modResCost, "mod1"
    	turnCost = baseTurns
    	for r in incomeMap:
-   	    stockpile[r] += incomeMap[r] * baseTurns
-   	print incomeMap, "income"
-   	print stockpile, "stock2"  	
+   	    stockpile[r] += incomeMap[r] * baseTurns	
    	while(len(modResCost) > 0):
    	    for r in stockpile:
    	        if r in modResCost:
@@ -165,6 +153,8 @@ class ai:
    	                if modResCost[r] <= stockpile[r]:
    	                    stockpile[r] -= modResCost[r]
    	                    modResCost.pop(r)
+   	                    if len(modResCost) == 0:
+   	                        return turnCost
    	                else:
    	                    modResCost[r] -= int(stockpile[r])
    	                    stockpile[r] -= int(stockpile[r])
@@ -172,13 +162,13 @@ class ai:
    	            while(stockpile[r] >= 4):
            	            exchange = self.findNeed(modResCost, incomeMap)
            	            if exchange == None:
-           	                print turnCost, "<<<<<<<<<<<<<<<<<<"
            	                return turnCost
-           	            print "exchanging", r, exchange
            	            stockpile[r] -= 4
            	            modResCost[exchange] -= 1
            	            if modResCost[exchange] == 0:
            	                modResCost.pop(exchange)
+           	                if len(modResCost) == 0:
+   	                            return turnCost
    	    if len(modResCost) == 0:
    	        break
    	    if turnCost > 100:
@@ -186,10 +176,6 @@ class ai:
    	    turnCost +=1
    	    for r in stockpile:
    	        stockpile[r] += incomeMap[r]
-   	    print incomeMap, "income Map"
-   	    print stockpile, "stock loop"
-   	    print modResCost, "mod loop"
-   	print turnCost, "<<<<<<<<<<<<<<<<<<"
    	return turnCost
    	        
     def evaluateLocationBenefit(self, vert, board):
@@ -299,7 +285,7 @@ class ai:
           roadChoice = board.edges[roadOptions[0]]
           self.AI.buildRoad(roadChoice, board) 
       else:
-        curDistanceAway = 4
+        curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost},"pass": {} }
         curSettlements = self.AI.structures['settlements']
@@ -322,7 +308,7 @@ class ai:
             benefit = self.evaluateLocationBenefit(s, board)
             turnCost = self.getCostInTurns('city', 0, self.income)
             resCost = sum(self.getResourceCost('city', 0).values())
-            asciiRepresentation = ""#str(board.vertexSettlementAscii[settle])
+            asciiRepresentation = str(board.vertexSettlementAscii(s))
             options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost}
           #need to add more options and expand the curDistanceAway
         print options
