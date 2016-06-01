@@ -134,6 +134,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
 		#print "Robber not handled"
+		handleResourceLossFromRobber(players, board)
 		handleRobber(curPlayer, players, board, AiNum)
 	else:
 		print str(diceRoll) + " was rolled"
@@ -165,6 +166,64 @@ def build(curPlayer, players, board, devCardsDeck):
 		else:
 			building = False
 
+def handleDiscard(player, playerNum, resources):
+	print "You have ", player.resources
+	toDiscard = resources / 2
+	print "Player ", playerNum, " has too many resources. ", playerNum, " must discard ", toDiscard
+	try:
+		while True:
+			numWood = int(raw_input("How much wood do you want to discard? "))
+			if numWood > player.resources['wood']:
+				print "You can't discard that much, you only have ",  player.resources['wood'], " wood"
+				continue
+			else:
+				print "You will discard ", numWood, " of your ", player.resources['wood'], " wood"
+			numBrick = int(raw_input("How much brick do you want to discard? "))
+			if numBrick > player.resources['brick']:
+				print "You can't discard that much, you only have ",  player.resources['brick'], " brick"
+				continue
+			else:
+				print "You will discard ", numBrick, " of your ", player.resources['brick'], " brick"
+			numOre = int(raw_input("How much ore do you want to discard? "))
+			if numOre > player.resources['ore']:
+				print "You can't discard that much, you only have ",  player.resources['ore'], " ore"
+				continue
+			else:
+				print "You will discard ", numOre, " of your ", player.resources['ore'], " ore"				
+			numSheep = int(raw_input("How muuch sheep do you want to discard? "))
+			if numSheep > player.resources['sheep']:
+				print "You can't discard that much, you only have ",  player.resources['sheep'], " sheep"
+				continue
+			else:
+				print "You will discard ", numSheep, " of your ", player.resources['sheep'], " sheep"
+			numWheat = int(raw_input("How much wheat do you want to discard? "))
+			if numWheat > player.resources['grain']:
+				print "You can't discard that much, you only have ",  player.resources['grain'], " wheat"
+			else:
+				print "You will discard ", numWheat, " of your ", player.resources['grain'], " wheat"
+			totalResources = numWood+numBrick+numOre+numSheep+numWheat
+			if totalResources != toDiscard:
+				print "You selected ", totalResources, " resources, you need to discard ", toDiscard, " resources"
+				continue
+			else:
+				player.loseResource('wood',numWood)
+				player.loseResource('brick',numBrick)
+				player.loseResource('ore',numOre)
+				player.loseResource('sheep',numSheep)
+				player.loseResource('grain',numWheat)
+				break
+	except EOFError:
+		print "Sublime error"
+	except ValueError:
+		print "Please enter a number"
+		handleDiscard(player, playerNum, resources)
+
+def handleResourceLossFromRobber(players, board):
+	for playerNum in range(len(players)):
+		player = players[playerNum]
+		resources = player.totalResources()
+		if resources > 7:
+			handleDiscard(player, playerNum, resources)
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
 	print "Robber"

@@ -21,12 +21,6 @@
 #   Current VP (when at 9VP, cost is all that matters)
 #   Total Turns remaaining in the game (not in 1-player)
 
-
- 
-
-
-
-
 import math
 import Player
 

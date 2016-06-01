@@ -101,6 +101,12 @@ class player:
 	def getDevCards(self):
 		return self.devCardsHeld
 
+	def totalResources(self):
+		count = 0
+		for item in self.resources:
+			count += self.resources[item]
+		return count
+
 	def playDevCard(self, card):
  		if self.canPlayDevCard(card):
 			self.devCardsHeld.remove(card)
