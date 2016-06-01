@@ -564,7 +564,16 @@ def trade(curPlayer, players, AiNum = -2):
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
                 	partner = -3
                 if (partner == AiNum and AiNum != -2):
-                    players[AiNum].evaluateTrade(offer, recieve)
+					traded = players[AiNum].evaluateTrade(offer, recieve)
+					print "trade executed with AI"
+					for r in offer:
+						players[curPlayer].loseResource(r, offer[r])
+						players[AiNum].addResource(r, offer[r])
+					for r in recieve:
+						players[curPlayer].addResource(r, recieve[r])
+						players[AiNum].loseResource(r, recieve[r])
+					for player in players:
+						print player
                 elif partner != -1 and partner != -3:
                     tradeLogicHelper(curPlayer, partner, players, offer, recieve)
                 else:
@@ -574,7 +583,16 @@ def trade(curPlayer, players, AiNum = -2):
                         if i == AiNum:
                             executed = players[AiNum].evaluateTrade(offer, recieve)
                             if (executed):
-                                break
+								print "trade executed with AI"
+								for r in offer:
+									players[curPlayer].loseResource(r, offer[r])
+									players[AiNum].addResource(r, offer[r])
+								for r in recieve:
+									players[curPlayer].addResource(r, recieve[r])
+									players[AiNum].loseResource(r, recieve[r])
+								for player in players:
+									print player
+								break
                         else:
                             executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
                             if (executed):

@@ -208,14 +208,19 @@ class ai:
         print "currentResources",currentResources
         available = False
         difference = {key: currentResources[key] - lose.get(key, 0) for key in currentResources.keys()}
-        print difference
-        
+        print "difference",difference
+        for key in difference: # Check if we don't have the resources to support the trade
+          if difference[key] < 0:
+            print "dont have enough", key, "to accept trade"
+            return False
+
         gainTotal = sum(gain.values())
         loseTotal = sum(lose.values())
-
-
         print "gainTotal", gainTotal, "loseTotal",loseTotal
-        print "The AI is too naive to trade right now"
+        if gainTotal > loseTotal: # accept if we are gaining more than we're losing
+          return True
+
+        print "The AI doesn't like this trade"
         return False
     def findShortestPath(self, start, end, expected, board):
         print start, end
