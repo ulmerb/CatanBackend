@@ -479,7 +479,35 @@ class ai:
                 bestScore = score
         return bestOption, bestScore
     def placeRobber(self, board):
-        newRobberLocation = board.asciiToTile['01T']
+        bestTile = board.asciiToTile['01T']
+        maxDamage = 0
+        for tile in board.getAllTiles():
+          badChoice = False
+          if tile.robber == True: # can't option not to move the robber
+            badChoice = True
+            continue 
+          vertexes = board.getTileToVertices(tile)
+          occupiedSpots = 0
+          for vertex in vertexes:
+            if vertex.getOwner() == self.AI.playerNumber:
+              badChoice = True
+              break
+            if vertex.getOwner() != None:
+              if vertex.getSettlement() != self.AI.playerNumber:
+                occupiedSpots += 1
+              elif vertex.getCity() != self.AI.playerNumber:
+                occupiedSpots += 2
+              else:
+                print "weirdness in placing robber"
+          if badChoice == True: # one of AI settlements is here
+            continue
+          else:
+            if occupiedSpots > maxDamage:
+              bestTile = tile
+              maxDamage = occupiedSpots
+        print "best selection was", board.tileToAscii[bestTile]
+        newRobberLocation = bestTile
+        # newRobberLocation = board.asciiToTile['01T']
         board.moveRobber(newRobberLocation)
         targets = list(board.playersToStealFrom(newRobberLocation))
         if len(targets) > 0:
