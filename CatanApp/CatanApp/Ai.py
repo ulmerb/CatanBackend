@@ -32,6 +32,7 @@ class ai:
         self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 1.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
+        self.savedBestOpt = [None, None]
    
     # getResourceCost(buildType,roadsAway)
     # Varible one, build type, "road", "settlement", "city", "devCard"
@@ -320,10 +321,10 @@ class ai:
                     self.AI.buildRoad(locObj, board)
                 self.AI.buildSettlement(settleObj, board)
                 self.updateIncome(settleObj, board)
-
                 board.createBatchCSV(players)
 		board.batchUpdate()
 	        print "the AI has built a settlement"
+	        return True
 	    else:
                 if self.makeExchange(cost, board, settleObj, players, 'settlement'):
                     for i in xrange(len(path)):
@@ -337,6 +338,7 @@ class ai:
                     board.createBatchCSV(players)
 		    board.batchUpdate()
                     print "the AI has built a settlement after some resource reallocation"
+                    return True
 
         elif bestOption['backtrace'][0] == 'city':
             print "time to upgrade our chosen loc"
@@ -350,6 +352,7 @@ class ai:
                 board.createBatchCSV(players)
 		board.batchUpdate()
                 print "the AI has built a city"
+                return True
             else:
                 print "exchanges needed"
                 #the following needs to be decomped later
@@ -360,12 +363,13 @@ class ai:
                     board.createBatchCSV(players)
                     board.batchUpdate()
                     print "the AI has built a city after some resource reallocation"
+                    return True
         elif bestOption['backtrace'][0] == 'dev':
             print "getting tactical with a dev card"
         else:
             print "something strange has happened, an wild option appears, the ai will reevaluate"
         
-            
+        return False   
         
     def decideMove(self, players, board, firstTurn):
 
@@ -386,6 +390,7 @@ class ai:
 # search further, etc. UNTIL we find N+ (start with N=5)
       #don't ignore the update income if something is built
       #self.AI.resources =  {'wood':10, 'sheep':10, 'brick': 10, 'ore': 10, 'grain' : 10}
+      print "decide move start"
       if firstTurn:
           locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
           maxIncome = 0
@@ -445,11 +450,14 @@ class ai:
         bestOptionKey = self.evaluateOptions(options)
         print bestOptionKey
         bestOption = options[bestOptionKey[0]]
+        self.savedBestOpt = [bestOptionKey, bestOption]
         if bestOptionKey[0] == 'pass':
             "The wise Ai has contemplated all its options and decided to pass"
             return
         if bestOption['costInTurns'] == 0:
-            self.execute(players, board, bestOption, bestOptionKey[0], options)
+                if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
+                    print "the Ai is checking for more actions"
+                    self.decideMove(players, board, firstTurn)
         else:
             print "The Ai will pass for now, its planning something!"
         vp = self.getVictoryPoints()
