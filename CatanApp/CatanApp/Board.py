@@ -279,6 +279,13 @@ class board:
 				tiles.append(tile)
 		return tiles
 
+	def getAllVertices(self):
+		vertices = []
+		for vertex in self.vertices:
+			if vertex is not None:
+				vertices.append(vertex)
+		return vertices		
+
 	def moveRobber(self, tile):
 		self.robberTile.setRobber(False)
 		self.robberTile = None

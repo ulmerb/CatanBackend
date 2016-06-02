@@ -33,6 +33,7 @@ class ai:
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
+        self.overallScarcity = None
    
     # getResourceCost(buildType,roadsAway)
     # Varible one, build type, "road", "settlement", "city", "devCard"
@@ -397,6 +398,7 @@ class ai:
       #self.AI.resources =  {'wood':10, 'sheep':10, 'brick': 10, 'ore': 10, 'grain' : 10}
       print "decide move start"
       if firstTurn:
+          self.overallScarcity = self.getOverallScarcity(board)
           locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
           maxIncome = 0
           bestloc = 0
@@ -538,4 +540,23 @@ class ai:
              
     def tests(self):
         print self.AI.roadsRemaining
+
+    def getCentrality(self,board,vertex): # basic version just gives precedents to being next to more total tiles
+        neighborTiles = board.getVertexToTiles(vertex)
+        return len(neighborTiles)
+        # USE case  
+            # for vertex in board.getAllVertices():
+            # print "vertex",vertex
+            # self.getCentrality(board,vertex) 
+    def getOverallScarcity(self,board):
+        scarcity = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
+        for tile in board.getAllTiles():
+          tileType = tile.getType()
+          tileNum = tile.getNumber()
+          if tileType == "desert":
+            continue
+          scarcity[tileType] += self.diceProbs[tileNum]
+        return scarcity
+
+
     
