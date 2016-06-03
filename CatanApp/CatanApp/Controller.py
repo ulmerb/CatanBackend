@@ -422,11 +422,29 @@ def selectDevCard(potentialDevCards):
 	except EOFError:
 		print "Sublime error"
 
+def recalculateLargestArmy(players):
+	maxKnights = 0
+	leadingPlayer = -1
+	bestIndex = -1
+	curIndex = 0
+	for player in players:
+		numKnights = player.getKnightsPlayed()
+		if numKnights > maxKnights:
+			maxKnights = numKnights
+			leadingPlayer = player
+			bestIndex = curIndex
+		curIndex += 1
+	if maxKnights >= 3:
+		x = 0
+		#Do stuff
+
+
 def useCard(curPlayer, players, board, chosenCard):
 	players[curPlayer].playDevCard(chosenCard)
 	if chosenCard == "knight":
 		print "You played a knight!"
 		handleRobber(curPlayer, players, board)
+		recalculateLargestArmy(players)
 	if chosenCard == "victoryPoint":
 		players[curPlayer].incrementScore()
 		print "You got a victory point!"
@@ -555,12 +573,51 @@ def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
         print "Player " + str(partner) + "has rejected the trade."
     return False
 
+def resourceSelector(prompt):
+	try:
+		resource = ""
+		while True:
+			resource =  raw_input(prompt)
+			if resource != "wood" and resource != "grain" and resource != "brick" and resource != "ore" and resource != "sheep":
+				print "Not a valid resource, try again"
+			else:
+				return resource
+	except EOFError:
+		return ""
+
+
+def getAmountFromPlayer():
+	try:
+		amount =  raw_input("What amount do you want to select? ")
+		return int(amount)
+		if amount < 0:
+			print "Enter a number that's greater than 0"
+			return getAmountFromPlayer
+	except EOFError:
+		return ""
+	except ValueError:
+		print "Enter an integer"
+		return getAmountFromPlayer()
+
 def trade(curPlayer, players, AiNum = -2):
         print "Trading phase"
         trading = True
         while(trading):
             response = raw_input("Would you like to propose a trade?")
             if  response == "Yes" or response == "yes" or response == "y":
+            	bankResponse = raw_input("Would you like to trade with the bank?")
+            	if  bankResponse == "Yes" or response == "yes" or response == "y":
+            		toLose = resourceSelector("Which resource do you want to give to the bank? ")
+            		numberToLose = getAmountFromPlayer()
+            		toGet = resourceSelector("Which resource do you want to receive? ")
+            		if numberToLose % 4 != 0:
+            			print "Retry and enter a number that is a multiple of 4"
+            			continue
+            		else:
+						players[curPlayer].addResource(toGet, numberToLose/4)
+						players[curPlayer].loseResource(toLose, numberToLose)
+						print "You know have ", players[curPlayer].resources
+						continue
                 curResources = players[curPlayer].checkResources()  
                 offer =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
                 print "What would you like to offer? (Enter an amount for each following resource)"

@@ -114,7 +114,14 @@ class player:
 			print "you have played: ", card
 		else:
 			print "You don't have that card"
-            
+    
+	def getKnightsPlayed(self):
+		count = 0
+		for card in self.devCardsPlayed:
+			if card == "knight":
+				count += 1
+		return count
+
 	def buildRoad(self, location, board):
 		if self.canBuildRoad(location, board):
 		    #we will need a deck to draw from
