@@ -26,6 +26,14 @@ class board:
 		self.asciiToEdge = {}
 		self.edgeToAscii = {}
 		self.settlements = {}
+		self.ports = {}
+		self.ports["three"] = []
+		self.ports["sheep"] = []
+		self.ports["grain"] = []
+		self.ports["ore"] = []
+		self.ports["sheep"] = []
+		self.ports["brick"] = []
+		self.ports["wood"] = []
 		#create a mapping of settlement ascii to vertex ascii
 		self.vertexToVertexMap = VertexToVertexDict.getMap()
 		self.vertexToEdgeMap = VertexToEdgeDict.getMap()
@@ -321,6 +329,24 @@ class board:
 			if neighbor.getOwner() is not None:
 				return False
 		return True
+
+	def handlePortConstruction(self, player, location):
+		print "Thining about constructing a port at ", location.index
+		if (location.index == 5 or location.index == 6 or location.index == 3 or location.index == 4 or location.index == 28 or location.index == 17):
+			self.ports["three"].append(player)
+			print "Made a three port!"
+		if (location.index == 39 or location.index == 40):
+			self.ports["ore"].append(player)
+		if (location.index == 8 or location.index == 9):
+			self.ports["sheep"].append(player)
+		if (location.index == 50 or location.index == 51):
+			self.ports["wheat"].append(player)
+		if (location.index == 53 or location.index == 54):
+			self.ports["three"].append(player)
+		if (location.index == 37 or location.index == 47):
+			self.ports["wood"].append(player)
+		if (location.index == 16 or location.index == 26):
+			self.ports["brick"].append(player)
 
 	def getPotentialSettlementLocs(self, curPlayer, players, initializing):
 		locs = set()
