@@ -9,8 +9,9 @@
 	<div ng-if="main.lastDieRollValue == 7">
 		<md-input-container>
 	        <label>Play Robber</label>
-	        <input ng-model="main.robberLocation">		        
-	        <md-button id="moveRobber" ng-click="setRobberPosition()">move robber</md-button>
+	        New Robber tile: <input ng-model="main.robberLocation"><br>
+	        Steal from player number: <input type="text" ng-model="main.robberPlayerToStealFrom"><br>		        
+	        <md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button>
 		</md-input-container>
 	</div>
 

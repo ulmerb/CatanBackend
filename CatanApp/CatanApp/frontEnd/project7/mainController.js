@@ -85,6 +85,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.devCardMonopolyYOP = false
         $scope.main.devCardKnight = false
         $scope.main.devCardRoadBuilding = false
+
+        $scope.main.robberPlayerToStealFrom = 0
         
 
         /*
@@ -263,6 +265,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
+        //already implemented when turn ends:
         // $scope.rollDieButtonPressed = function() {
         //     var userRes = $resource("/rollADie");
         //     userRes.save({},
@@ -351,7 +354,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.setRobberPosition = function() {
             var userRes = $resource("/setRobberPosition");
             var tilePosition = $scope.main.robberLocation
-            userRes.save({'tilePosition':tilePosition},
+            var playerToStealFrom = $scope.main.robberPlayerToStealFrom
+            userRes.save({'tilePosition':tilePosition, 'playerToStealFrom':playerToStealFrom},
                 function (model){
                     //TODO: if robber can be moved , move it
                     //else continue
