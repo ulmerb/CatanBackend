@@ -587,8 +587,8 @@ app.post('/setRobberPosition', function (request, response) {
     postDjango(request,response, 'placeRobber', function(chunk) {
         response.status(200).send(chunk);        
     });
-    console.log("setRobberPosition Pressed, new position: "+ tilePosition)
-    response.status(200).send();
+    // console.log("setRobberPosition Pressed, new position: "+ tilePosition)
+    // response.status(200).send();
 });
 
 

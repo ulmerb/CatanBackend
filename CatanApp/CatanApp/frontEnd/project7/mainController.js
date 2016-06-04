@@ -359,7 +359,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 function (model){
                     //TODO: if robber can be moved , move it
                     //else continue
-                    $scope.updateBoardBasedOnRecievedGameState(model)
+                    console.log("new board");
+                    console.log(model);
+                    $scope.updateBoardBasedOnRecievedGameState(model);
                     $scope.main.message_to_user = model.message;
 
                 }, function errorHandling(err) {

@@ -191,7 +191,6 @@ def djangotest(request):
 def makeJson(board, players, message, diceRoll=0, curPlayer=0):
 	data = {}
 	data['message'] = message
-	# data['boardText'] = "O"
 	data['currentDiceRoll'] = diceRoll
 	data['numPlayers'] = len(players)
 	data['currentPlayer'] = curPlayer
@@ -251,9 +250,12 @@ def placeRobber(request):
 	loc = int(info['tilePosition'])
 	target = int(info['playerToStealFrom'])
 	curPlayer = int(info['currentPlayer'])
-	error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, board, -1)
+	print "old board number", settings.BOARD.currentBoardNumber
+	error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
+	print "new board number", settings.BOARD.currentBoardNumber
+	# print settings.BOARD.printBoard()
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 7, curPlayer)
 	else:
-		resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " + str(newCurPlayer) + "'s turn", 7, curPlayer)
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " + str(curPlayer) + "'s turn", 7, curPlayer)
 	return HttpResponse(resp)

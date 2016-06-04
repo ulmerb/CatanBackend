@@ -51,12 +51,17 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 		if loc > 0 and loc < len(board.tiles) - 1:
 			newRobberLocation = board.tiles[loc]
 			board.moveRobber(newRobberLocation)
+			board.createBatchCSV(players)
+			board.batchUpdate()
 			targets = board.playersToStealFrom(newRobberLocation)
+			print len(targets), "Should be 0"
 			if len(targets) != 0:
 				if int(target) not in targets:
 					return "Invalid target"
 				else:
 					steal(players[int(target)], curPlayer, players)
+			else:
+				return "No targets"
 		else:
 			return "Invalid tile"
 

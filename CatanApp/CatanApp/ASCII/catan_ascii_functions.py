@@ -17,7 +17,7 @@ def printBoard(currentBoardNum):
  	filein = asciiPath + "catan_example" + str(currentBoardNum) + ".txt"
 	f = open(filein,'r')
 	filedata = f.read()
-	print filedata
+	# print filedata
 	f.close()
 	return filedata
 
