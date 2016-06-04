@@ -187,15 +187,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
                 function (model){
                     console.log('new game model');
-                    var arr = model["boardString"].split("\n");
-                    var newArr = [];
-                    for(var i = 0; i < arr.length; i++) {
-                        if(arr[i] !== "") {
-                            var z = arr[i] + '\n';
-                            newArr.push(z);
-                        }
-                    }
-                    $scope.main.map = newArr;
                     $scope.updateBoardBasedOnRecievedGameState(model);
                     $scope.initialPlacement(model);
                     //update all variables on UI
@@ -237,6 +228,15 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer].victoryPointCardsPlayed
             $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer].lengthOfLongestRoad
             $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].knightsPlayed
+            var arr = model.boardString.split("\n");
+                    var newArr = [];
+                    for(var i = 0; i < arr.length; i++) {
+                        if(arr[i] !== "") {
+                            var z = arr[i] + '\n';
+                            newArr.push(z);
+                        }
+                    }
+                    $scope.main.map = newArr;
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false

@@ -191,7 +191,7 @@ def djangotest(request):
 def makeJson(board, players, message, diceRoll=0, curPlayer=0):
 	data = {}
 	data['message'] = message
-	data['boardText'] = "O"
+	# data['boardText'] = "O"
 	data['currentDiceRoll'] = diceRoll
 	data['numPlayers'] = len(players)
 	data['currentPlayer'] = curPlayer
@@ -241,6 +241,9 @@ def endOfTurn(request):
 	dRoll = Controller.rollDice(settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
 	if dRoll == 7:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, "Robber!", dRoll, newCurPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "not robber", dRoll, newCurPlayer)
+	return HttpResponse(resp)
 
 @csrf_exempt
 def placeRobber(request):
