@@ -61,8 +61,7 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():
-	board = Board.board()
-	devCardsDeck = Devcards.devcards()
+	
 	numPlayers = 0
 	#test Ben
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
@@ -74,13 +73,6 @@ def main():
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
-	# players[0].addResource("wood",10)
-	# players[0].addResource("ore",10)
-	# players[0].addResource("grain",10)
-	# players[0].addResource("sheep",10)
-	# players[0].buildDevCard(devCardsDeck)
-	# print players[0].devCardsHeld
-	# print devCardsDeck.getNumDevCards()
 	AiNum = -1
 	try:
             response = raw_input("Add an Ai player?")
@@ -90,11 +82,33 @@ def main():
                 numPlayers +=1
 	except EOFError:
 		print " Not building, on sublime"
-	#board.createBatchCSV(players)
-	#board.batchUpdate()
-	#board.printBoard()
-	firstPlacement(numPlayers, players, board, AiNum)
-	playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
+        if AiNum != -1 and numPlayers == 1:
+	   numRuns = input('How many runs? ')
+	else:
+	   numRuns = 1
+	if numRuns > 1:
+	        stats = []
+           	for x in xrange(numRuns):
+           	    numPlayers = 1
+           	    players = []
+           	    AiNum = len(players)			
+                    players.append(Ai.ai(AiNum))
+                    board = Board.board()
+               	    devCardsDeck = Devcards.devcards()
+                    #board.createBatchCSV(players)
+                    #board.batchUpdate()
+                    #board.printBoard()
+                    firstPlacement(numPlayers, players, board, AiNum)
+                    stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
+        else:
+            board = Board.board()
+            devCardsDeck = Devcards.devcards()
+            #board.createBatchCSV(players)
+            #board.batchUpdate()
+            #board.printBoard()
+            firstPlacement(numPlayers, players, board, AiNum)
+            playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
 def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 1
@@ -118,6 +132,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	            if gameEndVP >= 10:
 	                print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
 	                gameEnd = True
+	                return turnCounter - robberCounter
 	            else:
 	                gameEnd = False
 	        else:

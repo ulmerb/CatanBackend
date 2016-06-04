@@ -490,8 +490,8 @@ class ai:
         if vp == 10:
             if self.verbose: print self.AI.structures['settlements'], "Settlements"
             if self.verbose: print self.AI.structures['cities'], "cities"
-            board.createBatchCSV(players)
-	    board.batchUpdate()
+            #board.createBatchCSV(players)
+	    #board.batchUpdate()
             return vp
         #handle over 7 cards in hand
         if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
