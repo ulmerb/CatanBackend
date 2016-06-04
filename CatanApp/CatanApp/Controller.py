@@ -26,8 +26,9 @@ def tileInitialization(numPlayers, ai):
 	if ai:
 		players.append(Ai.ai(len(players)))
 		numPlayers +=1
-	board.createBatchCSV(players)
-	board.batchUpdate()
+	if not ai or numPlayers > 1:
+	   board.createBatchCSV(players)
+	   board.batchUpdate()
 	return board, players
 
 def rollDice(board, players, curPlayer, AiNum=-1):
@@ -60,8 +61,7 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():
-	board = Board.board()
-	devCardsDeck = Devcards.devcards()
+	
 	numPlayers = 0
 	#test Ben
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
@@ -73,13 +73,6 @@ def main():
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
-	# players[0].addResource("wood",10)
-	# players[0].addResource("ore",10)
-	# players[0].addResource("grain",10)
-	# players[0].addResource("sheep",10)
-	# players[0].buildDevCard(devCardsDeck)
-	# print players[0].devCardsHeld
-	# print devCardsDeck.getNumDevCards()
 	AiNum = -1
 	try:
             response = raw_input("Add an Ai player?")
@@ -89,34 +82,57 @@ def main():
                 numPlayers +=1
 	except EOFError:
 		print " Not building, on sublime"
-	board.createBatchCSV(players)
-	board.batchUpdate()
-	board.printBoard()
-	firstPlacement(numPlayers, players, board, AiNum)
-	playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
+        if AiNum != -1 and numPlayers == 1:
+	   numRuns = input('How many runs? ')
+	else:
+	   numRuns = 1
+	if numRuns > 1:
+	        stats = []
+           	for x in xrange(numRuns):
+           	    numPlayers = 1
+           	    players = []
+           	    AiNum = len(players)			
+                    players.append(Ai.ai(AiNum))
+                    board = Board.board()
+               	    devCardsDeck = Devcards.devcards()
+                    #board.createBatchCSV(players)
+                    #board.batchUpdate()
+                    #board.printBoard()
+                    firstPlacement(numPlayers, players, board, AiNum)
+                    stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
+        else:
+            board = Board.board()
+            devCardsDeck = Devcards.devcards()
+            #board.createBatchCSV(players)
+            #board.batchUpdate()
+            #board.printBoard()
+            firstPlacement(numPlayers, players, board, AiNum)
+            playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
 def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 1
 	robberCounter = 0
 	while (True):
-	        print turnCounter
+	        #print turnCounter
 	        curPlayer = turnCounter % numPlayers
 	        isAi = False
 	        if (curPlayer == AiNum):
 	            isAi = True
 	        if (isAi):
 	            diceRoll = board.rollDice()
-	            print "dice", diceRoll
+	            #print "dice", diceRoll
 	            if diceRoll is CONST_ROBBER:
 		        handleRobber(curPlayer, players, board, AiNum)
 		        robberCounter += 1
 		    else:
 		        board.assignResources(diceRoll, players)
 	            gameEndVP = players[AiNum].decideMove(players, board, False)
-	            print gameEndVP
+	            #print gameEndVP
 	            if gameEndVP >= 10:
 	                print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
 	                gameEnd = True
+	                return turnCounter - robberCounter
 	            else:
 	                gameEnd = False
 	        else:
@@ -226,19 +242,19 @@ def handleResourceLossFromRobber(players, board):
 			handleDiscard(player, playerNum, resources)
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
-	print "Robber"
+	if curPlayer != AiNum: print "Robber"
 	locations = board.getAllTiles()
-	print "Choose a location: "
+	if curPlayer != AiNum: print "Choose a location: "
 	location_dict = {}
 	for l in locations:
 		goalTag = board.tileToAscii[l]
 		location_dict[goalTag] = l
-		print goalTag
+		if curPlayer != AiNum: print goalTag
         if (curPlayer == AiNum):
             target = players[curPlayer].placeRobber(board)
             if target != None and target != curPlayer:
                 steal(players[int(target)], curPlayer,players)
-            print "The ai has moved the robber"
+            if curPlayer != AiNum: print "The ai has moved the robber"
 	    return
 	locationForRobber = 0
 	try:
@@ -319,10 +335,10 @@ def buildDevCard(curPlayer, players, board, devCardsDeck):
 def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range (0, numPlayers):
 		if (i == AiNum):
-			print i
+			#print i
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
 			continue
 		board.printBoard()       
 		initialPlacement(i, players, board)
@@ -330,11 +346,11 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		board.batchUpdate()
 	print numPlayers
 	for i in range(numPlayers -1, -1, -1):
-		print i
+		#print i
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
 			continue
 		board.printBoard()
 	 	initialPlacement(i, players, board)
@@ -345,8 +361,8 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
           	    player.addResource('brick', 2)
           	    player.addResource('grain', 2)
           	    player.addResource('sheep', 2)
-	board.createBatchCSV(players)
-	board.batchUpdate()
+	#board.createBatchCSV(players)
+	#board.batchUpdate()
 
 def initialPlacement(curPlayer, players, board):
 	print curPlayer, " is placing their initial settlement and road"
