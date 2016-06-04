@@ -8,10 +8,17 @@
 	<!-- Moving the robber -->
 	<div ng-if="main.lastDieRollValue == 7">
 		<md-input-container>
-	        <label>Play Robber</label>
-	        New Robber tile: <input ng-model="main.robberLocation"><br>
-	        Steal from player number: <input type="text" ng-model="main.robberPlayerToStealFrom"><br>		        
-	        <md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button>
+			<h4>Play Robber</h4>
+	        <md-input-container>
+        		<label>New Robber tile: </label>
+	        	<input ng-model="main.robberLocation"><br>
+			</md-input-container>
+			<md-input-container>
+	        	<label>Steal from player number:</label>
+	        	<input ng-model="main.robberPlayerToStealFrom"><br>		
+	        	<md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button>
+	        </md-input-container>        
+	        <!-- <md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button> -->
 		</md-input-container>
 	</div>
 
