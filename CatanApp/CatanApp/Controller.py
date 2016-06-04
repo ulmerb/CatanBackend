@@ -48,14 +48,17 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 		    steal(players[int(target)], curPlayer,players)
 		print "The ai has moved the robber"
 	else:
-		newRobberLocation = board.asciiToTile[loc]
-		board.moveRobber(newRobberLocation)
-		targets = board.playersToStealFrom(newRobberLocation)
-		if len(targets) != 0:
-			if int(target) not in targets:
-				return "Invalid target"
-			else:
-				steal(players[int(target)], curPlayer, players)
+		if loc > 0 and loc < len(board.tiles) - 1:
+			newRobberLocation = board.tiles[loc]
+			board.moveRobber(newRobberLocation)
+			targets = board.playersToStealFrom(newRobberLocation)
+			if len(targets) != 0:
+				if int(target) not in targets:
+					return "Invalid target"
+				else:
+					steal(players[int(target)], curPlayer, players)
+		else:
+			return "Invalid tile"
 
 
 
