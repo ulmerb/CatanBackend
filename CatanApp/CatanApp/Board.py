@@ -40,6 +40,7 @@ class board:
 		self.vertices[0] = None
 		self.edges = [Location.Edge(i) for i in range(73)]
 		self.edges[0] = None
+		self.largestArmy = -1
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
 		for i in range(19):
@@ -134,7 +135,7 @@ class board:
 				if tile is not None and tile.index != 0:
 					tileAscii = self.tileToAscii[tile]
 					goalTag = ""
-					if(tile.getType() == "desert"):
+					if (tile == self.robberTile):
 						goalTag = "ROB"
 					else:
 						goalTag = str(tile.getType()[0]).capitalize()
@@ -143,7 +144,7 @@ class board:
 						else:
 							goalTag += str(tile.getNumber())
 					# print goalTag
-					writer.writerow([tileAscii,goalTag])
+					writer.writerow([tileAscii, goalTag])
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
 					vertexAscii = self.vertexToAscii[vertex]

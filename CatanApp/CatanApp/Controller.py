@@ -422,7 +422,7 @@ def selectDevCard(potentialDevCards):
 	except EOFError:
 		print "Sublime error"
 
-def recalculateLargestArmy(players):
+def recalculateLargestArmy(players, board):
 	maxKnights = 0
 	leadingPlayer = -1
 	bestIndex = -1
@@ -435,8 +435,11 @@ def recalculateLargestArmy(players):
 			bestIndex = curIndex
 		curIndex += 1
 	if maxKnights >= 3:
-		x = 0
-		#Do stuff
+		if board.largestArmy != -1:
+			players[board.largestArmy].incrementScore(2)
+		players[bestIndex].incrementScore(2)
+		board.largestArmy=curIndex
+		
 
 
 def useCard(curPlayer, players, board, chosenCard):
@@ -444,7 +447,7 @@ def useCard(curPlayer, players, board, chosenCard):
 	if chosenCard == "knight":
 		print "You played a knight!"
 		handleRobber(curPlayer, players, board)
-		recalculateLargestArmy(players)
+		recalculateLargestArmy(players, board)
 	if chosenCard == "victoryPoint":
 		players[curPlayer].incrementScore()
 		print "You got a victory point!"
