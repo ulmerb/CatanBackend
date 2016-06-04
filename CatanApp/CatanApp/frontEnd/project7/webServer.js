@@ -582,7 +582,11 @@ app.post('/playDevCard', function (request, response) {
 });
 
 app.post('/setRobberPosition', function (request, response) {
-    var tilePosition = request.body.tilePosition
+    // var tilePosition = request.body.tilePosition;
+    // var playerToStealFrom = request.body.playerToStealFrom;
+    postDjango(request,response, 'placeRobber', function(chunk) {
+        response.status(200).send(chunk);        
+    });
     console.log("setRobberPosition Pressed, new position: "+ tilePosition)
     response.status(200).send();
 });

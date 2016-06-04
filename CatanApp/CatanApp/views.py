@@ -248,8 +248,8 @@ def endOfTurn(request):
 @csrf_exempt
 def placeRobber(request):
 	info = json.loads(request.POST['js_resp'])
-	loc = int(info['robberLoc'])
-	target = int(info['robberTarget'])
+	loc = int(info['tilePosition'])
+	target = int(info['playerToStealFrom'])
 	curPlayer = int(info['currentPlayer'])
 	error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, board, -1)
 	if error:

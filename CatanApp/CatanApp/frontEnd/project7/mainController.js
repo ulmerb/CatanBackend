@@ -231,14 +231,14 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer].lengthOfLongestRoad
             $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].knightsPlayed
             var arr = model.boardString.split("\n");
-                    var newArr = [];
-                    for(var i = 0; i < arr.length; i++) {
-                        if(arr[i] !== "") {
-                            var z = arr[i] + '\n';
-                            newArr.push(z);
-                        }
-                    }
-                    $scope.main.map = newArr;
+            var newArr = [];
+            for(var i = 0; i < arr.length; i++) {
+                if(arr[i] !== "") {
+                    var z = arr[i] + '\n';
+                    newArr.push(z);
+                }
+            }
+            $scope.main.map = newArr;
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
@@ -355,7 +355,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var userRes = $resource("/setRobberPosition");
             var tilePosition = $scope.main.robberLocation
             var playerToStealFrom = $scope.main.robberPlayerToStealFrom
-            userRes.save({'tilePosition':tilePosition, 'playerToStealFrom':playerToStealFrom},
+            userRes.save({'currentPlayer':$scope.main.currentPlayer, 'tilePosition':tilePosition, 'playerToStealFrom':playerToStealFrom},
                 function (model){
                     //TODO: if robber can be moved , move it
                     //else continue

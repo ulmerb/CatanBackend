@@ -22,5 +22,6 @@ urlpatterns = [
     url(r'^djangotest/', djangotest),
     url(r'^newGame/', newGame),
     url(r'^build/',build),
-    url(r'^endOfTurn/', endOfTurn)
+    url(r'^endOfTurn/', endOfTurn),
+    url(r'^placeRobber/',placeRobber)
 ]
