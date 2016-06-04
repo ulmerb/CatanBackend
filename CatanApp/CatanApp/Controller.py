@@ -160,7 +160,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 		board.assignResources(diceRoll, players)
 	for player in players:
 		print player
-	trade(curPlayer, players, AiNum)
+	trade(curPlayer, players, board, AiNum)
 	build(curPlayer, players, board, devCardsDeck)
 	return players[curPlayer].hasWon()
 
@@ -324,6 +324,7 @@ def buildRoad(curPlayer, players, board):
 def buildSettlement(curPlayer, players, board):
 	settlementLocation = askPlayerForSettlementLocation(board)
 	players[curPlayer].buildSettlement(settlementLocation, board)
+	board.handlePortConstruction(curPlayer, settlementLocation)
 
 def buildCity(curPlayer, players, board):
 	cityLocation = askPlayerForCityLocation(curPlayer, players, board)
@@ -406,6 +407,7 @@ def initialPlacement(curPlayer, players, board):
 	except EOFError:
 		print "On sublime, not building"
 	players[curPlayer].buildSettlement(settlementLoc, board)
+	board.handlePortConstruction(curPlayer, settlementLoc)
 	players[curPlayer].buildRoad(roadLoc, board)
 
 
@@ -605,7 +607,14 @@ def getAmountFromPlayer():
 		print "Enter an integer"
 		return getAmountFromPlayer()
 
-def trade(curPlayer, players, AiNum = -2):
+def findTradeModifier(curPlayer, resource, board):
+	if curPlayer in board.ports[resource]:
+		return 2
+	if curPlayer in board.ports["three"]:
+		return 3
+	return 4
+
+def trade(curPlayer, players, board, AiNum = -2):
         print "Trading phase"
         trading = True
         while(trading):
@@ -616,11 +625,12 @@ def trade(curPlayer, players, AiNum = -2):
             		toLose = resourceSelector("Which resource do you want to give to the bank? ")
             		numberToLose = getAmountFromPlayer()
             		toGet = resourceSelector("Which resource do you want to receive? ")
-            		if numberToLose % 4 != 0:
-            			print "Retry and enter a number that is a multiple of 4"
+            		modifier = findTradeModifier(curPlayer, toLose, board)
+            		if numberToLose % modifier != 0:
+            			print "Retry and enter a number that is a multiple of ", modifier
             			continue
             		else:
-						players[curPlayer].addResource(toGet, numberToLose/4)
+						players[curPlayer].addResource(toGet, numberToLose/modifier)
 						players[curPlayer].loseResource(toLose, numberToLose)
 						print "You know have ", players[curPlayer].resources
 						continue
@@ -687,4 +697,4 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-# main()
+main()
