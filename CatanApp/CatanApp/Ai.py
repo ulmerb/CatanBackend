@@ -262,8 +262,6 @@ class ai:
                 break
         print paths
     def makeExchange(self, cost, board, locObj, players, typeS):
-        print cost, "cccc"
-        print self.AI.resources, "<< res"
         for r in self.AI.resources:
             if r not in cost:
                 cost[r] = 0
@@ -271,7 +269,7 @@ class ai:
         for r in modCost:
             modCost[r] -= self.AI.resources[r]
         print modCost, "mccc"
-        while(not self.AI.canBuildCity(locObj)):
+        while(self.needsExchange(cost)):
             print cost, modCost
             exchange = self.findNeed(modCost, self.income)
             print exchange
@@ -282,13 +280,18 @@ class ai:
             sortRes.sort(key=lambda tup: tup[0], reverse=True)
             print sortRes
             if sortRes[0][0] < 4:
-                print "something went wrong, it doesnt appear the " + typeS + " can be built"
+                if locObj == -1:
+                    print "failed to find reasonable exchange to reduce hand size"
+                else:
+                    print "something went wrong, it doesnt appear the " + typeS + " can be built"
                 return False
             r = sortRes[0][2]
             print "exchange", r , "for", exchange
             self.AI.resources[r] -= 4
             self.AI.resources[exchange] += 1
             modCost[exchange] -= 1
+            if locObj == -1:
+                return True
             '''
             if typeS == 'city' and self.AI.canBuildCity(locObj):
                 print "exchanges done"
@@ -425,7 +428,7 @@ class ai:
       else:
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
-        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev']},"pass": {'backtrace' : ['pass']} }
+        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]},"pass": {'backtrace' : ['pass', None, 0]} }
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
         if self.AI.settlementsRemaining > 0:
@@ -451,7 +454,7 @@ class ai:
                 turnCost = self.getCostInTurns('city', 0, self.income)
                 resCost = sum(self.getResourceCost('city', 0).values())
                 asciiRepresentation = str(board.vertexSettlementAscii(s))
-                options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['city', settle]}
+                options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['city', settle, 0]}
           #need to add more options and expand the curDistanceAway
         print options
         bestOptionKey = self.evaluateOptions(options)
@@ -465,12 +468,66 @@ class ai:
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
                     print "the Ai is checking for more actions"
                     self.decideMove(players, board, firstTurn)
+                    return self.getVictoryPoints()
         else:
             print "The Ai will pass for now, its planning something!"
         vp = self.getVictoryPoints()
         if vp == 10:
             print self.AI.structures['settlements'], "Settlements"
             print self.AI.structures['cities'], "cities"
+            return vp
+        #handle over 7 cards in hand
+        if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
+            curPath = None
+            counter = 0 
+            cost = 0
+            cost = self.getResourceCost(bestOption['backtrace'][0], bestOption['backtrace'][2])
+            print "*************************"
+            while sum(self.AI.resources.values()) >=7:
+                print self.AI.resources
+                counter += 1
+                if counter >= 20:
+                    break
+                print sum(self.AI.resources.values())
+                changeMade = False
+                if bestOption['backtrace'][0] == 'settlement':
+                    print curPath
+                    print "curPath"
+                    print self.AI.resources
+                    if self.AI.resources['brick'] >= 1 and self.AI.resources['wood'] >= 1 and self.AI.roadsRemaining > 0 and curPath != []:
+                       if curPath == None:
+                            curPath = self.findShortestPath(bestOption['backtrace'][1], int(bestOptionKey[0][:2]), bestOption['backtrace'][2], board)
+                            trash = []
+                            for r in curPath:
+                                if r in self.AI.structures['roads']:
+                                    trash.append(r)
+                            for r in trash:
+                                curPath.remove(r)
+                            print curPath, "after remove"
+                            if curPath == []:
+                                continue
+                       roadInd = curPath[0]
+                       locObj = board.edges[roadInd]
+                       self.AI.buildRoad(locObj, board)
+                       cost['brick'] -= 1
+                       cost['wood'] -= 1
+                       curPath.remove(roadInd)
+                       changeMade = True
+                       board.createBatchCSV(players)
+		       board.batchUpdate()
+                       print "the AI has built a road @", roadInd, "to reduce its hand size @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@2"
+                       print sum(self.AI.resources.values())
+                if not changeMade:
+                    if max(self.AI.resources.values()) >= 4:
+                        if self.makeExchange(cost, board, -1, players, bestOption['backtrace'][0]):
+                            changeMade = True
+                            print "the AI has made a bank exchange to reduce its hand size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+                            print self.AI.resources
+                            
+                if not changeMade:
+                    break
+            print "***********"
+        #end 7 cards in hand handle                
         return vp
     def evaluateOptions(self, options):
         bestOption = ""
