@@ -436,14 +436,14 @@ def buildDevCard(curPlayer, players, board, devCardsDeck):
 		print "You can't build a dev card"
 
 def firstPlacement(numPlayers, players, board, AiNum = -1):
-	print board.printBoard()
+	#print board.printBoard()
 	for i in range (0, numPlayers):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()       
 		initialPlacement(i, players, board)
@@ -454,21 +454,24 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		#print i
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()
 	 	initialPlacement(i, players, board)
-	 	board.createBatchCSV(players)
-		board.batchUpdate()
+	 	#board.createBatchCSV(players)
+		#board.batchUpdate()
+	'''	
 	for player in players:
           	    player.addResource('wood', 2)
           	    player.addResource('brick', 2)
           	    player.addResource('grain', 2)
           	    player.addResource('sheep', 2)
+        '''
 	#board.createBatchCSV(players)
 	#board.batchUpdate()
+	print players[AiNum].AI.resources
 
 def initialPlacement(curPlayer, players, board):
 	print curPlayer, " is placing their initial settlement and road"

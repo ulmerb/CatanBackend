@@ -5,7 +5,8 @@ class player:
 
 	def __init__(self, i):
 		self.score =  0
-		self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
+		#self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
+		self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
 		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
@@ -179,6 +180,25 @@ class player:
 		    self.structures['settlements'].append(location.index)
 		    self.score += 1
 		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
+		    ind = location.index
+		    three = [5,6,3,4,28,17,53,54]
+		    ore = [39,40]
+		    sheep = [8,9]
+		    grain = [50,51]
+		    wood = [37,47]
+		    brick = [16, 26]
+		    if ind in three:
+		        self.structures['ports'].append('three')
+		    elif ind in ore:
+		        self.structures['ports'].append('ore')
+		    elif ind in sheep:
+		        self.structures['ports'].append('sheep')
+		    elif ind in grain:
+		        self.structures['ports'].append('grain')
+		    elif ind in wood:
+		        self.structures['ports'].append('wood')
+		    elif ind in brick:
+		        self.structures['ports'].append('brick')
 		    board.addSettlement(location)
 		else:
 			print "You cannot build a settlement there"
