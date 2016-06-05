@@ -412,7 +412,7 @@ class ai:
       #self.AI.resources =  {'wood':10, 'sheep':10, 'brick': 10, 'ore': 10, 'grain' : 10}
       if self.verbose: print "decide move start"
       if firstTurn:
-
+          self.getCurrentScarcity(players)
 
           self.overallScarcity = self.getOverallScarcity(board)
           locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
@@ -661,6 +661,20 @@ class ai:
             scarcity[tileType] += self.diceProbs[tileNum]
             scarcity[tileType] += self.diceProbs[tileNum]
         return scarcity
+
+    def getCurrentScarcity(self,players):
+        scarcity = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
+        for player in players:
+          if(player == self):
+            AIresources = self.AI.resources
+            for res in AIresources:
+              scarcity[res] += AIresources[res]
+            continue
+          playerRes = player.resources
+          for res in playerRes:
+            scarcity[res] += playerRes[res]
+        return scarcity
+
 
 
 
