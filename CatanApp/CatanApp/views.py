@@ -9,6 +9,7 @@ import Devcards
 import Ai
 import ASCII.catan_ascii_functions as asc
 import settings
+import Devcards
 
 @csrf_exempt
 def djangotest(request):
@@ -224,6 +225,7 @@ def newGame(request):
 	board, players = Controller.tileInitialization(numPlayers, AI)
 	settings.BOARD = board
 	settings.PLAYERS = players
+	settings.DEVCARDS = Devcards.devcards()
 	# convert board, players, newNum into json response
 	resp = makeJson(board, players, "Player 0, place your first settlement")
 	return HttpResponse(resp)
@@ -259,3 +261,54 @@ def placeRobber(request):
 	else:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " + str(curPlayer) + "'s turn", 7, curPlayer)
 	return HttpResponse(resp)
+
+
+@csrf_exempt
+def buildRoad(request):
+	info = json.loads(request.POST['js_resp'])
+	suggestedLocation = info['suggestedLocation']
+	curPlayer = info['curPlayer']
+	error = Controller.serverBuildRoad(curPlayer, settings.PLAYERS, settings.BOARD, suggestedLocation)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "road build successfull", 0, curPlayer)
+
+	return HttpResponse(resp)
+@csrf_exempt
+def buildSettlement(request):
+	info = json.loads(request.POST['js_resp'])
+	suggestedLocation = info['suggestedLocation']
+	curPlayer = info['curPlayer']
+	error = Controller.serverBuildSettlement(curPlayer, settings.PLAYERS, settings.BOARD, suggestedLocation)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "settlement build successfull", 0, curPlayer)
+
+	return HttpResponse(resp)
+
+@csrf_exempt
+def buildCity(request):
+	info = json.loads(request.POST['js_resp'])
+	suggestedLocation = info['suggestedLocation']
+	curPlayer = info['curPlayer']
+	error = Controller.serverBuildCity(curPlayer, settings.PLAYERS, settings.BOARD, suggestedLocation)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "city build successfull", 0, curPlayer)
+
+	return HttpResponse(resp)
+
+@csrf_exempt
+def buyCard(request):
+	info = json.loads(request.POST['js_resp'])
+	curPlayer = info['curPlayer']
+	error = settings.PLAYERS[curPlayer].buildDevCard(settings.DEVCARDS)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "succesfully bought devcard", 0, curPlayer)
+	return HttpResponse(resp)
+

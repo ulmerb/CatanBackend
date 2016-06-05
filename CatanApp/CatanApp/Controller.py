@@ -65,6 +65,36 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 		else:
 			return "Invalid tile"
 
+def serverBuildRoad(curPlayer, players, board, sugLoc):
+	if sugLoc in board.asciiToEdge:
+		loc = board.asciiToEdge[sugLoc]
+		players[curPlayer].buildRoad(loc, board)
+		asc.buildRoad(board.currentBoardNumber, sugLoc, str(curPlayer))
+	else:
+		return "road build failed"
+
+def serverBuildSettlement(curPlayer, players, board, sugLoc):
+	if sugLoc in board.asciiToVertex:
+		loc = board.asciiToVertex[sugLoc]
+		players[curPlayer].buildSettlement(loc, board)
+		# if not error:
+		board.handlePortConstruction(curPlayer, loc)
+		asc.buildSettlement(board.currentBoardNumber, sugLoc, str(curPlayer), str(5 - players[curPlayer].settlementsRemaining))
+		# else:
+			# return error
+	else:
+		return "Vertex not on board"
+
+def serverBuildCity(curPlayer, players, board, sugLoc):
+	if board.validCityLoc(sugLoc):
+		loc = board.asciiToVertex[board.getSettlementFromAscii(sugLoc)]
+		players[curPlayer].buildCity(loc, board)
+		asc.buildCity(board.currentBoardNumber,sugLoc,str(curPlayer))
+	else:
+		return "city build failed"
+
+
+
 
 
 ## NON SERVER RELATED FUNCTIONS BELOW
@@ -414,7 +444,6 @@ def initialPlacement(curPlayer, players, board):
 	players[curPlayer].buildSettlement(settlementLoc, board)
 	board.handlePortConstruction(curPlayer, settlementLoc)
 	players[curPlayer].buildRoad(roadLoc, board)
-
 
 def selectDevCard(potentialDevCards):
 	print "You have: "

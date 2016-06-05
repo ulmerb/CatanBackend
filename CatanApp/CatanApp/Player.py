@@ -5,7 +5,7 @@ class player:
 
 	def __init__(self, i):
 		self.score =  0
-		self.resources =  {'wood':4, 'sheep':4, 'brick': 4, 'ore': 6, 'grain' : 4}
+		self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
 		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
@@ -146,7 +146,8 @@ class player:
 		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
 		    board.addSettlement(location)
 		else:
-		    print "You cannot build a settlement there"
+			print "You cannot build a settlement there"
+			# return "You cannot build a settlement there"
 
 	def buildCity(self, location, board):
 		if self.canBuildCity(location):
@@ -173,6 +174,7 @@ class player:
 		    self.resources['ore'] -=1
 		else:
 		    print "You cannot draw a development card right now"
+		    return "You cannot draw a development card right now"
 
 	def loseRandomCard(self):
        	    resources = []
