@@ -23,5 +23,10 @@ urlpatterns = [
     url(r'^newGame/', newGame),
     url(r'^build/',build),
     url(r'^endOfTurn/', endOfTurn),
-    url(r'^placeRobber/',placeRobber)
+    url(r'^placeRobber/',placeRobber),
+    url(r'^buildRoad/', buildRoad),
+    url(r'^buildSettlement/', buildSettlement),
+    url(r'^buildCity/', buildCity),
+    url(r'^buyCard/', buyCard)
+
 ]

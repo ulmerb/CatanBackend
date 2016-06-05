@@ -230,7 +230,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.numPlayers = model.numPlayers
             $scope.main.message_to_user = model.message
             $scope.main.players = model.players
-            $scope.main.lastDieRollValue = model.currentDiceRoll
+            if(model.currentDiceRoll) {
+                $scope.main.lastDieRollValue = model.currentDiceRoll
+            }
             $scope.main.devCards = model.players[$scope.main.currentPlayer].devCards
             $scope.main.resources = model.players[$scope.main.currentPlayer].resources
             $scope.main.hasLongestRoad = model.players[$scope.main.currentPlayer].hasLongestRoad
@@ -297,10 +299,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.buildRoadButtonPressed = function() {
             var userRes = $resource("/buildRoad");
             var suggestedEdgeForRoad = $scope.main.buildRoadLocation
-            userRes.save({'suggestedLocation':suggestedEdgeForRoad},
+            userRes.save({'suggestedLocation':suggestedEdgeForRoad, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
-                    //TODO: if road can be built, build it
-                    //else continue
+                    $scope.updateBoardBasedOnRecievedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: buildRoadButtonPressed failed";
                 }
@@ -310,8 +311,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.buildSettlementButtonPressed = function() {
             var userRes = $resource("/buildSettlement");
             var suggestedVertexForSettlement = $scope.main.buildSettlementLocation
-            userRes.save({'suggestedLocation':suggestedVertexForSettlement},
+            userRes.save({'suggestedLocation':suggestedVertexForSettlement, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
                     //TODO: if sett can be built, build it
                     //else continue
                 }, function errorHandling(err) {
@@ -323,8 +325,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.buildCityButtonPressed = function() {
             var userRes = $resource("/buildCity");
             var suggestedVertexForCity = $scope.main.buildCityLocation
-            userRes.save({'suggestedLocation':suggestedVertexForCity},
+            userRes.save({'suggestedLocation':suggestedVertexForCity, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+
                     //TODO: if city can be built, build it
                     //else continue
                 }, function errorHandling(err) {
@@ -335,8 +339,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.buyDevCardButtonPressed = function() {
             var userRes = $resource("/buyCard");
-            userRes.save({},
+            userRes.save({'curPlayer':$scope.main.currentPlayer},
                 function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    console.log("THE MODEL", model);
                     //TODO: if card can be bought, build it
                     //else continue
                 }, function errorHandling(err) {

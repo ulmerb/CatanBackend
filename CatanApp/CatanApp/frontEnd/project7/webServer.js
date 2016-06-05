@@ -545,27 +545,27 @@ app.post('/endOfTurn', function (request, response) {
 
 app.post('/buildRoad', function (request, response) {
     //1)  
-    var roadLocation = request.body.suggestedLocation
-    console.log("buildRoad Pressed, location: "+ roadLocation)
-    response.status(200).send();
+    postDjango(request, response, 'buildRoad', function(chunk){
+        response.status(200).send(chunk);    
+    });
 });
 
 app.post('/buildSettlement', function (request, response) {
-    var settlementLocation = request.body.suggestedLocation
-    console.log("buildSettlement Pressed, location: "+ settlementLocation)
-    response.status(200).send();
+     postDjango(request, response, 'buildSettlement', function(chunk){
+        response.status(200).send(chunk);    
+    });
 });
 
 app.post('/buildCity', function (request, response) {
-    var cityLocation = request.body.suggestedLocation
-    console.log("buildCity Pressed, location: "+ cityLocation)
-    response.status(200).send();
+    postDjango(request, response, 'buildCity', function(chunk){
+        response.status(200).send(chunk);    
+    });
 });
 
 app.post('/buyCard', function (request, response) {
-    var devCardType = request.body.devCardType
-    console.log("buyCard Pressed ")
-    response.status(200).send();
+    postDjango(request, response, 'buyCard', function(chunk){
+        response.status(200).send(chunk);    
+    });
 });
 
 app.post('/playDevCard', function (request, response) {
@@ -573,7 +573,9 @@ app.post('/playDevCard', function (request, response) {
     console.log("playDevCard Pressed, Type: "+ devCardType)
     console.log("loc1"+request.body.roadLoc1)
     console.log("loc1"+request.body.roadLoc2)
-    response.status(200).send();
+    postDjango(request, response, 'playCard', function(chunk){
+        response.status(200).send(chunk);    
+    });
 });
 
 app.post('/setRobberPosition', function (request, response) {
