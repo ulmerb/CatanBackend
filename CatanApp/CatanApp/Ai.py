@@ -622,6 +622,7 @@ class ai:
           if tileType == "desert":
             continue
           scarcity[tileType] += self.diceProbs[tileNum]
+        scarcity = self.reciprocalAndNormalize(scarcity)
         return scarcity
 
     def getSoonScarcity(self,players,board):
@@ -658,6 +659,7 @@ class ai:
               continue
             scarcity[tileType] += self.diceProbs[tileNum]
             scarcity[tileType] += self.diceProbs[tileNum]
+        scarcity = self.reciprocalAndNormalize(scarcity)
         return scarcity
 
     def getCurrentScarcity(self,players):
@@ -672,6 +674,22 @@ class ai:
           for res in playerRes:
             scarcity[res] += playerRes[res]
         return scarcity
+
+    def getCurrentNormalizedScarcity(self,players):
+        scarcity = self.getCurrentScarcity(players)
+        scarcity = self.reciprocalAndNormalize(scarcity)
+        return scarcity
+
+    def reciprocalAndNormalize(self,scarcity):
+        done = scarcity
+        # inverse
+        for res in scarcity:
+          done[res] = 1.0 / float(scarcity[res])
+        # normalize
+        factor=1.0/sum(done.itervalues())
+        for res in done:
+          done[res] = done[res]*factor
+        return done
 
 
 
