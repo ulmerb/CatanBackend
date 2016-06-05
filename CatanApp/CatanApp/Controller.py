@@ -250,7 +250,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
-		#print "Robber not handled"
+		print "7 is rolled, robber!"
 		handleResourceLossFromRobber(players, board)
 		handleRobber(curPlayer, players, board, AiNum)
 	else:
