@@ -196,7 +196,7 @@ def main():
                	    devCardsDeck = Devcards.devcards()
                     #board.createBatchCSV(players)
                     #board.batchUpdate()
-                    #board.printBoard()
+                    #print board.printBoard()
                     firstPlacement(numPlayers, players, board, AiNum)
                     stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
                 print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
@@ -205,7 +205,7 @@ def main():
             devCardsDeck = Devcards.devcards()
             board.createBatchCSV(players)
             board.batchUpdate()
-            board.printBoard()
+            print board.printBoard()
             firstPlacement(numPlayers, players, board, AiNum)
             playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
@@ -441,10 +441,11 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
-		board.printBoard()       
+		print board.printBoard()       
 		initialPlacement(i, players, board)
 		board.createBatchCSV(players)
 		board.batchUpdate()
@@ -453,10 +454,11 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		#print i
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
-		board.printBoard()
+		print board.printBoard()
 	 	initialPlacement(i, players, board)
 	 	board.createBatchCSV(players)
 		board.batchUpdate()
