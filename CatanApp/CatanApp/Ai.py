@@ -412,6 +412,8 @@ class ai:
       #self.AI.resources =  {'wood':10, 'sheep':10, 'brick': 10, 'ore': 10, 'grain' : 10}
       if self.verbose: print "decide move start"
       if firstTurn:
+
+
           self.overallScarcity = self.getOverallScarcity(board)
           locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
           maxIncome = 0
@@ -623,6 +625,43 @@ class ai:
             continue
           scarcity[tileType] += self.diceProbs[tileNum]
         return scarcity
+
+    def getSoonScarcity(self,players,board):
+        scarcity = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
+        ALLsettlements = self.AI.structures['settlements']
+        ALLcities = self.AI.structures['cities']
+
+        for player in players:
+          if(player == self):
+            continue
+          ALLsettlements += player.structures['settlements']
+          ALLcities += player.structures['cities']
+
+
+        ALLsettlements = list(set(ALLsettlements))
+        ALLcities = list(set(ALLcities))
+
+        for settlement in ALLsettlements:
+          vertex = board.vertices[settlement]
+          tiles = board.getVertexToTiles(vertex)
+          for tile in tiles:
+            tileType = tile.getType()
+            tileNum = tile.getNumber()
+            if tileType == "desert":
+              continue
+            scarcity[tileType] += self.diceProbs[tileNum]
+        for city in ALLcities:
+          vertex = board.vertices[city]
+          tiles = board.getVertexToTiles(vertex)
+          for tile in tiles:
+            tileType = tile.getType()
+            tileNum = tile.getNumber()
+            if tileType == "desert":
+              continue
+            scarcity[tileType] += self.diceProbs[tileNum]
+            scarcity[tileType] += self.diceProbs[tileNum]
+        return scarcity
+
 
 
     
