@@ -142,9 +142,9 @@ def main():
         else:
             board = Board.board()
             devCardsDeck = Devcards.devcards()
-            #board.createBatchCSV(players)
-            #board.batchUpdate()
-            #board.printBoard()
+            board.createBatchCSV(players)
+            board.batchUpdate()
+            board.printBoard()
             firstPlacement(numPlayers, players, board, AiNum)
             playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
