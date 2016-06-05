@@ -292,13 +292,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         //     )
         // }
 
-        //TODO: connect ot back end
-        $scope.sendTradeMessageToUserMessage = function(){
-            $scope.main.message_to_user = "This is your offer: Ore:"+$scope.main.give_ore+", Brick:"+ $scope.main.give_brick
-                 + ",Grain:" + $scope.main.give_grain + ", Wood: " + $scope.main.give_wood + ", Sheep:" +$scope.main.give_sheep+". "
-                 + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
-                 + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
-        }
+        
 
         $scope.buildRoadButtonPressed = function() {
             var userRes = $resource("/buildRoad");
@@ -395,5 +389,33 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         //Functionality: not implemented yet!
         $scope.exchangeResourcesWithBankButtonPressed = function() {}
 
+
+        //TODO: connect ot back end
+        $scope.sendTradeMessageToUserMessage = function(){
+            $scope.main.message_to_user = "This is your offer: Ore:"+$scope.main.give_ore+", Brick:"+ $scope.main.give_brick
+                 + ",Grain:" + $scope.main.give_grain + ", Wood: " + $scope.main.give_wood + ", Sheep:" +$scope.main.give_sheep+". "
+                 + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
+                 + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
+            var userRes = $resource("/suggestTrade");
+            userRes.save({'currentPlayer':$scope.main.currentPlayer,
+                'tradeMessage':$scope.main.message_to_user, 
+                'giveOre':$scope.main.give_ore,
+                'giveBrick':$scope.main.give_brick,
+                'giveGrain':$scope.main.give_grain,
+                'giveWood':$scope.main.give_wood,
+                'giveSheep':$scope.main.give_sheep,
+                'getOre':$scope.main.get_ore, 
+                'getBrick':$scope.main.get_brick,
+                'getGrain':$scope.main.get_grain,
+                'getWood':$scope.main.get_wood,
+                'getSheep':$scope.main.get_sheep},
+                function (model){
+                    //suugest trade to others
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
+                }
+            )
+
+        }
 
     }]);
