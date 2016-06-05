@@ -199,6 +199,7 @@ def main():
                     #print board.printBoard()
                     firstPlacement(numPlayers, players, board, AiNum)
                     stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                print stats
                 print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
         else:
             board = Board.board()
@@ -237,7 +238,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 100:
+		if gameEnd or turnCounter >= 1000:
 			break
 		turnCounter += 1
 

@@ -123,6 +123,11 @@ class ai:
    	    stockpile[r] += incomeMap[r] * baseTurns	
    	while(len(modResCost) > 0):
    	    for r in stockpile:
+   	        exNum = 4
+   	        if r in self.AI.structures['ports']:
+   	            exNum = 2
+   	        elif 'three' in self.AI.structures['ports']:
+   	            exNum = 3
    	        if r in modResCost:
    	            if stockpile[r] >= 1:
    	                if modResCost[r] <= stockpile[r]:
@@ -133,12 +138,12 @@ class ai:
    	                else:
    	                    modResCost[r] -= int(stockpile[r])
    	                    stockpile[r] -= int(stockpile[r])
-   	        elif stockpile[r] >= 4:
-   	            while(stockpile[r] >= 4):
+   	        elif stockpile[r] >= exNum:
+   	            while(stockpile[r] >= exNum):
            	            exchange = self.findNeed(modResCost, incomeMap)
            	            if exchange == None:
            	                return turnCost
-           	            stockpile[r] -= 4
+           	            stockpile[r] -= exNum
            	            modResCost[exchange] -= 1
            	            if modResCost[exchange] == 0:
            	                modResCost.pop(exchange)
@@ -282,7 +287,12 @@ class ai:
             if self.verbose: print exchange
             sortRes = []
             for r in self.AI.resources:
-                sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
+                if r in self.AI.structures['ports']:
+                    sortRes.append((self.AI.resources[r] - cost[r] + 2, self.income[r], r))
+                elif 'three' in self.AI.structures['ports']:
+                    sortRes.append((self.AI.resources[r] - cost[r] + 1, self.income[r], r))
+                else:
+                    sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)
             if self.verbose: print sortRes
@@ -293,8 +303,15 @@ class ai:
                     if self.verbose: print "something went wrong, it doesnt appear the " + typeS + " can be built"
                 return False
             r = sortRes[0][2]
+            exNum = 4
+            if r in self.AI.structures['ports']:
+                exNum = 2
+                print "Port being used for 2 : 1 exchange"
+            elif 'three' in self.AI.structures['ports']:
+                exNum = 3
+                print "Port being used for 3: 1 exchange"
             if self.verbose: print "exchange", r , "for", exchange
-            self.AI.resources[r] -= 4
+            self.AI.resources[r] -= exNum
             self.AI.resources[exchange] += 1
             modCost[exchange] -= 1
             if locObj == -1:
@@ -531,7 +548,7 @@ class ai:
 		           board.batchUpdate()
                            print "the AI has built a road at", roadInd, "to reduce its hand size"
                 if not changeMade:
-                    if max(self.AI.resources.values()) >= 4:
+                    if max(self.AI.resources.values()) >= 4 or self.possiblePortEx():
                         if self.makeExchange(cost, board, -1, players, bestOption['backtrace'][0]):
                             changeMade = True
                             if self.verbose: print "the AI has made a bank exchange to reduce its hand size@"
@@ -540,6 +557,18 @@ class ai:
                     break
         #end 7 cards in hand handle                
         return vp
+    def possiblePortEx(self):
+        maxi = max(self.AI.resources.values())
+        if maxi == 1:
+            return False
+        if maxi >= 3:
+            if 'three' in self.AI.structures['ports']:
+                return True
+        elif maxi >= 2:
+            for r in self.AI.resources:
+                if self.AI.resources[r] ==2 and r in self.AI.structures['ports']:
+                    return True
+        return False
     def evaluateOptions(self, options):
         bestOption = ""
         bestScore = -float('inf')
