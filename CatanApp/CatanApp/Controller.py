@@ -155,14 +155,20 @@ def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWo
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():
 	
-	numPlayers = 0
+	numPlayers = -1
 	#test Ben
 	#sublime text can't work with stdin, so hardcoded it as a 2 player game while on sublime
-	try:
-		numPlayers = input('How many players do you want? ')
-	except EOFError:
-		numPlayers = CONST_DEFAULT_NUM_PLAYERS
-		print  ""
+	while(True):
+		try:
+			response = raw_input('How many players do you want? ')
+			numPlayers = int(response)
+		except ValueError:
+			print "Please enter a number"
+			continue
+		if (numPlayers >= 0 and numPlayers <= 4):
+			break
+		else:
+			print "Please enter a number betweeen 0 and 4"
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
