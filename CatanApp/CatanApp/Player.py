@@ -202,8 +202,13 @@ class player:
 		if self.canPlayDevCard:
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
-		    print "You have build ", nameCard
-		    self.devCardsHeld.append(nameCard)
+		    print "You have built ", nameCard
+		    if nameCard == "victoryPoint":
+		    	self.devCardsPlayed.append(nameCard)
+		    	self.incrementScore(1)
+		    	print "Your score has been increased by 1"
+		    else: 
+		    	self.devCardsHeld.append(nameCard)
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
 		    self.resources['ore'] -=1
