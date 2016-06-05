@@ -88,6 +88,19 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.main.robberPlayerToStealFrom = 0
         
+        //play dev cards:
+        $scope.main.devCardBrick = false
+        $scope.main.devCardWood = false
+        $scope.main.devCardSheep = false
+        $scope.main.devCardGrain = false
+        $scope.main.devCardOre = false
+        $scope.main.devCardRoadLocation1 = 0
+        $scope.main.devCardRoadLocation2 = 0
+
+        $scope.testPlayDevCard = function(str){
+            console.log("brick " + $scope.main.devCardBrick)
+            console.log(str)
+        }
 
         /*
         * FetchModel - Fetch a model from the web server.
@@ -338,10 +351,20 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
-        $scope.playDevCardButtonPressed = function() {
+        //note str can be one of the following three: 'monopoly', 'yop', 'buildRoad'
+        $scope.playDevCardButtonPressed = function(str) {
             var userRes = $resource("/playDevCard");
-            var devCardType = "***TYPE OF CARD to play***"
-            userRes.save({'devCardType':devCardType},
+            var devCardType = str
+            console.log(str +" brick "+$scope.main.devCardBrick + ", wood "+$scope.main.devCardWood+ ", sheep "+$scope.main.devCardSheep+", grain " +$scope.main.devCardGrain+", ore "+ $scope.main.devCardOre+ " loc1 "+$scope.main.devCardRoadLocation1+ " loc2 "+ $scope.main.devCardRoadLocation2)
+            userRes.save({'devCardType':devCardType,
+                'devCardBrick':$scope.main.devCardBrick,
+                'devCardWood':$scope.main.devCardWood,
+                'devCardSheep':$scope.main.devCardSheep,
+                'devCardGrain':$scope.main.devCardGrain,
+                'devCardOre':$scope.main.devCardOre,
+                'roadLoc1':$scope.main.devCardRoadLocation1,
+                'roadLoc2':$scope.main.devCardRoadLocation2
+                },
                 function (model){
                     //TODO: if card can be played, build it
                     //else continue

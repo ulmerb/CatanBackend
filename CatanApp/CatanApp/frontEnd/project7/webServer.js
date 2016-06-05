@@ -543,13 +543,6 @@ app.post('/endOfTurn', function (request, response) {
 });
 
 
-//deprecated
-// app.post('/rollADie', function (request, response) {
-//     console.log("rollDieButton Pressed")
-//     //TODO: send an updated game state with roll result
-//     response.status(200).send();
-// });
-
 app.post('/buildRoad', function (request, response) {
     //1)  
     var roadLocation = request.body.suggestedLocation
@@ -578,10 +571,13 @@ app.post('/buyCard', function (request, response) {
 app.post('/playDevCard', function (request, response) {
     var devCardType = request.body.devCardType
     console.log("playDevCard Pressed, Type: "+ devCardType)
+    console.log("loc1"+request.body.roadLoc1)
+    console.log("loc1"+request.body.roadLoc2)
     response.status(200).send();
 });
 
 app.post('/setRobberPosition', function (request, response) {
+    console.log("play Robber pressed")
     // var tilePosition = request.body.tilePosition;
     // var playerToStealFrom = request.body.playerToStealFrom;
     postDjango(request,response, 'placeRobber', function(chunk) {
