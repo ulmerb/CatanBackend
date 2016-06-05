@@ -50,6 +50,9 @@ class board:
 		self.edges = [Location.Edge(i) for i in range(73)]
 		self.edges[0] = None
 		self.largestArmy = -1
+		self.curLongestRoad = 0
+		self.longestRoad = -1
+		self.curMaxKnights = 0
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
 		for i in range(19):
@@ -350,7 +353,7 @@ class board:
 		if (location.index == 8 or location.index == 9):
 			self.ports["sheep"].append(player)
 		if (location.index == 50 or location.index == 51):
-			self.ports["wheat"].append(player)
+			self.ports["grain"].append(player)
 		if (location.index == 53 or location.index == 54):
 			self.ports["three"].append(player)
 		if (location.index == 37 or location.index == 47):

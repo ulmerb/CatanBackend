@@ -244,6 +244,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	board.createBatchCSV(players)
 	board.batchUpdate()
+	print board.printBoard()
 	print  "Player " + str(curPlayer) + " turn"
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
@@ -416,6 +417,7 @@ def steal(target, curPlayer,players):
 def buildRoad(curPlayer, players, board):
 	roadLocation = askPlayerForRoadLocation(board)
 	players[curPlayer].buildRoad(roadLocation, board)
+	checkLongestRoad(board, players)
 
 def buildSettlement(curPlayer, players, board):
 	settlementLocation = askPlayerForSettlementLocation(board)
@@ -434,6 +436,7 @@ def buildDevCard(curPlayer, players, board, devCardsDeck):
 		print "You can't build a dev card"
 
 def firstPlacement(numPlayers, players, board, AiNum = -1):
+	print board.printBoard()
 	for i in range (0, numPlayers):
 		if (i == AiNum):
 			#print i
@@ -507,6 +510,29 @@ def initialPlacement(curPlayer, players, board):
 	board.handlePortConstruction(curPlayer, settlementLoc)
 	players[curPlayer].buildRoad(roadLoc, board)
 
+def checkLongestRoad(board, players):
+	longestRoad = 0
+	leadingPlayer = -1
+	bestIndex = -1
+	curIndex = 0
+	for player in players:
+		print "examining ", player
+		numRoads = player.getRoadLength(board)
+		if numRoads > longestRoad:
+			longestRoad = numRoads
+			leadingPlayer = player
+			bestIndex = curIndex
+		curIndex += 1
+	print "It was found that ", leadingPlayer, " has a road length of ", longestRoad
+	if longestRoad >= 5 and longestRoad > board.curLongestRoad:
+		if board.longestRoad != -1:
+			print board.longestRoad, " lost longestRoad"
+			players[board.longestRoad].incrementScore(-2)
+		print bestIndex, " gained longestRoad"
+		players[bestIndex].incrementScore(2)
+		board.longestRoad=bestIndex
+		board.curLongestRoad = longestRoad
+
 def selectDevCard(potentialDevCards):
 	print "You have: "
 	for devCard in potentialDevCards:
@@ -535,11 +561,14 @@ def recalculateLargestArmy(players, board):
 			leadingPlayer = player
 			bestIndex = curIndex
 		curIndex += 1
-	if maxKnights >= 3:
+	if maxKnights >= 3 and maxKnights > board.curMaxKnights:
 		if board.largestArmy != -1:
-			players[board.largestArmy].incrementScore(2)
+			players[board.largestArmy].incrementScore(-2)
+			print board.largestArmy, " lost largestArmy"
+		print bestIndex, " gained largestArmy"
 		players[bestIndex].incrementScore(2)
-		board.largestArmy=curIndex
+		board.largestArmy=bestIndex
+		board.curMaxKnights = maxKnights
 		
 
 

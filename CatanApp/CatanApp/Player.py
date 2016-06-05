@@ -26,6 +26,41 @@ class player:
 	def incrementScore(self, s = 1):
 		self.score += s
                  
+	def getRoadLength(self, board):
+		roads = set(self.structures['roads'])
+		print "I have ", len(roads), " roads"
+		bestFound = 0
+		for road in roads:
+			roads.remove(road)
+			cur = self.findPathFromRoad(road, None, roads, board) + 1
+			if cur > bestFound:
+				bestFound = cur
+			roads.add(road)
+		print "Found lenght ", bestFound
+		return bestFound
+
+	def findPathFromRoad(self, start, end, roads, board):
+		best = 0
+		for road in roads:
+			cur = 0
+			if end is None:
+				if road in board.edgeToEdgeMap[start]:
+					roads.remove(road)
+					cur = self.findPathFromRoad(start, road, roads, board) + 1
+					roads.add(road)
+			else:
+				if road in board.edgeToEdgeMap[start]:
+					roads.remove(road)
+					cur = self.findPathFromRoad(road, end, roads, board) + 1 
+					roads.add(road)
+				elif road in board.edgeToEdgeMap[end]:
+					roads.remove(road)
+					cur = self.findPathFromRoad(start, road, roads, board) + 1
+					roads.add(road)
+			if cur > best:
+				best = cur
+		return best
+
 	def hasWon(self):
 	        if self.score >= 10:
 	            return True
