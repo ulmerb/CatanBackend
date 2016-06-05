@@ -2,8 +2,6 @@
 
 var cs142App = angular.module('cs142App', ['ngRoute', 'ngMaterial', 'ngResource']); //consider adding ngResource
 
-
-
 cs142App.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
@@ -341,6 +339,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var userRes = $resource("/buyCard");
             userRes.save({'curPlayer':$scope.main.currentPlayer},
                 function (model){
+                    console.log("model after card bought");
+                    console.log(model.players[$scope.main.currentPlayer].devCards);
+                    console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
                     if(model.devCardName === "victoryPoint") {
                         $scope.playDevCardButtonPressed("victoryPoint");
