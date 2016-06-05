@@ -95,26 +95,28 @@ def serverBuildCity(curPlayer, players, board, sugLoc):
 
 
 def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2):
-	players[curPlayer].playDevCard(chosenCard)
 	if chosenCard == "knight":
 		print "You played a knight!"
 		handleRobber(curPlayer, players, board)
 		recalculateLargestArmy(players, board)
+		players[curPlayer].playDevCard(chosenCard)
 	if chosenCard == "victoryPoint":
 		players[curPlayer].incrementScore()
+		players[curPlayer].playDevCard(chosenCard)
 		print "You got a victory point!"
 	if chosenCard == "roadBuild":
 		print "You can build two free roads!"
-		roadOne = roadLoc1
+		roadOne = board.asciiToEdge[roadLoc1]
 		if players[curPlayer].validSpaceForRoad(roadOne, board):
 			roadOne.buildRoad(curPlayer)
 			players[curPlayer].structures['roads'].append(roadOne.index)
 		else:
 			return "Invalid road 1"
-		roadTwo = roadLoc2
+		roadTwo = board.asciiToEdge[roadLoc2]
 		if players[curPlayer].validSpaceForRoad(roadTwo, board):
 			roadTwo.buildRoad(curPlayer)
 			players[curPlayer].structures['roads'].append(roadTwo.index)
+			players[curPlayer].playDevCard(chosenCard)
 		else:
 			return "Invalid road 2"
 	if chosenCard == "monopoly":
@@ -134,6 +136,7 @@ def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWo
 			numResource = player.numResources(resource)
 			player.loseResource(resource, numResource)
 			players[curPlayer].addResource(resource, numResource)
+		players[curPlayer].playDevCard(chosenCard)
 	if chosenCard == "yearOfPlenty":
 		numChosen = 0
 		
@@ -147,6 +150,7 @@ def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWo
 			players[curPlayer].addResource('grain', 1)
 		if devCardSheep:
 			players[curPlayer].addResource('sheep', 1)
+		players[curPlayer].playDevCard(chosenCard)
 
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():

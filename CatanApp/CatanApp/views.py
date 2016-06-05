@@ -323,8 +323,8 @@ def playCard(request):
 	devCardSheep = info['devCardSheep']
 	devCardOre = info['devCardOre']
 	devCardGrain = info['devCardGrain']
-	roadLoc1 = ['roadLoc1']
-	roadLoc2 = ['roadLoc2']
+	roadLoc1 = info['roadLoc1']
+	roadLoc2 = info['roadLoc2']
 	error = Controller.serverUseCard(curPlayer, settings.PLAYERS, settings.BOARD, cardType,
 		devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2)
 	if error:
