@@ -99,6 +99,7 @@ class Vertex(Location):
 		return None
 
 	def setType(self,resource):
+		self.type = resource
 		pass
 
 	def getType(self):

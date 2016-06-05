@@ -27,6 +27,7 @@ class board:
 		self.edgeToAscii = {}
 		self.settlements = {}
 		self.ports = {}
+		self.prevRobber = -1
 		self.ports["three"] = []
 		self.ports["sheep"] = []
 		self.ports["grain"] = []
@@ -143,15 +144,16 @@ class board:
 				if tile is not None and tile.index != 0:
 					tileAscii = self.tileToAscii[tile]
 					goalTag = ""
-					if (tile == self.robberTile):
+					if tile is self.robberTile:
 						goalTag = "ROB"
+						if tile.type is not "desert":
+							tileAscii = self.getTilesString(tile)
+					elif tile.type is "desert":
+						goalTag = "DES"
 					else:
-						goalTag = str(tile.getType()[0]).capitalize()
-						if(tile.getNumber() < 10):
-							goalTag += "0"+ str(tile.getNumber())
-						else:
-							goalTag += str(tile.getNumber())
-					# print goalTag
+						goalTag = self.getTilesString(tile)
+					if tile.index == self.prevRobber:
+						tileAscii = "ROB"
 					writer.writerow([tileAscii, goalTag])
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
@@ -164,6 +166,16 @@ class board:
 				if edge is not None and edge.getOwner() is not None:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
+
+	def getTilesString(self, tile):
+		if tile.type == "desert":
+			return "DES"
+		goalTag = str(tile.getType()[0]).capitalize()
+		if(tile.getNumber() < 10):
+			goalTag += "0"+ str(tile.getNumber())
+		else:
+			goalTag += str(tile.getNumber()) 
+		return goalTag
 
 	def vertexSettlementAscii(self, vertex):
 		return str(vertex.settleNum) + "S" + str(vertex.getOwner()) 
@@ -296,6 +308,7 @@ class board:
 		return vertices		
 
 	def moveRobber(self, tile):
+		self.prevRobber = self.robberTile.index
 		self.robberTile.setRobber(False)
 		self.robberTile = None
 		print "Robber moved to " + str(self.tileToAscii[tile])
@@ -330,10 +343,8 @@ class board:
 		return True
 
 	def handlePortConstruction(self, player, location):
-		print "Thining about constructing a port at ", location.index
 		if (location.index == 5 or location.index == 6 or location.index == 3 or location.index == 4 or location.index == 28 or location.index == 17):
 			self.ports["three"].append(player)
-			print "Made a three port!"
 		if (location.index == 39 or location.index == 40):
 			self.ports["ore"].append(player)
 		if (location.index == 8 or location.index == 9):

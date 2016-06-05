@@ -787,5 +787,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-#main()
+main()
 
