@@ -23,11 +23,13 @@
 
 import math
 import Player
+import VertexToCentralityDict
 
 class ai:
     
     def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
+        self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
         self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 1.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
@@ -607,9 +609,12 @@ class ai:
     def tests(self):
         if self.verbose: print self.AI.roadsRemaining
 
-    def getCentrality(self,board,vertex): # basic version just gives precedents to being next to more total tiles
-        neighborTiles = board.getVertexToTiles(vertex)
-        return len(neighborTiles)
+    def getCentrality(self,board,vertex): # advanced version gives distance to the edge
+        returnable = self.vertexToCentralityMap[vertex.getIndex()]
+        return returnable
+        # OLD VERSION
+        # neighborTiles = board.getVertexToTiles(vertex)
+        # return len(neighborTiles)
         # USE case  
             # for vertex in board.getAllVertices():
             # print "vertex",vertex
