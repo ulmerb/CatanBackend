@@ -172,9 +172,10 @@ class player:
 		    self.resources['sheep'] -= 1
 		    self.resources['grain'] -= 1
 		    self.resources['ore'] -=1
+		    return None, nameCard
 		else:
 		    print "You cannot draw a development card right now"
-		    return "You cannot draw a development card right now"
+		    return "failed" , None
 
 	def loseRandomCard(self):
        	    resources = []

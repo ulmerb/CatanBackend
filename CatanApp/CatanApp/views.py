@@ -189,7 +189,7 @@ def djangotest(request):
 	   })
 	)
 
-def makeJson(board, players, message, diceRoll=0, curPlayer=0):
+def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
 	data = {}
 	data['message'] = message
 	data['currentDiceRoll'] = diceRoll
@@ -213,7 +213,7 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0):
 		for key in p.structures:
 			pInfo[key] = p.structures[key]
 		data["players"].append(pInfo)
-
+	data['devCardName'] = card
 	return json.dumps(data)
 
 # Intialize game
@@ -305,10 +305,31 @@ def buildCity(request):
 def buyCard(request):
 	info = json.loads(request.POST['js_resp'])
 	curPlayer = info['curPlayer']
-	error = settings.PLAYERS[curPlayer].buildDevCard(settings.DEVCARDS)
+	error, card = settings.PLAYERS[curPlayer].buildDevCard(settings.DEVCARDS)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer, card)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "succesfully bought devcard", 0, curPlayer, card)
+	
+	return HttpResponse(resp)
+
+@csrf_exempt
+def playCard(request):
+	info = json.loads(request.POST['js_resp'])
+	cardType = info['devCardType']
+	curPlayer = info['curPlayer']
+	devCardBrick = info['devCardBrick']
+	devCardWood = info['devCardWood']
+	devCardSheep = info['devCardSheep']
+	devCardOre = info['devCardOre']
+	devCardGrain = info['devCardGrain']
+	roadLoc1 = ['roadLoc1']
+	roadLoc2 = ['roadLoc2']
+	error = Controller.serverUseCard(curPlayer, settings.PLAYERS, settings.BOARD, cardType,
+		devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2)
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
 	else:
-		resp = makeJson(settings.BOARD, settings.PLAYERS, "succesfully bought devcard", 0, curPlayer)
-	return HttpResponse(resp)
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Devcard played", 0, curPlayer)
 
+	return HttpResponse(resp)

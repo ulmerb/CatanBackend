@@ -94,8 +94,59 @@ def serverBuildCity(curPlayer, players, board, sugLoc):
 		return "city build failed"
 
 
-
-
+def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2):
+	players[curPlayer].playDevCard(chosenCard)
+	if chosenCard == "knight":
+		print "You played a knight!"
+		handleRobber(curPlayer, players, board)
+		recalculateLargestArmy(players, board)
+	if chosenCard == "victoryPoint":
+		players[curPlayer].incrementScore()
+		print "You got a victory point!"
+	if chosenCard == "roadBuild":
+		print "You can build two free roads!"
+		roadOne = roadLoc1
+		if players[curPlayer].validSpaceForRoad(roadOne, board):
+			roadOne.buildRoad(curPlayer)
+			players[curPlayer].structures['roads'].append(roadOne.index)
+		else:
+			return "Invalid road 1"
+		roadTwo = roadLoc2
+		if players[curPlayer].validSpaceForRoad(roadTwo, board):
+			roadTwo.buildRoad(curPlayer)
+			players[curPlayer].structures['roads'].append(roadTwo.index)
+		else:
+			return "Invalid road 2"
+	if chosenCard == "monopoly":
+		resource = ""
+		if devCardBrick:
+			resource = 'brick'
+		elif devCardWood:
+			resource = 'wood'
+		elif devCardOre:
+			resource = 'ore'
+		elif devCardGrain:
+			resource = 'grain'
+		elif devCardSheep:
+			resource = 'sheep'
+		totalStolen = 0
+		for player in players:
+			numResource = player.numResources(resource)
+			player.loseResource(resource, numResource)
+			players[curPlayer].addResource(resource, numResource)
+	if chosenCard == "yearOfPlenty":
+		numChosen = 0
+		
+		if devCardBrick:
+			players[curPlayer].addResource('brick', 1)
+		if devCardWood:
+			players[curPlayer].addResource('wood', 1)
+		if devCardOre:
+			players[curPlayer].addResource('ore', 1)
+		if devCardGrain:
+			players[curPlayer].addResource('grain', 1)
+		if devCardSheep:
+			players[curPlayer].addResource('sheep', 1)
 
 ## NON SERVER RELATED FUNCTIONS BELOW
 def main():
@@ -367,7 +418,8 @@ def buildCity(curPlayer, players, board):
 
 def buildDevCard(curPlayer, players, board, devCardsDeck):
 	if players[curPlayer].canBuildDevCard():
-		players[curPlayer].buildDevCard(devCardsDeck)
+		nameCard = players[curPlayer].buildDevCard(devCardsDeck)
+		return nameCard
 	else:
 		print "You can't build a dev card"
 

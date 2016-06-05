@@ -342,7 +342,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             userRes.save({'curPlayer':$scope.main.currentPlayer},
                 function (model){
                     $scope.updateBoardBasedOnRecievedGameState(model);
-                    console.log("THE MODEL", model);
+                    if(model.devCardName === "victoryPoint") {
+                        $scope.playDevCardButtonPressed("victoryPoint");
+                    }
                     //TODO: if card can be bought, build it
                     //else continue
                 }, function errorHandling(err) {
@@ -351,7 +353,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
 
-        //note str can be one of the following three: 'monopoly', 'yop', 'buildRoad'
+        //note str can be one of the following three: 
         $scope.playDevCardButtonPressed = function(str) {
             var userRes = $resource("/playDevCard");
             var devCardType = str
@@ -363,11 +365,11 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'devCardGrain':$scope.main.devCardGrain,
                 'devCardOre':$scope.main.devCardOre,
                 'roadLoc1':$scope.main.devCardRoadLocation1,
-                'roadLoc2':$scope.main.devCardRoadLocation2
+                'roadLoc2':$scope.main.devCardRoadLocation2,
+                'curPlayer':$scope.main.currentPlayer
                 },
                 function (model){
-                    //TODO: if card can be played, build it
-                    //else continue
+                    $scope.updateBoardBasedOnRecievedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
                 }
