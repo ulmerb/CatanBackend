@@ -412,8 +412,6 @@ class ai:
       #self.AI.resources =  {'wood':10, 'sheep':10, 'brick': 10, 'ore': 10, 'grain' : 10}
       if self.verbose: print "decide move start"
       if firstTurn:
-          self.getCurrentScarcity(players)
-
           self.overallScarcity = self.getOverallScarcity(board)
           locs = list(board.getPotentialSettlementLocs(self.AI.playerNumber, players, True))
           maxIncome = 0
