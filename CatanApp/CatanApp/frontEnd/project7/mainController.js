@@ -404,7 +404,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'giveGrain':$scope.main.give_grain,
                 'giveWood':$scope.main.give_wood,
                 'giveSheep':$scope.main.give_sheep,
-                'getOre':$scope.main.get_ore, 
+                'getOre':$scope.main.get_ore , 
                 'getBrick':$scope.main.get_brick,
                 'getGrain':$scope.main.get_grain,
                 'getWood':$scope.main.get_wood,
