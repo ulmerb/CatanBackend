@@ -404,6 +404,17 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                  + ",Grain:" + $scope.main.give_grain + ", Wood: " + $scope.main.give_wood + ", Sheep:" +$scope.main.give_sheep+". "
                  + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
                  + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
+            //get the checked users on the list:
+            var form = document.getElementById("tradeWithUsers"),
+            inputs = form.getElementsByTagName("INPUT"),
+            arr = [];
+            for (var i = 0, max = inputs.length; i < max; i += 1) {
+               // Take only those inputs which are checkbox
+               if (inputs[i].type === "checkbox" && inputs[i].checked) {
+                  arr.push(inputs[i].value);
+               }
+            }
+            console.log("users you want to tade with"+arr);
             var userRes = $resource("/suggestTrade");
             userRes.save({'currentPlayer':$scope.main.currentPlayer,
                 'tradeMessage':$scope.main.message_to_user, 
@@ -416,11 +427,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'getBrick':$scope.main.get_brick,
                 'getGrain':$scope.main.get_grain,
                 'getWood':$scope.main.get_wood,
-                'getSheep':$scope.main.get_sheep},
+                'getSheep':$scope.main.get_sheep,
+                'userToTradeWithArr':arr},
                 function (model){
                     //suugest trade to others
                 }, function errorHandling(err) {
-                    $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
+                    $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
                 }
             )
 

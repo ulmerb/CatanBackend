@@ -589,6 +589,13 @@ app.post('/setRobberPosition', function (request, response) {
     // response.status(200).send();
 });
 
+app.post('/suggestTrade', function (request, response) {
+    console.log("user suggested a trade")
+    console.log(request.body.userToTradeWithArr)
+    postDjango(request,response, '*** New place holder ***', function(chunk) {
+        response.status(200).send(chunk);        
+    });
+});
 
 
 

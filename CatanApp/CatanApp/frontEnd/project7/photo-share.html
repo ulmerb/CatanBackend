@@ -61,10 +61,12 @@
                     <button ng-click="endTurnPressed()"> end my turn </button>
                     <button ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
-                    <input type="checkbox" value="Player1"> Player1 <br>
-                    <input type="checkbox" value="Player2"> Player2 <br>
-                    <input type="checkbox" value="Player3"> Player3 <br>
-                    <input type="checkbox" value="Player4"> Player4 <br>
+                    <form id="tradeWithUsers" name="tradeWithUsers">
+                        <input type="checkbox" value="0"> Player1 <br>
+                        <input type="checkbox" value="1"> Player2 <br>
+                        <input type="checkbox" value="2"> Player3 <br>
+                        <input type="checkbox" value="3"> Player4 <br>
+                    </form>
                     <br>
                     <h4>You give:</h4>
                     <p>Ore <input type="number" ng-model="main.give_ore"></p>
