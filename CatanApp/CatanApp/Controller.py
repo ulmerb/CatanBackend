@@ -34,6 +34,7 @@ def tileInitialization(numPlayers, ai):
 def rollDice(board, players, curPlayer, AiNum=-1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
+	        print str(diceRoll) + " was rolled"
 		#print "Robber not handled"
 		return diceRoll
 	else:

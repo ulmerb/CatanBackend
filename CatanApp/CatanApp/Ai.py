@@ -27,11 +27,11 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = True):
+    def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
-        self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 100000.0, 'vp' : 1.0}
+        self.weights =  {'incomeIncrease' : 100, 'centrality' : 1.0, 'costInTurns' : -20.0, 'costInRes' : -1.0, 'port' : 80.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
@@ -336,7 +336,6 @@ class ai:
         #exchanges come into play
         #more advanced step
         #self.AI.resources =  {'wood':40, 'sheep':0, 'brick': 0, 'ore': 10, 'grain' : 10}
-
         if self.verbose: print "the ai is executing option", bestOptionKey, bestOption
         if bestOption['backtrace'][0] == 'settlement':
             settleLoc = int(bestOptionKey[:2])
@@ -499,9 +498,9 @@ class ai:
                         turnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                         resCost = sum(self.getResourceCost('settlement', roadsAway).values())
                         options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['settlement', settlement, roadsAway]}
-                        if s.index in self.portsMap:
-                            options['port'] = self.portsMap[s.index]
-                if (len(options) >= 7 or curDistanceAway >= 5):
+                        if playableS.index in self.portsMap.keys():
+                            options[asciiRepresentation]['port'] = self.portsMap[playableS.index]
+                if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
         if self.verbose: print self.AI.structures['settlements']
@@ -522,6 +521,10 @@ class ai:
         if bestOptionKey[0] == 'pass':
             "The wise Ai has contemplated all its options and decided to pass"
             return
+        if type(bestOption) == str:
+            print "error####################"
+            print bestOption
+            print bestOptionKey[0]
         if bestOption['costInTurns'] == 0:
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
                     if self.verbose: print "the Ai is checking for more actions"
@@ -533,9 +536,9 @@ class ai:
         if vp == 10:
             if self.verbose: print self.AI.structures['settlements'], "Settlements"
             if self.verbose: print self.AI.structures['cities'], "cities"
-            board.createBatchCSV(players)
-	    board.batchUpdate()
-	    print board.printBoard()
+            #board.createBatchCSV(players)
+	    #board.batchUpdate()
+	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
         if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
@@ -609,7 +612,7 @@ class ai:
                         if options[opt][field] == 'three':
                              sortInc = []
                              for r in self.income:
-                                sortInc.append((self.AI.income[r]))
+                                sortInc.append((self.income[r]))
                              sortInc.sort(reverse=True)
                              avg = (sortInc[0] + sortInc[1])/2.0
                              score += avg * self.weights[field] * 2.0/3.0
