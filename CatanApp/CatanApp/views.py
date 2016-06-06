@@ -175,9 +175,11 @@ def bankTrade(request):
 def portTrade(request):
 	info = json.loads(request.POST['js_resp'])
 	curPlayer = info['curPlayer']
-	port = info['port']
+	give = info['youGiveResource']
+	take = info['youWantResource']
+	portNum = info['tradeEntity']
 	player = settings.PLAYERS[curPlayer]
-	error = player.makePortTrade(port)
+	error = player.makePortTrade(portNum, give, take)
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
 	else:

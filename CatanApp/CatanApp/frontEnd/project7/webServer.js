@@ -593,8 +593,15 @@ app.post('/setRobberPosition', function (request, response) {
 });
 
 app.post('/suggestTrade', function (request, response) {
-    console.log("user suggested a trade")
-    console.log(request.body.userToTradeWithArr)
+    postDjango(request,response, 'playerTrade', function(chunk) {
+        response.status(200).send(chunk);        
+    });
+    
+});
+
+app.post('/tradeWithBankOrPort', function (request, response) {
+    console.log("user would like to trade with Bank/Port")
+    console.log(request.body.tradeEntity)
     if(request.body.tradeEntity === 'bank') {
         postDjango(request,response, 'bankTrade', function(chunk) {
             response.status(200).send(chunk);        
@@ -605,14 +612,6 @@ app.post('/suggestTrade', function (request, response) {
         });
     }
     
-});
-
-app.post('/tradeWithBankOrPort', function (request, response) {
-    console.log("user would like to trade with Bank/Port")
-    console.log(request.body.tradeEntity)
-    postDjango(request,response, '*** New place holder ***', function(chunk) {
-        response.status(200).send(chunk);        
-    });
 });
 
 

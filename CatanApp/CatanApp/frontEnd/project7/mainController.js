@@ -311,8 +311,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             userRes.save({'suggestedLocation':suggestedVertexForSettlement, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
                     $scope.updateBoardBasedOnRecievedGameState(model);
-                    //TODO: if sett can be built, build it
-                    //else continue
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: buildSettlementButtonPressed failed";
                 }
@@ -481,11 +479,11 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                }
                if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="want") {
                   youWantResource = inputs[i].value;
-               } 
+               }
             }
 
             //tradeEntity = port number or 'bank'
-            userRes.save({'currentPlayer':$scope.main.currentPlayer,
+            userRes.save({'curPlayer':$scope.main.currentPlayer,
                 'tradeEntity':str, 
                 'youWantResource':youWantResource,
                 'youGiveResource':youGiveResource},
@@ -494,8 +492,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
-                }
-            )
+                });
         }
 
     }]);

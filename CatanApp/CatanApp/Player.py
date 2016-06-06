@@ -22,15 +22,33 @@ class player:
 		return str(self.playerNumber) + " resources:" + str(self.resources) + " score: " + str(self.score)
 	
 	def bankTrade(self, give, take):
-		if self.resources[give] > 4:
+		if self.resources[give] >= 4:
 			self.resources[give] -= 4
 			self.resources[take] += 1
 		else:
 			return "Not enough " + give
 
-	def makePortTrade(self, port):
-		pass
+	def makePortTrade(self, port, give, take):
+		print port
+		if port in self.structures['ports']:
+			if port == "three":
+				if self.resources[give] >= 3:
+					self.resources[give] -= 3
+					self.resources[take] += 1
+				else:
+					return "Not enough " + give
+			else:
+				error = self.specPortTrade(port, take)
+				return error
+		else:
+			return port + " not owned"
 
+	def specPortTrade(self,port, take):
+		if self.resources[port] >= 2:
+			self.resources[port] -= 2
+			self.resources[take] += 1
+		else:
+			return "Not enough " + port
 	def getScore(self):
 		return self.score
                 
