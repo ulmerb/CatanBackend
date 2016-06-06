@@ -28,7 +28,6 @@ cs142App.config(function($mdThemingProvider) {
 });
 
 
-
 cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$resource', '$http',
     function ($scope, $rootScope, $location, $resource, $http) {
         $scope.main = {};
@@ -395,8 +394,33 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             )
         }
         //Functionality: not implemented yet!
-        $scope.exchangeResourcesWithBankButtonPressed = function() {}
+        // $scope.exchangeResourcesWithBankButtonPressed = function(e) {
+        //     console.log();
+        // }
 
+         $scope.showBankTradeForm = function() {
+            var playerTrade = document.querySelector('.playerTradeStuff');
+            playerTrade.style.display = "none";
+            var bankTrade = document.querySelector(".bankTradeStuff");
+            bankTrade.style.display = "block";
+        }
+
+        $scope.showPlayerTradeForm = function() {
+            var playerTrade = document.querySelector('.playerTradeStuff');
+            playerTrade.style.display = "block";
+            var bankTrade = document.querySelector(".bankTradeStuff");
+            bankTrade.style.display = "none";
+        }
+
+        $scope.bankTradeInputs = function() {
+            var form = document.getElementById("tradeWithUsers"),
+            inputs = form.getElementsByTagName("INPUT");
+            if(inputs[4].checked) {
+                $scope.showBankTradeForm();
+            } else {
+                $scope.showPlayerTradeForm();
+            }
+        }
 
         //TODO: connect ot back end
         $scope.sendTradeMessageToUserMessage = function(){
@@ -405,6 +429,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                  + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
                  + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
             //get the checked users on the list:
+
+            
             var form = document.getElementById("tradeWithUsers"),
             inputs = form.getElementsByTagName("INPUT"),
             arr = [];

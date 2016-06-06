@@ -217,9 +217,11 @@ class player:
 		    location.buildCity(self.playerNumber, len(self.structures['cities']))
 		else:
 		    print "You cannot build a city there"
+	def canAffordDevCard(self):
+	    return self.resources['sheep'] > 0 and self.resources['grain'] > 0 and self.resources['ore'] > 0
 
 	def buildDevCard(self, deck):
-		if self.canPlayDevCard:
+		if self.canAffordDevCard():
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
 		    print "You have built ", nameCard
@@ -234,8 +236,7 @@ class player:
 		    self.resources['ore'] -=1
 		    return None, nameCard
 		else:
-		    print "You cannot draw a development card right now"
-		    return "failed" , None
+		    return "You can't afford that" , None
 
 	def loseRandomCard(self):
        	    resources = []
