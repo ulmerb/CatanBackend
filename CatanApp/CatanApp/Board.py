@@ -239,7 +239,6 @@ class board:
 
 
 	def rollDice(self):
-		return 7
 		return (random.randint(1, 6) + random.randint(1, 6))
 
 	def assignResources(self, diceRoll, players):

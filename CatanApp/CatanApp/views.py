@@ -11,184 +11,6 @@ import ASCII.catan_ascii_functions as asc
 import settings
 import Devcards
 
-@csrf_exempt
-def djangotest(request):
-	# z = json.loads(request.POST['js_resp'])
-	# print z['action']
-	# return HttpResponse("Hello")
-	print request.POST
-	# return HttpResponse(
-	# json.dumps({
- #  "numPlayers": "2",
- #  "currentPlayer": "1",
- #  "message": "cannot buy devcard",
- #  "robberTileLocation": "04T","players": [
- #  	{
- #  	"hasLongestRoad": True,
- #  	"hasLargestArmy": False,
- #  	"victoryPoints": "1",
- #  	}
- #  ]})
-	# )
-
-	# return HttpResponse(
-	# 	json.dumps(
-	# {
-	#   "numPlayers": "2",
-	#   "currentPlayer": "1",
-	#   "message": "cannot buy devcard",
-	#   "robberTileLocation": "04T",
-	#   "players": [
-	#     {
-	#       "hasLongestRoad": True,
-	#       "hasLargestArmy": False,
-	#       "victoryPoints": "1",
-	#       "resources": {
-	#         "wood": "1",
-	#         "brick": "2",
-	#         "grain": "3",
-	#         "sheep": "0",
-	#         "ore": "1"
-	#       },
-	#       "devCards": {
-	#         "yearOfPlenty": "1",
-	#         "roadBuilding": "0",
-	#         "knight": "0",
-	#         "monopoly": "0",
-	#         "victoryPoint": "0"
-	#       },
-	#       "ports": [
-	#         "1"
-	#       ]
-	#     },
-	#     {
-	#       "hasLongestRoad": False,
-	#       "hasLargestArmy": True,
-	#       "victoryPoints": "1",
-	#       "resources": {
-	#         "wood": "1",
-	#         "brick": "0",
-	#         "grain": "0",
-	#         "sheep": "0",
-	#         "ore": "1"
-	#       },
-	#       "devCards": {
-	#         "yearOfPlenty": "0",
-	#         "roadBuilding": "1",
-	#         "knight": "0",
-	#         "monopoly": "1",
-	#         "victoryPoint": "0"
-	#       },
-	#       "ports": [
-	#         "1"
-	#       ]
-	#     }
-	#    ],
-	# 	  "board": {
-	# 	    "cities": [
-	# 	      "07V",
-	# 	      "18V"
-	# 	    ],
-	# 	    "roads": [
-	# 	      "21R",
-	# 	      "13R"
-	# 	    ],
-	# 	    "settlements": [
-	# 	      "42V"
-	# 	    ]
-	# 	  }
-	#    })
-	# )
-
-
-
-	#used for testing (from the new gameState2):
-	return HttpResponse(
-		json.dumps(
-	{
-	  "numPlayers": "2",
-	  "currentPlayer": "1",
-	  "message": "cannot buy devcard",
-	  "robberTileLocation": "04T",
-	  "currentDiceRoll":"4",
-	  "boardText": "the actual ascii board",
-	  "players": [
-	    {
-	      "hasLongestRoad": True,
-	      "hasLargestArmy": False,
-	      "victoryPoints": "1",
-	      "knightsPlayed": "1",
-      	  "lengthOfLongestRoad": "2",
-      	  "victoryPointCardsPlayed": "1",
-	      "resources": {
-	        "wood": "1",
-	        "brick": "2",
-	        "grain": "3",
-	        "sheep": "0",
-	        "ore": "1"
-	      },
-	      "devCards": {
-	        "yearOfPlenty": "1",
-	        "roadBuilding": "0",
-	        "knight": "0",
-	        "monopoly": "0",
-	        "victoryPoint": "0"
-	      },
-	      "ports": [
-	        "1"
-	      ],
-	      "cities": [
-		      "07V",
-		      "18V"
-		    ],
-		    "roads": [
-		      "21R",
-		      "13R"
-		    ],
-		    "settlements": [
-		      "42V"
-		    ]
-	    },
-	    {
-	      "hasLongestRoad": False,
-	      "hasLargestArmy": True,
-	      "victoryPoints": "1",
-	      "knightsPlayed": "3",
-      	  "lengthOfLongestRoad": "1",
-          "victoryPointCardsPlayed": "0",
-	      "resources": {
-	        "wood": "1",
-	        "brick": "0",
-	        "grain": "0",
-	        "sheep": "0",
-	        "ore": "1"
-	      },
-	      "devCards": {
-	        "yearOfPlenty": "0",
-	        "roadBuilding": "1",
-	        "knight": "0",
-	        "monopoly": "1",
-	        "victoryPoint": "0"
-	      },
-	      "ports": [
-	        "2"
-	      ],
-	      "cities": [
-		      "09V",
-		      "20V"
-		    ],
-		    "roads": [
-		      "22R",
-		      "14R"
-		    ],
-		    "settlements": [
-		      "44V"
-		    ]
-	    }
-	]
-	   })
-	)
-
 def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
 	data = {}
 	data['message'] = message
@@ -202,6 +24,7 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
 		pInfo = {"victoryPoints":p.score}
 		pInfo['resources'] = p.resources
 		pInfo["devCards"] = {}
+		pInfo["ports"] = p.structures.ports
 		for card in p.devCardsHeld:
 			if card in pInfo["devCards"]:
 				pInfo["devCards"][card] += 1
@@ -333,3 +156,34 @@ def playCard(request):
 		resp = makeJson(settings.BOARD, settings.PLAYERS, "Devcard played", 0, curPlayer)
 
 	return HttpResponse(resp)
+
+@csrf_exempt
+def bankTrade(request):
+	info = json.loads(request.POST['js_resp'])
+	curPlayer = info['curPlayer']
+	give = info['give']
+	take = info['take']
+	error = settings.PLAYERS[curPlayer].bankTrade(give, take)
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Successfull transaction", 0, curPlayer)
+
+	return HttpResponse(resp)
+
+@csrf_exempt
+def portTrade(request):
+	info = json.loads(request.POST['js_resp'])
+	curPlayer = info['curPlayer']
+	port = info['port']
+	player = settings.PLAYERS[curPlayer]
+	error = player.makePortTrade('port')
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Successfull port trade", 0, curPlayer)
+
+	return HttpResponse(resp)
+
+
+

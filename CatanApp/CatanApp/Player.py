@@ -21,8 +21,15 @@ class player:
 	def __str__(self):
 		return str(self.playerNumber) + " resources:" + str(self.resources) + " score: " + str(self.score)
 	
+	def bankTrade(self, give, take):
+		if self.resources[give] > 4:
+			self.resources[give] -= 4
+			self.resources[take] += 1
+		else:
+			return "Not enough " + give
+		
 	def getScore(self):
-		return self.score   
+		return self.score
                 
 	def incrementScore(self, s = 1):
 		self.score += s
@@ -37,7 +44,7 @@ class player:
 			if cur > bestFound:
 				bestFound = cur
 			roads.add(road)
-		print "Found lenght ", bestFound
+		print "Found length ", bestFound
 		return bestFound
 
 	def findPathFromRoad(self, start, end, roads, board):
