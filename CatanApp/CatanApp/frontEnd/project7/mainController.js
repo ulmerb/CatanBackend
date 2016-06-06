@@ -241,7 +241,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.roads = model.players[$scope.main.currentPlayer].roads
             $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer].victoryPointCardsPlayed
             $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer].lengthOfLongestRoad
-            $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].knightsPlayed
+            //$scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].devCardsPlayed.knight
+            
             var arr = model.boardString.split("\n");
             var newArr = [];
             for(var i = 0; i < arr.length; i++) {
@@ -340,9 +341,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     console.log(model.players[$scope.main.currentPlayer].devCards);
                     console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
-                    if(model.devCardName === "victoryPoint") {
-                        $scope.playDevCardButtonPressed("victoryPoint");
-                    }
+                    // if(model.devCardName === "victoryPoint") {
+                    //     $scope.playDevCardButtonPressed("victoryPoint");
+                    // }
                     //TODO: if card can be bought, build it
                     //else continue
                 }, function errorHandling(err) {
@@ -364,9 +365,14 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'devCardOre':$scope.main.devCardOre,
                 'roadLoc1':$scope.main.devCardRoadLocation1,
                 'roadLoc2':$scope.main.devCardRoadLocation2,
-                'curPlayer':$scope.main.currentPlayer
+                'curPlayer':$scope.main.currentPlayer,
+                'tilePosition':$scope.main.robberLocation,
+                'playerToStealFrom':$scope.main.robberPlayerToStealFrom
                 },
                 function (model){
+                    console.log("robber location:")
+                    console.log(model.robberTileLocation)
+                    console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
@@ -392,6 +398,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             )
         }
+
         //Functionality: not implemented yet!
         // $scope.exchangeResourcesWithBankButtonPressed = function(e) {
         //     console.log();

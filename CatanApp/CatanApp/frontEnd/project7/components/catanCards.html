@@ -53,7 +53,7 @@
 		<h4>Knights Played</h4>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>Player number{{$index + 1}}: {{player.knightsPlayed}} knights</p>
+		<p>Player number{{$index + 1}}: {{player.devCardsPlayed.knight}} knights</p>
 	</div>
 
 	<div ng-if="main.hasLargestArmy">
@@ -194,7 +194,7 @@
 		<md-input-container>
         	<label>Steal from player number:</label>
         	<input ng-model="main.robberPlayerToStealFrom"><br>		
-        	<md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button>
+        	<md-button id="moveRobber" ng-click="playDevCardButtonPressed('knight')">play robber</md-button>
        	</md-input-container> 
 	</div>	
 	<div>

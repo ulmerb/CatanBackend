@@ -101,12 +101,14 @@ def serverBuildCity(curPlayer, players, board, sugLoc):
 		return "city build failed"
 
 
-def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2):
+def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2, tilePosition, playerToStealFrom):
 	if chosenCard == "knight":
 		print "You played a knight!"
-		handleRobber(curPlayer, players, board)
-		recalculateLargestArmy(players, board)
+		#handleRobber(curPlayer, players, board)
+		#error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
+		serverHandleRobber(curPlayer, players, tilePosition, playerToStealFrom, board, -1) #TO DO change AI number
 		players[curPlayer].playDevCard(chosenCard)
+		recalculateLargestArmy(players, board)
 	if chosenCard == "victoryPoint":
 		players[curPlayer].incrementScore()
 		players[curPlayer].playDevCard(chosenCard)
@@ -568,6 +570,7 @@ def recalculateLargestArmy(players, board):
 			maxKnights = numKnights
 			leadingPlayer = player
 			bestIndex = curIndex
+		print "player "+ str(curIndex) +"played "+ str(numKnights) + "knights!!!!"
 		curIndex += 1
 	if maxKnights >= 3 and maxKnights > board.curMaxKnights:
 		if board.largestArmy != -1:

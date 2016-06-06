@@ -24,15 +24,23 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
 		pInfo = {"victoryPoints":p.score}
 		pInfo['resources'] = p.resources
 		pInfo["devCards"] = {}
+		pInfo["devCardsPlayed"] = {}
 		pInfo["ports"] = p.structures['ports']
 		for card in p.devCardsHeld:
 			if card in pInfo["devCards"]:
 				pInfo["devCards"][card] += 1
 			else:
 				pInfo["devCards"][card] = 1
+
+		for card in p.devCardsPlayed:
+			if card in pInfo["devCardsPlayed"]:
+				pInfo["devCardsPlayed"][card] += 1
+			else:
+				pInfo["devCardsPlayed"][card] = 1
+
 		# stubs to be updated
 		pInfo["hasLongestRoad"] = False
-		pInfo["hasLongestArmy"] = False
+		pInfo["hasLongestArmy"] = (board.largestArmy == p.playerNumber)
 		for key in p.structures:
 			pInfo[key] = p.structures[key]
 		data["players"].append(pInfo)
@@ -148,8 +156,10 @@ def playCard(request):
 	devCardGrain = info['devCardGrain']
 	roadLoc1 = info['roadLoc1']
 	roadLoc2 = info['roadLoc2']
+	tilePosition = info['tilePosition']
+	playerToStealFrom = info['playerToStealFrom']
 	error = Controller.serverUseCard(curPlayer, settings.PLAYERS, settings.BOARD, cardType,
-		devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2)
+		devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2, tilePosition, playerToStealFrom)
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
 	else:

@@ -571,8 +571,8 @@ app.post('/buyCard', function (request, response) {
 app.post('/playDevCard', function (request, response) {
     var devCardType = request.body.devCardType
     console.log("playDevCard Pressed, Type: "+ devCardType)
-    console.log("loc1"+request.body.roadLoc1)
-    console.log("loc1"+request.body.roadLoc2)
+    console.log(request.body.tilePosition)
+    console.log(request.body.playerToStealFrom)
     postDjango(request, response, 'playCard', function(chunk){
         response.status(200).send(chunk);    
     });
