@@ -600,6 +600,14 @@ app.post('/suggestTrade', function (request, response) {
     });
 });
 
+app.post('/tradeWithBankOrPort', function (request, response) {
+    console.log("user would like to trade with Bank/Port")
+    console.log(request.body.tradeEntity)
+    postDjango(request,response, '*** New place holder ***', function(chunk) {
+        response.status(200).send(chunk);        
+    });
+});
+
 
 
 

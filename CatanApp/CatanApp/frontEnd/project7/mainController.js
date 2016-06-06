@@ -437,7 +437,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             arr = [];
             for (var i = 0, max = inputs.length; i < max; i += 1) {
                // Take only those inputs which are checkbox
-               if (inputs[i].type === "checkbox" && inputs[i].checked) {
+               if (inputs[i].type === "radio" && inputs[i].checked) {
+                  console.log("ADDED "+ i)
                   arr.push(inputs[i].value);
                }
             }
@@ -463,6 +464,38 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             )
 
+        }
+
+        $scope.tradeWithBankOrPort = function(str) {
+            var userRes = $resource("/tradeWithBankOrPort");
+            var youWantResource = ""
+            var youGiveResource = ""
+
+            var form = document.getElementById("bankOrPortTrade"),
+            inputs = form.getElementsByTagName("INPUT"),
+            arr = [];
+            for (var i = 0, max = inputs.length; i < max; i += 1) {
+               // Take only those inputs which are checkbox
+               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="give") {
+                  youGiveResource = inputs[i].value;
+               }
+               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="want") {
+                  youWantResource = inputs[i].value;
+               } 
+            }
+
+            //tradeEntity = port number or 'bank'
+            userRes.save({'currentPlayer':$scope.main.currentPlayer,
+                'tradeEntity':str, 
+                'youWantResource':youWantResource,
+                'youGiveResource':youGiveResource},
+                function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.main.message_to_user = model.message;
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
+                }
+            )
         }
 
     }]);
