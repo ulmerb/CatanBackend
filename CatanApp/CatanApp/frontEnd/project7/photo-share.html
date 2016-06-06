@@ -66,22 +66,42 @@
                         <input type="checkbox" value="1"> Player2 <br>
                         <input type="checkbox" value="2"> Player3 <br>
                         <input type="checkbox" value="3"> Player4 <br>
+                        <input type="checkbox" value="Bank" ng-click="bankTradeInputs()"> Bank <br>
                     </form>
                     <br>
-                    <h4>You give:</h4>
-                    <p>Ore <input type="number" ng-model="main.give_ore"></p>
-                    <p>Grain <input type="number" ng-model="main.give_grain"></p>
-                    <p>Brick <input type="number" ng-model="main.give_brick"></p>
-                    <p>Wood <input type="number" ng-model="main.give_wood"></p>
-                    <p>Sheep <input type="number" ng-model="main.give_sheep"></p>
-                    <br>
-                    <h4>You want:</h4>
-                    <p>Ore <input type="number" ng-model="main.get_ore"></p>
-                    <p>Grain <input type="number" ng-model="main.get_grain"></p>
-                    <p>Brick <input type="number" ng-model="main.get_brick"></p>
-                    <p>Wood <input type="number" ng-model="main.get_wood"></p>
-                    <p>Sheep <input type="number" ng-model="main.get_sheep"></p>
-                    <button ng-click="sendTradeMessageToUserMessage()"> submit trade suggestion</button>
+                    <div class="playerTradeStuff">
+                        <h4>You give:</h4>
+                        <p>Ore <input type="number" ng-model="main.give_ore"></p>
+                        <p>Grain <input type="number" ng-model="main.give_grain"></p>
+                        <p>Brick <input type="number" ng-model="main.give_brick"></p>
+                        <p>Wood <input type="number" ng-model="main.give_wood"></p>
+                        <p>Sheep <input type="number" ng-model="main.give_sheep"></p>
+                        <br>
+                        <h4>You want:</h4>
+                        <p>Ore <input type="number" ng-model="main.get_ore"></p>
+                        <p>Grain <input type="number" ng-model="main.get_grain"></p>
+                        <p>Brick <input type="number" ng-model="main.get_brick"></p>
+                        <p>Wood <input type="number" ng-model="main.get_wood"></p>
+                        <p>Sheep <input type="number" ng-model="main.get_sheep"></p>
+                        <button ng-click="sendTradeMessageToUserMessage()"> submit trade suggestion</button>
+                    </div>
+                    <div class="bankTradeStuff" style="display:none">
+                       
+                        <form>
+                          <h4>You give:</h4>
+                          <input type="radio" value="ore" checked> Ore<br>
+                          <input type="radio" value="grain"> Grain<br>
+                          <input type="radio" value="brick"> Brick<br>
+                          <input type="radio" value="wood"> Wood<br>
+                          <input type="radio" value="sheep"> Sheep
+                          <h4>You want:</h4>
+                          <input type="radio" value="ore"> Ore<br>
+                          <input type="radio" value="grain" checked> Grain<br>
+                          <input type="radio" value="brick"> Brick<br>
+                          <input type="radio" value="wood"> Wood<br>
+                          <input type="radio" value="sheep"> Sheep
+                        </form>
+                    </div>
                 </div>
             </md-sidenav>
 

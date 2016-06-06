@@ -189,15 +189,21 @@ class player:
 		    brick = [16, 26]
 		    if ind in three:
 		        self.structures['ports'].append('three')
+		        print "You've gained a 3:1 port"
 		    elif ind in ore:
 		        self.structures['ports'].append('ore')
+		        print "You've gained an ore port"
 		    elif ind in sheep:
 		        self.structures['ports'].append('sheep')
+		        print "you've gained a sheep port"
 		    elif ind in grain:
+		        print "you've gained a grain port"
 		        self.structures['ports'].append('grain')
 		    elif ind in wood:
+		        print "youve'gained a wood port"
 		        self.structures['ports'].append('wood')
 		    elif ind in brick:
+		        print "you've gained a brick port"
 		        self.structures['ports'].append('brick')
 		    board.addSettlement(location)
 		else:
@@ -217,9 +223,11 @@ class player:
 		    location.buildCity(self.playerNumber, len(self.structures['cities']))
 		else:
 		    print "You cannot build a city there"
+	def canAffordDevCard(self):
+	    return self.resources['sheep'] > 0 and self.resources['grain'] > 0 and self.resources['ore'] > 0
 
 	def buildDevCard(self, deck):
-		if self.canPlayDevCard:
+		if self.canAffordDevCard():
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
 		    print "You have built ", nameCard
@@ -234,8 +242,7 @@ class player:
 		    self.resources['ore'] -=1
 		    return None, nameCard
 		else:
-		    print "You cannot draw a development card right now"
-		    return "failed" , None
+		    return "You can't afford that" , None
 
 	def loseRandomCard(self):
        	    resources = []

@@ -204,6 +204,7 @@ def main():
                     #print board.printBoard()
                     firstPlacement(numPlayers, players, board, AiNum)
                     stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                print stats
                 print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
         else:
             board = Board.board()
@@ -242,7 +243,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 100:
+		if gameEnd or turnCounter >= 1000:
 			break
 		turnCounter += 1
 
@@ -254,7 +255,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
-		#print "Robber not handled"
+		print "7 is rolled, robber!"
 		handleResourceLossFromRobber(players, board)
 		handleRobber(curPlayer, players, board, AiNum)
 	else:
@@ -450,13 +451,12 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 			#board.batchUpdate()
 			#print board.printBoard()
 			continue
-		print board.printBoard()       
+		print board.printBoard()    
 		initialPlacement(i, players, board)
 		board.createBatchCSV(players)
 		board.batchUpdate()
 	print numPlayers
 	for i in range(numPlayers -1, -1, -1):
-		#print i
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
 			#board.createBatchCSV(players)
@@ -464,19 +464,14 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 			#print board.printBoard()
 			continue
 		print board.printBoard()
-	 	initialPlacement(i, players, board)
+	 	setLoc = initialPlacement(i, players, board)
+	 	for tile in board.vertexToTileMap[setLoc.index]:
+	 		if board.tiles[tile].type != "desert":
+	 			players[i].addResource(board.tiles[tile].type, 1)
 	 	#board.createBatchCSV(players)
 		#board.batchUpdate()
-	'''	
-	for player in players:
-          	    player.addResource('wood', 2)
-          	    player.addResource('brick', 2)
-          	    player.addResource('grain', 2)
-          	    player.addResource('sheep', 2)
-        '''
 	#board.createBatchCSV(players)
 	#board.batchUpdate()
-	print players[AiNum].AI.resources
 
 def initialPlacement(curPlayer, players, board):
 	print curPlayer, " is placing their initial settlement and road"
@@ -519,6 +514,7 @@ def initialPlacement(curPlayer, players, board):
 	players[curPlayer].buildSettlement(settlementLoc, board)
 	board.handlePortConstruction(curPlayer, settlementLoc)
 	players[curPlayer].buildRoad(roadLoc, board)
+	return settlementLoc
 
 def checkLongestRoad(board, players):
 	longestRoad = 0
@@ -832,5 +828,9 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
+<<<<<<< HEAD
 #main()
+=======
+# main()
+>>>>>>> origin/master
 
