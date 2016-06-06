@@ -189,15 +189,21 @@ class player:
 		    brick = [16, 26]
 		    if ind in three:
 		        self.structures['ports'].append('three')
+		        print "You've gained a 3:1 port"
 		    elif ind in ore:
 		        self.structures['ports'].append('ore')
+		        print "You've gained an ore port"
 		    elif ind in sheep:
 		        self.structures['ports'].append('sheep')
+		        print "you've gained a sheep port"
 		    elif ind in grain:
+		        print "you've gained a grain port"
 		        self.structures['ports'].append('grain')
 		    elif ind in wood:
+		        print "youve'gained a wood port"
 		        self.structures['ports'].append('wood')
 		    elif ind in brick:
+		        print "you've gained a brick port"
 		        self.structures['ports'].append('brick')
 		    board.addSettlement(location)
 		else:

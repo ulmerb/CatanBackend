@@ -79,6 +79,7 @@ class Vertex(Location):
 	def buildSettlement(self, player, settlementNumber):
 		self.settlement = player
 		self.settleNum = settlementNumber
+		self.city = None
 
 	def buildCity(self, player, cityNumber):
 		self.settlement = None
