@@ -64,8 +64,11 @@
                         <input type="radio" name="tradeWithUsers" value="2"> Player3 <br>
                         <input type="radio" name="tradeWithUsers" value="3"> Player4 <br>
                         <input type="checkbox" value="Bank" ng-click="bankTradeInputs()"> Bank <br>
-                        <div style="line-height: 0px" ng-repeat="port in main.ports" ng-if="main.isUserLoggedIn">
-                            <input type="radio" name="tradeWithPort" value="port"> Port{{port}} <br>
+                        <div ng-if="main.ports.length > 0">
+                            <div style="line-height: 0px" ng-repeat="port in main.ports" ng-if="main.isUserLoggedIn">
+                             <input type="radio" name="tradeWithPort" value="port"> Port {{port}} <br>
+                            </div>
+                            <button ng-click="tradeWithBankOrPort('port')"> submit trade to Port</button>
                         </div>
                     </form>
                     <br>

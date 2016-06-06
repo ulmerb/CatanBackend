@@ -8,7 +8,6 @@ from CatanApp import settings
 #import settings
 
 
-
 # IS_RUNNING is True when the django server is running
 if settings.IS_RUNNING:
 	asciiPath = os.path.join(settings.BASE_DIR, "ASCII/")
