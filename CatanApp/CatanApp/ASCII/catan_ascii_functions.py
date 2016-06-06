@@ -5,12 +5,7 @@ import json
 from CatanApp import settings
 # ^Use import settings when server is not running
 # otherwise use from CatanApp import settings
-<<<<<<< HEAD
 #import settings
-=======
-
-# import settings
->>>>>>> origin/master
 
 
 

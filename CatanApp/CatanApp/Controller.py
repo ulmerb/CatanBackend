@@ -70,7 +70,8 @@ def serverBuildRoad(curPlayer, players, board, sugLoc):
 	if sugLoc in board.asciiToEdge:
 		loc = board.asciiToEdge[sugLoc]
 		players[curPlayer].buildRoad(loc, board)
-		asc.buildRoad(board.currentBoardNumber, sugLoc, str(curPlayer))
+		board.createBatchCSV(players)
+		board.batchUpdate()
 	else:
 		return "road build failed"
 
@@ -85,7 +86,6 @@ def serverBuildSettlement(curPlayer, players, board, sugLoc):
 		print board.printBoard()
 		# if not error:
 		board.handlePortConstruction(curPlayer, loc)
-		asc.buildSettlement(board.currentBoardNumber, sugLoc, str(curPlayer), str(5 - players[curPlayer].settlementsRemaining))
 		# else:
 			# return error
 	else:
@@ -95,7 +95,8 @@ def serverBuildCity(curPlayer, players, board, sugLoc):
 	if board.validCityLoc(sugLoc):
 		loc = board.asciiToVertex[board.getSettlementFromAscii(sugLoc)]
 		players[curPlayer].buildCity(loc, board)
-		asc.buildCity(board.currentBoardNumber,sugLoc,str(curPlayer))
+		board.createBatchCSV(players)
+		board.batchUpdate()
 	else:
 		return "city build failed"
 
@@ -829,9 +830,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-<<<<<<< HEAD
 #main()
-=======
-# main()
->>>>>>> origin/master
 

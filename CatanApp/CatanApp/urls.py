@@ -19,7 +19,6 @@ from views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^djangotest/', djangotest),
     url(r'^newGame/', newGame),
     url(r'^build/',build),
     url(r'^endOfTurn/', endOfTurn),

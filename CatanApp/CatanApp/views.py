@@ -24,7 +24,7 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
 		pInfo = {"victoryPoints":p.score}
 		pInfo['resources'] = p.resources
 		pInfo["devCards"] = {}
-		pInfo["ports"] = p.structures.ports
+		pInfo["ports"] = p.structures['ports']
 		for card in p.devCardsHeld:
 			if card in pInfo["devCards"]:
 				pInfo["devCards"][card] += 1
@@ -177,7 +177,7 @@ def portTrade(request):
 	curPlayer = info['curPlayer']
 	port = info['port']
 	player = settings.PLAYERS[curPlayer]
-	error = player.makePortTrade('port')
+	error = player.makePortTrade(port)
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
 	else:
