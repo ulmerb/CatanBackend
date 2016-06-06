@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^buildSettlement/', buildSettlement),
     url(r'^buildCity/', buildCity),
     url(r'^buyCard/', buyCard),
-    url(r'^playCard/', playCard)
+    url(r'^playCard/', playCard),
+    url(r'^portTrade/', portTrade),
+    url(r'^bankTrade/',bankTrade)
 
 ]

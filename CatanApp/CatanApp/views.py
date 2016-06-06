@@ -161,8 +161,8 @@ def playCard(request):
 def bankTrade(request):
 	info = json.loads(request.POST['js_resp'])
 	curPlayer = info['curPlayer']
-	give = info['give']
-	take = info['take']
+	give = info['youGiveResource']
+	take = info['youWantResource']
 	error = settings.PLAYERS[curPlayer].bankTrade(give, take)
 	if error:
 		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)

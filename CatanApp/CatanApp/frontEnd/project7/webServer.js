@@ -595,9 +595,16 @@ app.post('/setRobberPosition', function (request, response) {
 app.post('/suggestTrade', function (request, response) {
     console.log("user suggested a trade")
     console.log(request.body.userToTradeWithArr)
-    postDjango(request,response, '*** New place holder ***', function(chunk) {
-        response.status(200).send(chunk);        
-    });
+    if(request.body.tradeEntity === 'bank') {
+        postDjango(request,response, 'bankTrade', function(chunk) {
+            response.status(200).send(chunk);        
+        });
+    } else if(request.body.tradeEntity === 'port') {
+        postDjango(request,response, 'portTrade', function(chunk) {
+            response.status(200).send(chunk);        
+        });
+    }
+    
 });
 
 app.post('/tradeWithBankOrPort', function (request, response) {
