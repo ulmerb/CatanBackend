@@ -409,6 +409,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             playerTrade.style.display = "none";
             var bankTrade = document.querySelector(".fixedExchangeRates");
             bankTrade.style.display = "block";
+
+            document.querySelector('.bankSubmit').style.display = "block";
+            document.querySelector('.portSubmit').style.display = "none";
+
         }
 
         $scope.showPlayerTradeForm = function() {
@@ -434,17 +438,18 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var form = document.getElementById("ports"),
             inputs = form.querySelectorAll("input");
             console.log(inputs[0].checked);
+            document.querySelector('.fixedExchangeRates').style.display = "block";
+            document.querySelector('.playerTradeStuff').style.display = "none";
+            document.querySelector('.bankSubmit').style.display = "none";
+            document.querySelector('.portSubmit').style.display = "block";
             for (var i = 0; i < inputs.length; i++) {
                 if(inputs[i].checked) {
-                    document.querySelector('.fixedExchangeRates').style.display = "block";
-                    document.querySelector('.playerTradeStuff').style.display = "none";
-                    console.log(document.querySelector('.playerTradeStuff'));
-                    console.log(document.querySelector('.fixedExchangeRates'));
                     if(inputs[i].value === "three") {
                         document.querySelector(".fixedExchangeGive").style.display = "block";
                     } else {
                         document.querySelector(".fixedExchangeGive").style.display = "none";
                     }
+                    return;
                 }
             };
         }
