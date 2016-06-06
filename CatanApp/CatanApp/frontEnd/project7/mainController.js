@@ -407,25 +407,46 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
          $scope.showBankTradeForm = function() {
             var playerTrade = document.querySelector('.playerTradeStuff');
             playerTrade.style.display = "none";
-            var bankTrade = document.querySelector(".bankTradeStuff");
+            var bankTrade = document.querySelector(".fixedExchangeRates");
             bankTrade.style.display = "block";
         }
 
         $scope.showPlayerTradeForm = function() {
             var playerTrade = document.querySelector('.playerTradeStuff');
             playerTrade.style.display = "block";
-            var bankTrade = document.querySelector(".bankTradeStuff");
+            var bankTrade = document.querySelector(".fixedExchangeRates");
             bankTrade.style.display = "none";
         }
 
-        $scope.bankTradeInputs = function() {
-            var form = document.getElementById("tradeWithUsers"),
+        $scope.playerTradeInputs = function() {
+            var form = document.getElementById("trading"),
             inputs = form.getElementsByTagName("INPUT");
-            if(inputs[4].checked) {
-                $scope.showBankTradeForm();
-            } else {
-                $scope.showPlayerTradeForm();
-            }
+            $scope.showPlayerTradeForm();
+        }
+
+        $scope.bankTradeInputs = function() {
+            var form = document.getElementById("trading"),
+            inputs = form.getElementsByTagName("INPUT");
+            $scope.showBankTradeForm();
+        }
+
+        $scope.portTradeInputs = function() {
+            var form = document.getElementById("ports"),
+            inputs = form.querySelectorAll("input");
+            console.log(inputs[0].checked);
+            for (var i = 0; i < inputs.length; i++) {
+                if(inputs[i].checked) {
+                    document.querySelector('.fixedExchangeRates').style.display = "block";
+                    document.querySelector('.playerTradeStuff').style.display = "none";
+                    console.log(document.querySelector('.playerTradeStuff'));
+                    console.log(document.querySelector('.fixedExchangeRates'));
+                    if(inputs[i].value === "three") {
+                        document.querySelector(".fixedExchangeGive").style.display = "block";
+                    } else {
+                        document.querySelector(".fixedExchangeGive").style.display = "none";
+                    }
+                }
+            };
         }
 
         //TODO: connect ot back end
@@ -437,7 +458,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             //get the checked users on the list:
 
             
-            var form = document.getElementById("tradeWithUsers"),
+            var form = document.getElementById("trading"),
             inputs = form.getElementsByTagName("INPUT"),
             arr = [];
             for (var i = 0, max = inputs.length; i < max; i += 1) {
@@ -487,7 +508,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="want") {
                   youWantResource = inputs[i].value;
                }
-            }
+
+           }
+            
 
             //tradeEntity = port number or 'bank'
             userRes.save({'curPlayer':$scope.main.currentPlayer,

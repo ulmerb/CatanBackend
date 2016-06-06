@@ -58,17 +58,16 @@
                     <button ng-click="endTurnPressed()"> end my turn </button>
                     <button ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
-                    <form id="tradeWithUsers" name="tradeWithUsers">
-                        <input type="radio" name="tradeWithUsers" value="0"> Player1 <br>
-                        <input type="radio" name="tradeWithUsers" value="1"> Player2 <br>
-                        <input type="radio" name="tradeWithUsers" value="2"> Player3 <br>
-                        <input type="radio" name="tradeWithUsers" value="3"> Player4 <br>
-                        <input type="checkbox" value="Bank" ng-click="bankTradeInputs()"> Bank <br>
-                        <div ng-if="main.ports.length > 0">
+                    <form id="trading" name="trading">
+                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
+                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>
+                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="2"> Player3 <br>
+                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="3"> Player4 <br>
+                        <input type="radio" name="trade" ng-click="bankTradeInputs()"> Bank <br>
+                        <div id="ports" ng-if="main.ports.length > 0">
                             <div style="line-height: 0px" ng-repeat="port in main.ports" ng-if="main.isUserLoggedIn">
-                             <input type="radio" name="tradeWithPort" value="port"> Port {{port}} <br>
+                             <input type="radio" name="trade" value={{port}} ng-click="portTradeInputs()"> Port {{port}} <br>
                             </div>
-                            <button ng-click="tradeWithBankOrPort('port')"> submit trade to Port</button>
                         </div>
                     </form>
                     <br>
@@ -88,24 +87,28 @@
                         <p>Sheep <input type="number" ng-model="main.get_sheep"></p><br>
                         <button ng-click="sendTradeMessageToUserMessage()"> submit trade suggestion</button>
                     </div>
-                    <div class="bankTradeStuff" style="display:none">       
+                    <div class="fixedExchangeRates" style="display:none">    
                         <form id ="bankOrPortTrade">
+                            <div class="fixedExchangeGive">
                           <h4>You give:</h4>
                           <input type="radio" name="give" value="ore" checked> Ore<br>
                           <input type="radio" name="give" value="grain"> Grain<br>
                           <input type="radio" name="give" value="brick"> Brick<br>
                           <input type="radio" name="give" value="wood"> Wood<br>
                           <input type="radio" name="give" value="sheep"> Sheep
+                            </div>
+                            <div class="fixedExchangeTake">
                           <h4>You want:</h4>
                           <input type="radio" name="want" value="ore"> Ore<br>
                           <input type="radio" name="want" value="grain" checked> Grain<br>
                           <input type="radio" name="want" value="brick"> Brick<br>
                           <input type="radio" name="want" value="wood"> Wood<br>
                           <input type="radio" name="want" value="sheep"> Sheep
+                        </div>
                           <button ng-click="tradeWithBankOrPort('bank')"> submit trade to Bank</button>
+                          <button ng-click="tradeWithBankOrPort('port')"> submit trade to Port</button>
                         </form>
                     </div>
-                    
                 </div>
             </md-sidenav>
 
