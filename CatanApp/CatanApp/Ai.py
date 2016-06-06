@@ -27,16 +27,18 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
-        self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 1.0, 'vp' : 1.0}
+        self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 100000.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
         self.overallScarcity = None
         self.savedPaths = {}
+        self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
+        54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
    
     # getResourceCost(buildType,roadsAway)
@@ -356,10 +358,15 @@ class ai:
                     locObj = board.edges[roadInd]
                     self.AI.buildRoad(locObj, board)
                 self.AI.buildSettlement(settleObj, board)
+                if self.verbose:
+                    print settleObj.getCity()
+                    print settleObj.getSettlement()
+                    print "owner checks settlement"
                 self.updateIncome(settleObj, board)
                 if self.verbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
+		    print board.printBoard()
 	            print "the AI has built a settlement"
 	        return True
 	    else:
@@ -373,11 +380,15 @@ class ai:
                     self.AI.buildSettlement(settleObj, board)
                     self.updateIncome(settleObj, board)
                     if self.verbose:
+                        print settleObj.getCity()
+                        print settleObj.getSettlement()
+                        print "owner checks settlement"
+                    if self.verbose:
                         board.createBatchCSV(players)
 		        board.batchUpdate()
+		        print board.printBoard()
                         print "the AI has built a settlement after some resource reallocation"
                     return True
-
         elif bestOption['backtrace'][0] == 'city':
             if self.verbose: print "time to upgrade our chosen loc"
             cost = self.getResourceCost('city', 0)
@@ -387,9 +398,14 @@ class ai:
             if self.AI.canBuildCity(locObj):
                 self.AI.buildCity(locObj, board)
                 self.updateIncome(locObj, board)
+                if self.verbose:
+                    print locObj.getCity()
+                    print locObj.getSettlement()
+                    print "owner checks city"
                 if self.verbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
+		    print board.printBoard()
                     print "the AI has built a city"
                 return True
             else:
@@ -398,9 +414,14 @@ class ai:
                 if self.makeExchange(cost, board, locObj, players, 'city'):
                     self.AI.buildCity(locObj, board)
                     self.updateIncome(locObj, board)
+                    if self.verbose:
+                        print locObj.getCity()
+                        print locObj.getSettlement()
+                        print "owner checks city"
                     if self.verbose: 
                         board.createBatchCSV(players)
                         board.batchUpdate()
+                        print board.printBoard()
                         print "the AI has built a city after some resource reallocation"
                     return True
         elif bestOption['backtrace'][0] == 'dev':
@@ -456,6 +477,7 @@ class ai:
           roadChoice = board.edges[roadOptions[0]]
           self.AI.buildRoad(roadChoice, board) 
       else:
+        #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]},"pass": {'backtrace' : ['pass', None, 0]} }
@@ -477,6 +499,8 @@ class ai:
                         turnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                         resCost = sum(self.getResourceCost('settlement', roadsAway).values())
                         options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['settlement', settlement, roadsAway]}
+                        if s.index in self.portsMap:
+                            options['port'] = self.portsMap[s.index]
                 if (len(options) >= 7 or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
@@ -509,8 +533,9 @@ class ai:
         if vp == 10:
             if self.verbose: print self.AI.structures['settlements'], "Settlements"
             if self.verbose: print self.AI.structures['cities'], "cities"
-            #board.createBatchCSV(players)
-	    #board.batchUpdate()
+            board.createBatchCSV(players)
+	    board.batchUpdate()
+	    print board.printBoard()
             return vp
         #handle over 7 cards in hand
         if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
@@ -546,12 +571,13 @@ class ai:
                        if self.verbose:
                            board.createBatchCSV(players)
 		           board.batchUpdate()
+		           print board.printBoard()
                            print "the AI has built a road at", roadInd, "to reduce its hand size"
                 if not changeMade:
                     if max(self.AI.resources.values()) >= 4 or self.possiblePortEx():
                         if self.makeExchange(cost, board, -1, players, bestOption['backtrace'][0]):
                             changeMade = True
-                            if self.verbose: print "the AI has made a bank exchange to reduce its hand size@"
+                            if self.verbose: print "the AI has made a bank exchange to reduce its hand size"
                             
                 if not changeMade:
                     break
@@ -577,7 +603,23 @@ class ai:
             for field in options[opt]:
                     if field not in self.weights:
                         continue
-                    score += options[opt][field] * self.weights[field]
+                    elif field == 'port':
+                        if options[opt][field] in self.AI.structures['ports']:
+                            continue
+                        if options[opt][field] == 'three':
+                             sortInc = []
+                             for r in self.income:
+                                sortInc.append((self.AI.income[r]))
+                             sortInc.sort(reverse=True)
+                             avg = (sortInc[0] + sortInc[1])/2.0
+                             score += avg * self.weights[field] * 2.0/3.0
+                        else:
+                           score += self.income[options[opt][field]] * self.weights[field]     
+                        
+                    
+                    else:
+                        score += options[opt][field] * self.weights[field]
+                    
             if score > bestScore:
                 bestOption = opt
                 bestScore = score
