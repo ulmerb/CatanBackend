@@ -783,6 +783,7 @@ class ai:
 
 
     def handleDiscard(self):
+        #test
         sortRes = []
         numLost = sum(self.AI.resources.values())
         if self.verbose: print "The ai must discard", numLost, "resources"
