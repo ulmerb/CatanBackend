@@ -420,10 +420,13 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 		try:
 			while True:
 				target = raw_input("")
-				if int(target) not in targets:
-					print "Not a valid selection, try again"
-				else:
-					break
+				try:
+					if int(target) not in targets:
+						print "Not a valid selection, try again"
+					else:
+						break
+				except ValueError:
+					print "Please enter a number"
 		except EOFError:
 			target = 0
 			print  ""
@@ -786,9 +789,9 @@ def trade(curPlayer, players, board, AiNum = -2):
         print "Trading phase"
         trading = True
         while(trading):
-            response = raw_input("Would you like to propose a trade?")
+            response = raw_input("Would you like to propose a trade? ")
             if  response == "Yes" or response == "yes" or response == "y":
-            	bankResponse = raw_input("Would you like to trade with the bank?")
+            	bankResponse = raw_input("Would you like to trade with the bank? ")
             	if  bankResponse == "Yes" or response == "yes" or response == "y":
             		toLose = resourceSelector("Which resource do you want to give to the bank? ")
             		numberToLose = getAmountFromPlayer()
