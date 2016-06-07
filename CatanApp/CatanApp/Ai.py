@@ -763,13 +763,15 @@ class ai:
 
     def getCurrentNormalizedScarcity(self,players):
         scarcity = self.getCurrentScarcity(players)
-        scarcity = self.reciprocalAndNormalize(scarcity)
+        scarcity = self.reciprocalAndNormalize(scarcity,True)
         return scarcity
 
-    def reciprocalAndNormalize(self,scarcity):
+    def reciprocalAndNormalize(self,scarcity,laplace = False):
         done = scarcity
         # inverse
         for res in scarcity:
+          if laplace == True:
+            scarcity[res] += 1.0
           done[res] = 1.0 / float(scarcity[res])
         # normalize
         factor=1.0/sum(done.itervalues())
@@ -778,6 +780,8 @@ class ai:
         return done
 
 
+    def handleDiscard(self):
+# STUB
 
 
     
