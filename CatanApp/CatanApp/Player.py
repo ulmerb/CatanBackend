@@ -5,8 +5,8 @@ class player:
 
 	def __init__(self, i):
 		self.score =  0
-		#self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
 		self.resources =  {'wood': 14, 'sheep':12, 'brick': 14, 'ore': 10, 'grain' : 12}
+		#self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
 		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
