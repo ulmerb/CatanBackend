@@ -498,7 +498,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'userToTradeWithArr':arr},
                 function (model){
                     //suggest trade to others
-                    if (model.canTrade):
+                    if (model.canTrade) {
                         $scope.main.isTrading = true
                         scope.updateBoardBasedOnRecievedGameState(model);
                         //take, offer, canTrade
@@ -506,10 +506,11 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                         $scope.main.take = model.take
                         $scope.main.proposer = model.proposer
                         switchToTradeModeUI()
-                    else:
+                    } else {
                         var playerTrade = document.querySelector(".tradeWithPlayer");
                         playerTrade.style.display = "none";
                         $scope.main.message_to_user = model.message;
+                    }
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
                 }
