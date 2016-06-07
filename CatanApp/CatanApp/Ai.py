@@ -28,7 +28,7 @@ import sys
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = False, gamePlayVerbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -44,6 +44,7 @@ class ai:
         self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
+        self.gamePlayVerbose = gamePlayVerbose
         self.scarceWeightsInc = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
         self.scarceWeightsCost = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
    
@@ -262,8 +263,10 @@ class ai:
           loseTotal += scarcity[value] * lose[value]
         if self.verbose: print "gainTotal", gainTotal, "loseTotal",loseTotal
         if gainTotal > loseTotal: # accept if we are gaining more than we're losing
+          if self.verbose or self.gamePlayVerbose:
+            print "The AI accepts this trade"
           return True
-        if self.verbose:
+        if self.verbose or self.gamePlayVerbose:
             print "The AI doesn't like this trade"
         return False
     def findShortestPath(self, start, end, expected, board):
@@ -365,7 +368,7 @@ class ai:
         #exchanges come into play
         #more advanced step
         #self.AI.resources =  {'wood':40, 'sheep':0, 'brick': 0, 'ore': 10, 'grain' : 10}
-        if self.verbose: print "the ai is executing option", bestOptionKey, bestOption
+        if self.verbose or self.gamePlayVerbose: print "the ai is executing option", bestOptionKey, bestOption
         if bestOption['backtrace'][0] == 'settlement':
             settleLoc = int(bestOptionKey[:2])
             if bestOptionKey in self.savedPaths:
@@ -382,7 +385,7 @@ class ai:
                 newTurnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                 if newTurnCost > 0:
                     self.savedPaths[bestOptionKey] = path
-                    if self.verbose: print "A planned road for this settlement has been built on, the Ai can no longer complete this option this turn"
+                    if self.verbose or self.gamePlayVerbose: print "A planned road for this settlement has been built on, the Ai can no longer complete this option this turn"
                     return False  
             settleObj = board.vertices[settleLoc]
             if not self.needsExchange(cost):
@@ -392,13 +395,15 @@ class ai:
                         continue
                     locObj = board.edges[roadInd]
                     self.AI.buildRoad(locObj, board)
-                self.AI.buildSettlement(settleObj, board)
+                if not self.AI.buildSettlement(settleObj, board):
+                    print "for some reason the AI failed to build a settlement where it thinks it can"
+                    return False
                 if self.verbose:
                     print settleObj.getCity()
                     print settleObj.getSettlement()
                     print "owner checks settlement"
                 self.updateIncome(settleObj, board)
-                if self.verbose: 
+                if self.verbose or self.gamePlayVerbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
 		    print board.printBoard()
@@ -412,13 +417,15 @@ class ai:
                             continue
                         locObj = board.edges[roadInd]
                         self.AI.buildRoad(locObj, board)
-                    self.AI.buildSettlement(settleObj, board)
+                    if not self.AI.buildSettlement(settleObj, board):
+                        print "for some reason the AI failed to build a settlement where it thinks it can"
+                        return False
                     self.updateIncome(settleObj, board) 
                     if self.verbose:
                         print settleObj.getCity()
                         print settleObj.getSettlement()
                         print "owner checks settlement"
-                    if self.verbose:
+                    if self.verbose or self.gamePlayVerbose:
                         board.createBatchCSV(players)
 		        board.batchUpdate()
 		        print board.printBoard()
@@ -431,13 +438,16 @@ class ai:
             if self.verbose: print self.AI.resources
             locObj = board.vertices[bestOption['backtrace'][1]]
             if self.AI.canBuildCity(locObj):
-                self.AI.buildCity(locObj, board)
+                
+                if not self.AI.buildCity(locObj, board):
+                    print "for some reason the AI failed to build a city where it thinks it can"
+                    return False
                 self.updateIncome(locObj, board)
                 if self.verbose:
                     print locObj.getCity()
                     print locObj.getSettlement()
                     print "owner checks city"
-                if self.verbose: 
+                if self.verbose or self.gamePlayVerbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
 		    print board.printBoard()
@@ -447,13 +457,15 @@ class ai:
                 #the following needs to be decomped later
                 cost = self.getResourceCost('city', 0)
                 if self.makeExchange(cost, board, locObj, players, 'city'):
-                    self.AI.buildCity(locObj, board)
+                    if not self.AI.buildCity(locObj, board):
+                         print "for some reason the AI failed to build a city where it thinks it can"
+                         return False
                     self.updateIncome(locObj, board)
                     if self.verbose:
                         print locObj.getCity()
                         print locObj.getSettlement()
                         print "owner checks city"
-                    if self.verbose: 
+                    if self.verbose or self.gamePlayVerbose: 
                         board.createBatchCSV(players)
                         board.batchUpdate()
                         print board.printBoard()
@@ -576,26 +588,27 @@ class ai:
         if bestOption['costInTurns'] == 0:
 
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
-                    if self.verbose: print "the Ai is checking for more actions"
+                    if self.verbose or self.gamePlayVerbose: print "the Ai is checking for more actions"
                     self.decideMove(players, board, firstTurn)
                     return self.getVictoryPoints()
         else:
-            if self.verbose: print "The Ai will pass for now, its planning something!"
+            if self.verbose or self.gamePlayVerbose: print "The Ai will pass for now, its planning something!"
         vp = self.getVictoryPoints()
         if vp == 10:
-            if self.verbose: print self.AI.structures['settlements'], "Settlements"
-            if self.verbose: print self.AI.structures['cities'], "cities"
+            if self.verbose or self.gamePlayVerbose: print self.AI.structures['settlements'], "Settlements"
+            if self.verbose or self.gamePlayVerbose: print self.AI.structures['cities'], "cities"
             #board.createBatchCSV(players)
 	    #board.batchUpdate()
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
-
+        if self.verbose: print self.AI.resources
         if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
             cost = 0
             cost = self.getResourceCost(bestOption['backtrace'][0], bestOption['backtrace'][2])
+            if self.verbose or self.gamePlayVerbose: print "The Ai is attempting to reduce its hand size"
             while sum(self.AI.resources.values()) >=7:
                 counter += 1
                 if counter >= 20:
@@ -621,7 +634,7 @@ class ai:
                        cost['wood'] -= 1
                        curPath.remove(roadInd)
                        changeMade = True
-                       if self.verbose:
+                       if self.verbose or self.gamePlayVerbose:
                            board.createBatchCSV(players)
 		           board.batchUpdate()
 		           print board.printBoard()
@@ -630,7 +643,7 @@ class ai:
                     if max(self.AI.resources.values()) >= 4 or self.possiblePortEx():
                         if self.makeExchange(cost, board, -1, players, bestOption['backtrace'][0]):
                             changeMade = True
-                            if self.verbose: print "the AI has made a bank exchange to reduce its hand size"
+                            if self.verbose or self.gamePlayVerbose: print "the AI has made a bank exchange to reduce its hand size"
                             
                 if not changeMade:
                     break
@@ -731,6 +744,7 @@ class ai:
           if badChoice == True: # one of AI settlements is here
             continue
           else:
+            #print "Tile ", tile.index, " has a score ", occupiedSpots 
             if occupiedSpots > maxDamage:
               bestTile = tile
               maxDamage = occupiedSpots
@@ -758,7 +772,7 @@ class ai:
         self.AI.loseResource(res, amount)
         
     def loseRandomCard(self):
-        self.AI.loseRandomCard()   
+        return self.AI.loseRandomCard()   
              
     def tests(self):
         if self.verbose: print self.AI.roadsRemaining
@@ -859,12 +873,12 @@ class ai:
             return
         numLost = sum(self.AI.resources.values())
         numLost /= 2
-        if self.verbose: print "The ai must discard", numLost, "resources"
+        if self.verbose or self.gamePlayVerbose: print "The ai must discard", numLost, "resources"
         bestMove = self.savedBestOpt
         if bestMove[0] == None:
             cost = {'wood': 0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
         else:
-            cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
+            cost = self.getResourceCost(bestMove[1]['backtrace'][0], bestMove[1]['backtrace'][2])
         for r in self.AI.resources:
              sortRes.append([self.AI.resources[r] - cost[r], self.income[r], r])
         sortRes.sort(key=lambda tup: tup[1], reverse=True)
@@ -879,17 +893,17 @@ class ai:
                     numLost -= 1
                     sortRes[0][0] -= 1
                     #if self.verbose: 
-                    if self.verbose: print "The ai has discared 1", sortRes[0][2]
+                    if self.verbose or self.gamePlayVerbose: print "The ai has discared 1", sortRes[0][2]
             else:
                 if excess >= numLost:
                     self.AI.resources[sortRes[0][2]] -= numLost
-                    if self.verbose: print "The ai has discared", numLost, sortRes[0][2]
+                    if self.verbose or self.gamePlayVerbose: print "The ai has discared", numLost, sortRes[0][2]
                     numLost = 0                  
                     break
                 else:
                     self.AI.resources[sortRes[0][2]] -= excess
                     numLost -= excess
                     sortRes[0][0] -= excess
-                    if self.verbose: print "The ai has discared", excess, sortRes[0][2]
+                    if self.verbose or self.gamePlayVerbose: print "The ai has discared", excess, sortRes[0][2]
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)

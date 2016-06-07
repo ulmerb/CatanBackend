@@ -277,7 +277,7 @@ def build(curPlayer, players, board, devCardsDeck):
 	print "Player " + str(curPlayer) + " is in building phase"
 	building = True
 	while(building):
-		response = raw_input("Do you want to build?")
+		response = raw_input("Do you want to build? ")
 		if response == "Yes" or response == "yes" or response == "y":
 			toBuild = raw_input("What do you want to build? ")
 			if toBuild == "road":
@@ -404,7 +404,7 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	locationForRobber = 0
 	try:
 		while True:
-			locationForRobber = raw_input("Enter a location (e.g. 12T)")
+			locationForRobber = raw_input("Enter a location (e.g. 12T) ")
 			if locationForRobber not in location_dict:
 				print "Not a valid location. Try again"
 			else:
@@ -443,7 +443,7 @@ def askPlayerIfDevCard(curPlayer, players, board):
 		return 0
 	selection = 0
 	try:
-		selection = raw_input("Do you want to play a dev card?")
+		selection = raw_input("Do you want to play a dev card? ")
 		if selection == "Yes" or selection == "yes" or selection == "y":
 			if players[curPlayer].canPlayDevCard():
 				potentialDevCards = players[curPlayer].getDevCards()
@@ -653,7 +653,7 @@ def useCard(curPlayer, players, board, chosenCard):
 		resource = ""
 		try: 
 			while (True):
-				resource = raw_input("What resource do you want to steal?")
+				resource = raw_input("What resource do you want to steal? ")
 				if resource != "wood" and resource != "sheep" and resource != "brick" and resource != "ore" and resource != "grain":
 					print "not a valid resource"
 				else:
@@ -671,7 +671,7 @@ def useCard(curPlayer, players, board, chosenCard):
 			while True:
 				if numChosen == 2:
 					break
-				resource = raw_input("What resource do you want to get?")
+				resource = raw_input("What resource do you want to get? ")
 				if resource != "wood" and resource != "sheep" and resource != "brick" and resource != "ore" and resource != "grain":
 					print "Not a valid resource"
 					continue
@@ -735,9 +735,9 @@ def tradeLogicHelper(curPlayer, partner, players, offer, receive):
             print "Player ", partner, " cant make the proposed trade because they dont have enough " + r + "."
             return False
     print "Player " + str(partner) + ", Player " + str(curPlayer) + " has proposed to trade: ", offer, "for: ",  receive, "do you accept?"
-    answer = raw_input("y/n?") 
+    answer = raw_input("y/n? ") 
     if answer == "Yes" or answer == "yes" or answer == "y":
-        confirm =  raw_input("Player " + str(curPlayer) + " would you like to confirm this trade?")
+        confirm =  raw_input("Player " + str(curPlayer) + " would you like to confirm this trade? ")
         if confirm  == "Yes" or confirm == "yes" or confirm == "y":
             print "Trade confirmed."
             for r in offer:
@@ -816,7 +816,7 @@ def trade(curPlayer, players, board, AiNum = -2):
                 print "What would you like in return? (Enter an amount for each following resource)"
                 receive = tradeHelper(receive, curResources, True)
                 partner = -1
-                potentialPartner = raw_input("Would like to ask a specific player (if so enter the player number you'd like to trade with)")
+                potentialPartner = raw_input("Would like to ask a specific player (if so enter the player number you'd like to trade with) ")
                 if isInt(potentialPartner):
                     potentialPartner = int(potentialPartner)
                     if potentialPartner < len(players) and potentialPartner != curPlayer:
