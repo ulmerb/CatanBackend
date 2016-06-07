@@ -615,6 +615,12 @@ app.post('/tradeWithBankOrPort', function (request, response) {
     
 });
 
+app.post('/acceptOrRejectTrade', function (request, response) {
+    postDjango(request,response, 'tradeMaker', function(chunk) {
+        response.status(200).send(chunk);        
+    });    
+});
+
 
 
 
