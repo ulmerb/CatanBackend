@@ -57,13 +57,15 @@ class player:
 				return False, "Not enough of ", resource
 		return True, trade
 		
+	# server func
 	def makeTrade(self, offer, take, proposee, players):
+		# print "offer and take:", offer, take
 		for res in offer:
 			self.resources[res] -= offer[res]
 			players[proposee].resources[res] += offer[res]
 		for res in take:
-			self.resources[res] += offer[res]
-			players[proposee].resources[res] -= offer[res]
+			self.resources[res] += take[res]
+			players[proposee].resources[res] -= take[res]
 
 	#trade function based on Controller.trade 
 	def trade(curPlayer, players, board, AiNum = -2):

@@ -254,8 +254,8 @@ def playerTrade(request):
     offer = info['offer']
     take = info['take']
     userToTradeWith = info['userToTradeWithArr'][0]
-    if isAI(userToTradeWith):
-        executeAITrade(offer, take, settings.PLAYERS)
+    # if isAI(userToTradeWith):
+    #     executeAITrade(offer, take, settings.PLAYERS)
     canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
     if canTrade:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
@@ -277,8 +277,11 @@ def tradeMaker(request):
     canTrade, message = settings.PLAYERS[proposee].checkTrade(take)
     if canTrade:
         if accepted == 'accept':
+            print "before trade player 0 resource: ", settings.PLAYERS[proposer].resources, "player 1 resource:", settings.PLAYERS[proposee]
             settings.PLAYERS[proposer].makeTrade(
                 offer, take, proposee, settings.PLAYERS)
+            print "after trade player 0 resource: ", settings.PLAYERS[proposer].resources, "player 1 resource:", settings.PLAYERS[proposee]
+
             resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                             str(proposee) + " has accepted your offer", 0, proposer)
         else:
@@ -287,4 +290,4 @@ def tradeMaker(request):
     else:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                         str(proposee) + " has rejected your offer", 0, proposer)
-    return HttpResponse(resp) 
+    return HttpResponse(resp)
