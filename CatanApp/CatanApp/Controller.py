@@ -850,7 +850,7 @@ def trade(curPlayer, players, board, AiNum = -2):
 									players[curPlayer].addResource(r, recieve[r])
 									players[AiNum].loseResource(r, recieve[r])
 								for player in players:
-									print player
+									print player 
 								break
                         else:
                             executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
