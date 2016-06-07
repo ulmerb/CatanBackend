@@ -491,10 +491,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'userToTradeWithArr':arr},
                 function (model){
                     //suugest trade to others
-                    if (model.canTrade):
-                        scope.updateBoardBasedOnRecievedGameState(model);
-                    else:
-                        $scope.main.message_to_user = model.message;
+                    // if (model.canTrade):
+                    //     scope.updateBoardBasedOnRecievedGameState(model);
+                    // else:
+                    //     $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
                 }
