@@ -28,11 +28,14 @@ import sys
 
 class ai:
     
-    def __init__(self, i, verbose = True):
+    def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
-        self.weights =  {'incomeIncrease' : 200, 'centrality' : 10.0, 'costInTurns' : -20.0, 'costInRes' : -10.0, 'port' : 80.0}
+        #change this for not baseline
+        #self.weights =  {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
+        #this is the baseline
+        self.weights =  {'incomeIncrease' : 100, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 20.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
@@ -41,17 +44,17 @@ class ai:
         self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
-        self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
-        self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
+        self.scarceWeightsInc = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
+        self.scarceWeightsCost = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
    
 
     def numResources(self, resource):
       return self.AI.numResources(resource)
 
-    def loseResource(resource, numResource):
+    def loseResource(self, resource, numResource):
       self.AI.loseResource(resource, numResource)
     
-    def addResource(resource, numResource):
+    def addResource(self, resource, numResource):
       self.AI.addResource(resource, numResource)
 
     def incrementScore(self, s = 1):
@@ -334,10 +337,10 @@ class ai:
             exNum = 4
             if r in self.AI.structures['ports']:
                 exNum = 2
-                print "Port being used for 2 : 1 exchange"
+                if self.verbose: print "Port being used for 2 : 1 exchange"
             elif 'three' in self.AI.structures['ports']:
                 exNum = 3
-                print "Port being used for 3: 1 exchange"
+                if self.verbose: print "Port being used for 3: 1 exchange"
             if self.verbose: print "exchange", r , "for", exchange
             self.AI.resources[r] -= exNum
             self.AI.resources[exchange] += 1
@@ -410,7 +413,7 @@ class ai:
                         locObj = board.edges[roadInd]
                         self.AI.buildRoad(locObj, board)
                     self.AI.buildSettlement(settleObj, board)
-                    self.updateIncome(settleObj, board)
+                    self.updateIncome(settleObj, board) 
                     if self.verbose:
                         print settleObj.getCity()
                         print settleObj.getSettlement()
@@ -501,13 +504,17 @@ class ai:
                 bestloc = i
                 maxIncome = gain
           self.AI.buildSettlement(locs[bestloc], board)
-          self.updateIncome(locs[bestloc], board)
+          self.updateIncome(locs[bestloc], board)     		
           builtSettlementSpot = locs[bestloc].getIndex()
-          roadOptions = board.vertexToEdgeMap[builtSettlementSpot]
+          roadOptions = board.vertexToEdgeMap[builtSettlementSpot]	  
           if self.verbose: print builtSettlementSpot, "roadOptions", roadOptions
           if self.verbose: print "currently just choosing the first road on the list" # Currentliy just building at the first option
           roadChoice = board.edges[roadOptions[0]]
-          self.AI.buildRoad(roadChoice, board) 
+          self.AI.buildRoad(roadChoice, board)
+          if len(self.AI.structures['settlements']) == 2:
+                for tile in board.vertexToTileMap[locs[bestloc].index]:
+	 		if board.tiles[tile].type != "desert":
+	 			self.addResource(board.tiles[tile].type, 1)
       else:
         #sys.exit()
         curDistanceAway = 2
@@ -662,6 +669,7 @@ class ai:
                             total += scarceWeightsInc['soon']  * options[opt][field][r] * soonScarcity[r]
                             total += scarceWeightsInc['cur']  * options[opt][field][r] * curNormS[r]
                             total += scarceWeightsInc['gross']  * options[opt][field][r]
+                        #print total, "inc"
                         score += total * self.weights['incomeIncrease']
                     elif field == 'costInRes':
                         total = 0.0
@@ -670,6 +678,7 @@ class ai:
                             total += scarceWeightsCost['soon']  * options[opt][field][r] * soonScarcity[r]
                             total += scarceWeightsCost['cur']  * options[opt][field][r] * curNormS[r]
                             total += scarceWeightsCost['gross']  * options[opt][field][r]
+                        #print total, "cost"
                         score += total * self.weights['costInRes']
                     elif field == 'port':
                         if options[opt][field] in self.AI.structures['ports']:
@@ -683,7 +692,6 @@ class ai:
                              score += avg * self.weights[field] * 2.0/3.0
                         else:
                            score += self.income[options[opt][field]] * self.weights[field]     
-                        
                     elif field == 'costInTurns': 
                         vp = self.getVictoryPoints()
                         if vp == 7:
