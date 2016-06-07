@@ -114,6 +114,8 @@ def endOfTurn(request):
                 newCurPlayer + 1) % len(settings.PLAYERS)  # should be 0
             dRoll = Controller.rollDice(
                 settings.BOARD, settings.PLAYERS, newCurPlayer)
+            settings.BOARD.createBatchCSV(settings.PLAYERS)
+            settings.BOARD.batchUpdate()
             return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai placed robber, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
         else:
             settings.PLAYERS[newCurPlayer].decideMove(
@@ -122,6 +124,10 @@ def endOfTurn(request):
                 newCurPlayer + 1) % len(settings.PLAYERS)  # should be 0
             dRoll = Controller.rollDice(
                 settings.BOARD, settings.PLAYERS, newCurPlayer)
+            settings.BOARD.createBatchCSV(settings.PLAYERS)
+            settings.BOARD.batchUpdate()
+            print "LATEST BOARD"
+            settings.BOARD.printBoard()
             return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai moved, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
     else:
         if dRoll == 7:
