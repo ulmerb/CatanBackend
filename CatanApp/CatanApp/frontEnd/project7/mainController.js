@@ -2,8 +2,6 @@
 
 var cs142App = angular.module('cs142App', ['ngRoute', 'ngMaterial', 'ngResource']); //consider adding ngResource
 
-
-
 cs142App.config(['$routeProvider',
     function ($routeProvider) {
         $routeProvider.
@@ -26,7 +24,6 @@ cs142App.config(function($mdThemingProvider) {
             .primaryPalette('light-blue')
             .accentPalette('orange');
 });
-
 
 
 cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$resource', '$http',
@@ -244,7 +241,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.main.roads = model.players[$scope.main.currentPlayer].roads
             $scope.main.victoryPointCardsPlayed = model.players[$scope.main.currentPlayer].victoryPointCardsPlayed
             $scope.main.lengthOfLongestRoad = model.players[$scope.main.currentPlayer].lengthOfLongestRoad
-            $scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].knightsPlayed
+            //$scope.main.knightsPlayed = model.players[$scope.main.currentPlayer].devCardsPlayed.knight
+            
             var arr = model.boardString.split("\n");
             var newArr = [];
             for(var i = 0; i < arr.length; i++) {
@@ -314,8 +312,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             userRes.save({'suggestedLocation':suggestedVertexForSettlement, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
                     $scope.updateBoardBasedOnRecievedGameState(model);
-                    //TODO: if sett can be built, build it
-                    //else continue
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: buildSettlementButtonPressed failed";
                 }
@@ -341,10 +337,13 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var userRes = $resource("/buyCard");
             userRes.save({'curPlayer':$scope.main.currentPlayer},
                 function (model){
+                    console.log("model after card bought");
+                    console.log(model.players[$scope.main.currentPlayer].devCards);
+                    console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
-                    if(model.devCardName === "victoryPoint") {
-                        $scope.playDevCardButtonPressed("victoryPoint");
-                    }
+                    // if(model.devCardName === "victoryPoint") {
+                    //     $scope.playDevCardButtonPressed("victoryPoint");
+                    // }
                     //TODO: if card can be bought, build it
                     //else continue
                 }, function errorHandling(err) {
@@ -366,9 +365,14 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'devCardOre':$scope.main.devCardOre,
                 'roadLoc1':$scope.main.devCardRoadLocation1,
                 'roadLoc2':$scope.main.devCardRoadLocation2,
-                'curPlayer':$scope.main.currentPlayer
+                'curPlayer':$scope.main.currentPlayer,
+                'tilePosition':$scope.main.robberLocation,
+                'playerToStealFrom':$scope.main.robberPlayerToStealFrom
                 },
                 function (model){
+                    console.log("robber location:")
+                    console.log(model.robberTileLocation)
+                    console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
@@ -394,9 +398,35 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             )
         }
-        //Functionality: not implemented yet!
-        $scope.exchangeResourcesWithBankButtonPressed = function() {}
 
+        //Functionality: not implemented yet!
+        // $scope.exchangeResourcesWithBankButtonPressed = function(e) {
+        //     console.log();
+        // }
+
+         $scope.showBankTradeForm = function() {
+            var playerTrade = document.querySelector('.playerTradeStuff');
+            playerTrade.style.display = "none";
+            var bankTrade = document.querySelector(".bankTradeStuff");
+            bankTrade.style.display = "block";
+        }
+
+        $scope.showPlayerTradeForm = function() {
+            var playerTrade = document.querySelector('.playerTradeStuff');
+            playerTrade.style.display = "block";
+            var bankTrade = document.querySelector(".bankTradeStuff");
+            bankTrade.style.display = "none";
+        }
+
+        $scope.bankTradeInputs = function() {
+            var form = document.getElementById("tradeWithUsers"),
+            inputs = form.getElementsByTagName("INPUT");
+            if(inputs[4].checked) {
+                $scope.showBankTradeForm();
+            } else {
+                $scope.showPlayerTradeForm();
+            }
+        }
 
         //TODO: connect ot back end
         $scope.sendTradeMessageToUserMessage = function(){
@@ -405,12 +435,15 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                  + "This is what you want: Ore:" + $scope.main.get_ore + ", Brick:" + $scope.main.get_brick 
                  + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
             //get the checked users on the list:
+
+            
             var form = document.getElementById("tradeWithUsers"),
             inputs = form.getElementsByTagName("INPUT"),
             arr = [];
             for (var i = 0, max = inputs.length; i < max; i += 1) {
                // Take only those inputs which are checkbox
-               if (inputs[i].type === "checkbox" && inputs[i].checked) {
+               if (inputs[i].type === "radio" && inputs[i].checked) {
+                  console.log("ADDED "+ i)
                   arr.push(inputs[i].value);
                }
             }
@@ -436,6 +469,37 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             )
 
+        }
+
+        $scope.tradeWithBankOrPort = function(str) {
+            var userRes = $resource("/tradeWithBankOrPort");
+            var youWantResource = ""
+            var youGiveResource = ""
+
+            var form = document.getElementById("bankOrPortTrade"),
+            inputs = form.getElementsByTagName("INPUT"),
+            arr = [];
+            for (var i = 0, max = inputs.length; i < max; i += 1) {
+               // Take only those inputs which are checkbox
+               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="give") {
+                  youGiveResource = inputs[i].value;
+               }
+               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="want") {
+                  youWantResource = inputs[i].value;
+               }
+            }
+
+            //tradeEntity = port number or 'bank'
+            userRes.save({'curPlayer':$scope.main.currentPlayer,
+                'tradeEntity':str, 
+                'youWantResource':youWantResource,
+                'youGiveResource':youGiveResource},
+                function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.main.message_to_user = model.message;
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
+                });
         }
 
     }]);

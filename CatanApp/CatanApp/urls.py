@@ -19,7 +19,6 @@ from views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^djangotest/', djangotest),
     url(r'^newGame/', newGame),
     url(r'^build/',build),
     url(r'^endOfTurn/', endOfTurn),
@@ -28,6 +27,8 @@ urlpatterns = [
     url(r'^buildSettlement/', buildSettlement),
     url(r'^buildCity/', buildCity),
     url(r'^buyCard/', buyCard),
-    url(r'^playCard/', playCard)
+    url(r'^playCard/', playCard),
+    url(r'^portTrade/', portTrade),
+    url(r'^bankTrade/',bankTrade)
 
 ]

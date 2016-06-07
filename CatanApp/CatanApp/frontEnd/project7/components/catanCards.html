@@ -39,7 +39,7 @@
 <h3>Current Dev Cards</h3>
 	<div ng-if="main.devCards.length != 0">
 		<p>Year of plenty: {{main.devCards.yearOfPlenty}} </p>
-		<p>Road Building: {{main.devCards.roadBuilding}} </p>
+		<p>Road Building: {{main.devCards.roadBuild}} </p>
 		<p>Knight: {{main.devCards.knight}} </p>
 		<p>Monopoly: {{main.devCards.monopoly}} </p>
 		<p>Victory Point: {{main.devCards.victoryPoint}} </p>
@@ -53,7 +53,7 @@
 		<h4>Knights Played</h4>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>Player number{{$index + 1}}: {{player.knightsPlayed}} knights</p>
+		<p>Player number{{$index + 1}}: {{player.devCardsPlayed.knight}} knights</p>
 	</div>
 
 	<div ng-if="main.hasLargestArmy">
@@ -194,7 +194,7 @@
 		<md-input-container>
         	<label>Steal from player number:</label>
         	<input ng-model="main.robberPlayerToStealFrom"><br>		
-        	<md-button id="moveRobber" ng-click="setRobberPosition()">play robber</md-button>
+        	<md-button id="moveRobber" ng-click="playDevCardButtonPressed('knight')">play robber</md-button>
        	</md-input-container> 
 	</div>	
 	<div>

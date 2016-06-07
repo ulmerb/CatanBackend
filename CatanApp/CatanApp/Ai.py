@@ -23,18 +23,22 @@
 
 import math
 import Player
+import VertexToCentralityDict
 
 class ai:
     
     def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
+        self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
-        self.weights =  {'incomeIncrease' : 1000, 'centrality' : 1.0, 'costInTurns' : -1.0, 'costInRes' : -1.0, 'port' : 1.0, 'vp' : 1.0}
+        self.weights =  {'incomeIncrease' : 100, 'centrality' : 1.0, 'costInTurns' : -20.0, 'costInRes' : -1.0, 'port' : 80.0, 'vp' : 1.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
         self.overallScarcity = None
         self.savedPaths = {}
+        self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
+        54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
    
     # getResourceCost(buildType,roadsAway)
@@ -121,6 +125,11 @@ class ai:
    	    stockpile[r] += incomeMap[r] * baseTurns	
    	while(len(modResCost) > 0):
    	    for r in stockpile:
+   	        exNum = 4
+   	        if r in self.AI.structures['ports']:
+   	            exNum = 2
+   	        elif 'three' in self.AI.structures['ports']:
+   	            exNum = 3
    	        if r in modResCost:
    	            if stockpile[r] >= 1:
    	                if modResCost[r] <= stockpile[r]:
@@ -131,12 +140,12 @@ class ai:
    	                else:
    	                    modResCost[r] -= int(stockpile[r])
    	                    stockpile[r] -= int(stockpile[r])
-   	        elif stockpile[r] >= 4:
-   	            while(stockpile[r] >= 4):
+   	        elif stockpile[r] >= exNum:
+   	            while(stockpile[r] >= exNum):
            	            exchange = self.findNeed(modResCost, incomeMap)
            	            if exchange == None:
            	                return turnCost
-           	            stockpile[r] -= 4
+           	            stockpile[r] -= exNum
            	            modResCost[exchange] -= 1
            	            if modResCost[exchange] == 0:
            	                modResCost.pop(exchange)
@@ -280,7 +289,12 @@ class ai:
             if self.verbose: print exchange
             sortRes = []
             for r in self.AI.resources:
-                sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
+                if r in self.AI.structures['ports']:
+                    sortRes.append((self.AI.resources[r] - cost[r] + 2, self.income[r], r))
+                elif 'three' in self.AI.structures['ports']:
+                    sortRes.append((self.AI.resources[r] - cost[r] + 1, self.income[r], r))
+                else:
+                    sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)
             if self.verbose: print sortRes
@@ -291,8 +305,15 @@ class ai:
                     if self.verbose: print "something went wrong, it doesnt appear the " + typeS + " can be built"
                 return False
             r = sortRes[0][2]
+            exNum = 4
+            if r in self.AI.structures['ports']:
+                exNum = 2
+                print "Port being used for 2 : 1 exchange"
+            elif 'three' in self.AI.structures['ports']:
+                exNum = 3
+                print "Port being used for 3: 1 exchange"
             if self.verbose: print "exchange", r , "for", exchange
-            self.AI.resources[r] -= 4
+            self.AI.resources[r] -= exNum
             self.AI.resources[exchange] += 1
             modCost[exchange] -= 1
             if locObj == -1:
@@ -315,7 +336,6 @@ class ai:
         #exchanges come into play
         #more advanced step
         #self.AI.resources =  {'wood':40, 'sheep':0, 'brick': 0, 'ore': 10, 'grain' : 10}
-
         if self.verbose: print "the ai is executing option", bestOptionKey, bestOption
         if bestOption['backtrace'][0] == 'settlement':
             settleLoc = int(bestOptionKey[:2])
@@ -337,10 +357,15 @@ class ai:
                     locObj = board.edges[roadInd]
                     self.AI.buildRoad(locObj, board)
                 self.AI.buildSettlement(settleObj, board)
+                if self.verbose:
+                    print settleObj.getCity()
+                    print settleObj.getSettlement()
+                    print "owner checks settlement"
                 self.updateIncome(settleObj, board)
                 if self.verbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
+		    print board.printBoard()
 	            print "the AI has built a settlement"
 	        return True
 	    else:
@@ -354,11 +379,15 @@ class ai:
                     self.AI.buildSettlement(settleObj, board)
                     self.updateIncome(settleObj, board)
                     if self.verbose:
+                        print settleObj.getCity()
+                        print settleObj.getSettlement()
+                        print "owner checks settlement"
+                    if self.verbose:
                         board.createBatchCSV(players)
 		        board.batchUpdate()
+		        print board.printBoard()
                         print "the AI has built a settlement after some resource reallocation"
                     return True
-
         elif bestOption['backtrace'][0] == 'city':
             if self.verbose: print "time to upgrade our chosen loc"
             cost = self.getResourceCost('city', 0)
@@ -368,9 +397,14 @@ class ai:
             if self.AI.canBuildCity(locObj):
                 self.AI.buildCity(locObj, board)
                 self.updateIncome(locObj, board)
+                if self.verbose:
+                    print locObj.getCity()
+                    print locObj.getSettlement()
+                    print "owner checks city"
                 if self.verbose: 
                     board.createBatchCSV(players)
 		    board.batchUpdate()
+		    print board.printBoard()
                     print "the AI has built a city"
                 return True
             else:
@@ -379,9 +413,14 @@ class ai:
                 if self.makeExchange(cost, board, locObj, players, 'city'):
                     self.AI.buildCity(locObj, board)
                     self.updateIncome(locObj, board)
+                    if self.verbose:
+                        print locObj.getCity()
+                        print locObj.getSettlement()
+                        print "owner checks city"
                     if self.verbose: 
                         board.createBatchCSV(players)
                         board.batchUpdate()
+                        print board.printBoard()
                         print "the AI has built a city after some resource reallocation"
                     return True
         elif bestOption['backtrace'][0] == 'dev':
@@ -437,6 +476,7 @@ class ai:
           roadChoice = board.edges[roadOptions[0]]
           self.AI.buildRoad(roadChoice, board) 
       else:
+        #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]},"pass": {'backtrace' : ['pass', None, 0]} }
@@ -458,7 +498,9 @@ class ai:
                         turnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                         resCost = sum(self.getResourceCost('settlement', roadsAway).values())
                         options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['settlement', settlement, roadsAway]}
-                if (len(options) >= 7 or curDistanceAway >= 5):
+                        if playableS.index in self.portsMap.keys():
+                            options[asciiRepresentation]['port'] = self.portsMap[playableS.index]
+                if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
         if self.verbose: print self.AI.structures['settlements']
@@ -479,6 +521,10 @@ class ai:
         if bestOptionKey[0] == 'pass':
             "The wise Ai has contemplated all its options and decided to pass"
             return
+        if type(bestOption) == str:
+            print "error####################"
+            print bestOption
+            print bestOptionKey[0]
         if bestOption['costInTurns'] == 0:
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
                     if self.verbose: print "the Ai is checking for more actions"
@@ -492,6 +538,7 @@ class ai:
             if self.verbose: print self.AI.structures['cities'], "cities"
             #board.createBatchCSV(players)
 	    #board.batchUpdate()
+	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
         if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
@@ -527,17 +574,30 @@ class ai:
                        if self.verbose:
                            board.createBatchCSV(players)
 		           board.batchUpdate()
+		           print board.printBoard()
                            print "the AI has built a road at", roadInd, "to reduce its hand size"
                 if not changeMade:
-                    if max(self.AI.resources.values()) >= 4:
+                    if max(self.AI.resources.values()) >= 4 or self.possiblePortEx():
                         if self.makeExchange(cost, board, -1, players, bestOption['backtrace'][0]):
                             changeMade = True
-                            if self.verbose: print "the AI has made a bank exchange to reduce its hand size@"
+                            if self.verbose: print "the AI has made a bank exchange to reduce its hand size"
                             
                 if not changeMade:
                     break
         #end 7 cards in hand handle                
         return vp
+    def possiblePortEx(self):
+        maxi = max(self.AI.resources.values())
+        if maxi == 1:
+            return False
+        if maxi >= 3:
+            if 'three' in self.AI.structures['ports']:
+                return True
+        elif maxi >= 2:
+            for r in self.AI.resources:
+                if self.AI.resources[r] ==2 and r in self.AI.structures['ports']:
+                    return True
+        return False
     def evaluateOptions(self, options):
         bestOption = ""
         bestScore = -float('inf')
@@ -546,7 +606,23 @@ class ai:
             for field in options[opt]:
                     if field not in self.weights:
                         continue
-                    score += options[opt][field] * self.weights[field]
+                    elif field == 'port':
+                        if options[opt][field] in self.AI.structures['ports']:
+                            continue
+                        if options[opt][field] == 'three':
+                             sortInc = []
+                             for r in self.income:
+                                sortInc.append((self.income[r]))
+                             sortInc.sort(reverse=True)
+                             avg = (sortInc[0] + sortInc[1])/2.0
+                             score += avg * self.weights[field] * 2.0/3.0
+                        else:
+                           score += self.income[options[opt][field]] * self.weights[field]     
+                        
+                    
+                    else:
+                        score += options[opt][field] * self.weights[field]
+                    
             if score > bestScore:
                 bestOption = opt
                 bestScore = score
@@ -607,9 +683,12 @@ class ai:
     def tests(self):
         if self.verbose: print self.AI.roadsRemaining
 
-    def getCentrality(self,board,vertex): # basic version just gives precedents to being next to more total tiles
-        neighborTiles = board.getVertexToTiles(vertex)
-        return len(neighborTiles)
+    def getCentrality(self,board,vertex): # advanced version gives distance to the edge
+        returnable = self.vertexToCentralityMap[vertex.getIndex()]
+        return returnable
+        # OLD VERSION
+        # neighborTiles = board.getVertexToTiles(vertex)
+        # return len(neighborTiles)
         # USE case  
             # for vertex in board.getAllVertices():
             # print "vertex",vertex

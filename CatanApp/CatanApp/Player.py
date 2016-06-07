@@ -6,7 +6,7 @@ class player:
 	def __init__(self, i):
 		self.score =  0
 		#self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
-		self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
+		self.resources =  {'wood': 14, 'sheep':12, 'brick': 14, 'ore': 10, 'grain' : 12}
 		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
@@ -21,8 +21,36 @@ class player:
 	def __str__(self):
 		return str(self.playerNumber) + " resources:" + str(self.resources) + " score: " + str(self.score)
 	
+	def bankTrade(self, give, take):
+		if self.resources[give] >= 4:
+			self.resources[give] -= 4
+			self.resources[take] += 1
+		else:
+			return "Not enough " + give
+
+	def makePortTrade(self, port, give, take):
+		print port
+		if port in self.structures['ports']:
+			if port == "three":
+				if self.resources[give] >= 3:
+					self.resources[give] -= 3
+					self.resources[take] += 1
+				else:
+					return "Not enough " + give
+			else:
+				error = self.specPortTrade(port, take)
+				return error
+		else:
+			return port + " not owned"
+
+	def specPortTrade(self,port, take):
+		if self.resources[port] >= 2:
+			self.resources[port] -= 2
+			self.resources[take] += 1
+		else:
+			return "Not enough " + port
 	def getScore(self):
-		return self.score   
+		return self.score
                 
 	def incrementScore(self, s = 1):
 		self.score += s
@@ -37,7 +65,7 @@ class player:
 			if cur > bestFound:
 				bestFound = cur
 			roads.add(road)
-		print "Found lenght ", bestFound
+		print "Found length ", bestFound
 		return bestFound
 
 	def findPathFromRoad(self, start, end, roads, board):
@@ -179,7 +207,9 @@ class player:
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location.index)
 		    self.score += 1
-		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
+
+		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']) + len(self.structures['cities']))
+
 		    ind = location.index
 		    three = [5,6,3,4,28,17,53,54]
 		    ore = [39,40]
@@ -189,15 +219,21 @@ class player:
 		    brick = [16, 26]
 		    if ind in three:
 		        self.structures['ports'].append('three')
+		        print "You've gained a 3:1 port"
 		    elif ind in ore:
 		        self.structures['ports'].append('ore')
+		        print "You've gained an ore port"
 		    elif ind in sheep:
 		        self.structures['ports'].append('sheep')
+		        print "you've gained a sheep port"
 		    elif ind in grain:
+		        print "you've gained a grain port"
 		        self.structures['ports'].append('grain')
 		    elif ind in wood:
+		        print "youve'gained a wood port"
 		        self.structures['ports'].append('wood')
 		    elif ind in brick:
+		        print "you've gained a brick port"
 		        self.structures['ports'].append('brick')
 		    board.addSettlement(location)
 		else:
@@ -217,9 +253,11 @@ class player:
 		    location.buildCity(self.playerNumber, len(self.structures['cities']))
 		else:
 		    print "You cannot build a city there"
+	def canAffordDevCard(self):
+	    return self.resources['sheep'] > 0 and self.resources['grain'] > 0 and self.resources['ore'] > 0
 
 	def buildDevCard(self, deck):
-		if self.canPlayDevCard:
+		if self.canAffordDevCard():
 		    #we will need a deck to draw from
 		    nameCard = deck.getRandomDevCard()
 		    print "You have built ", nameCard
@@ -234,8 +272,7 @@ class player:
 		    self.resources['ore'] -=1
 		    return None, nameCard
 		else:
-		    print "You cannot draw a development card right now"
-		    return "failed" , None
+		    return "You can't afford that" , None
 
 	def loseRandomCard(self):
        	    resources = []

@@ -34,6 +34,7 @@ def tileInitialization(numPlayers, ai):
 def rollDice(board, players, curPlayer, AiNum=-1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
+	        print str(diceRoll) + " was rolled"
 		#print "Robber not handled"
 		return diceRoll
 	else:
@@ -69,7 +70,8 @@ def serverBuildRoad(curPlayer, players, board, sugLoc):
 	if sugLoc in board.asciiToEdge:
 		loc = board.asciiToEdge[sugLoc]
 		players[curPlayer].buildRoad(loc, board)
-		asc.buildRoad(board.currentBoardNumber, sugLoc, str(curPlayer))
+		board.createBatchCSV(players)
+		board.batchUpdate()
 	else:
 		return "road build failed"
 
@@ -77,9 +79,13 @@ def serverBuildSettlement(curPlayer, players, board, sugLoc):
 	if sugLoc in board.asciiToVertex:
 		loc = board.asciiToVertex[sugLoc]
 		players[curPlayer].buildSettlement(loc, board)
+		#test
+		board.createBatchCSV(players)
+		board.batchUpdate()
+		print "my current board:"
+		print board.printBoard()
 		# if not error:
 		board.handlePortConstruction(curPlayer, loc)
-		asc.buildSettlement(board.currentBoardNumber, sugLoc, str(curPlayer), str(5 - players[curPlayer].settlementsRemaining))
 		# else:
 			# return error
 	else:
@@ -89,17 +95,20 @@ def serverBuildCity(curPlayer, players, board, sugLoc):
 	if board.validCityLoc(sugLoc):
 		loc = board.asciiToVertex[board.getSettlementFromAscii(sugLoc)]
 		players[curPlayer].buildCity(loc, board)
-		asc.buildCity(board.currentBoardNumber,sugLoc,str(curPlayer))
+		board.createBatchCSV(players)
+		board.batchUpdate()
 	else:
 		return "city build failed"
 
 
-def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2):
+def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2, tilePosition, playerToStealFrom):
 	if chosenCard == "knight":
 		print "You played a knight!"
-		handleRobber(curPlayer, players, board)
-		recalculateLargestArmy(players, board)
+		#handleRobber(curPlayer, players, board)
+		#error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
+		serverHandleRobber(curPlayer, players, tilePosition, playerToStealFrom, board, -1) #TO DO change AI number
 		players[curPlayer].playDevCard(chosenCard)
+		recalculateLargestArmy(players, board)
 	if chosenCard == "victoryPoint":
 		players[curPlayer].incrementScore()
 		players[curPlayer].playDevCard(chosenCard)
@@ -199,6 +208,7 @@ def main():
                     #print board.printBoard()
                     firstPlacement(numPlayers, players, board, AiNum)
                     stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                print stats
                 print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
         else:
             board = Board.board()
@@ -237,7 +247,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	        else:
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 100:
+		if gameEnd or turnCounter >= 1000:
 			break
 		turnCounter += 1
 
@@ -249,7 +259,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	askPlayerIfDevCard(curPlayer, players, board)
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
-		#print "Robber not handled"
+		print "7 is rolled, robber!"
 		handleResourceLossFromRobber(players, board)
 		handleRobber(curPlayer, players, board, AiNum)
 	else:
@@ -443,9 +453,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()    
 		initialPlacement(i, players, board)
@@ -455,9 +465,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range(numPlayers -1, -1, -1):
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()
 	 	setLoc = initialPlacement(i, players, board)
@@ -562,6 +572,7 @@ def recalculateLargestArmy(players, board):
 			maxKnights = numKnights
 			leadingPlayer = player
 			bestIndex = curIndex
+		print "player "+ str(curIndex) +"played "+ str(numKnights) + "knights!!!!"
 		curIndex += 1
 	if maxKnights >= 3 and maxKnights > board.curMaxKnights:
 		if board.largestArmy != -1:

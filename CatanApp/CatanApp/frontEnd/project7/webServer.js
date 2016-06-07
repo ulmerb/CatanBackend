@@ -571,8 +571,8 @@ app.post('/buyCard', function (request, response) {
 app.post('/playDevCard', function (request, response) {
     var devCardType = request.body.devCardType
     console.log("playDevCard Pressed, Type: "+ devCardType)
-    console.log("loc1"+request.body.roadLoc1)
-    console.log("loc1"+request.body.roadLoc2)
+    console.log(request.body.tilePosition)
+    console.log(request.body.playerToStealFrom)
     postDjango(request, response, 'playCard', function(chunk){
         response.status(200).send(chunk);    
     });
@@ -583,6 +583,9 @@ app.post('/setRobberPosition', function (request, response) {
     // var tilePosition = request.body.tilePosition;
     // var playerToStealFrom = request.body.playerToStealFrom;
     postDjango(request,response, 'placeRobber', function(chunk) {
+        console.log("info")
+        console.log(request.body.tilePosition)
+        console.log(request.body.playerToStealFrom)
         response.status(200).send(chunk);        
     });
     // console.log("setRobberPosition Pressed, new position: "+ tilePosition)
@@ -590,11 +593,25 @@ app.post('/setRobberPosition', function (request, response) {
 });
 
 app.post('/suggestTrade', function (request, response) {
-    console.log("user suggested a trade")
-    console.log(request.body.userToTradeWithArr)
-    postDjango(request,response, '*** New place holder ***', function(chunk) {
+    postDjango(request,response, 'playerTrade', function(chunk) {
         response.status(200).send(chunk);        
     });
+    
+});
+
+app.post('/tradeWithBankOrPort', function (request, response) {
+    console.log("user would like to trade with Bank/Port")
+    console.log(request.body.tradeEntity)
+    if(request.body.tradeEntity === 'bank') {
+        postDjango(request,response, 'bankTrade', function(chunk) {
+            response.status(200).send(chunk);        
+        });
+    } else if(request.body.tradeEntity === 'port') {
+        postDjango(request,response, 'portTrade', function(chunk) {
+            response.status(200).send(chunk);        
+        });
+    }
+    
 });
 
 
