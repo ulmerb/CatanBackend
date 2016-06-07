@@ -817,8 +817,3 @@ class ai:
                     if self.verbose: print "The ai has discared", excess, sortRes[0][2]
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)
-                    
-
-
-
-    
