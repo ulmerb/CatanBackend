@@ -34,7 +34,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.version = "0"; //added this version
         $scope.main.map = ["                         /~~~~~~\\~~port3~~/~~~~~~~\\\n", "                        /~~~~~~~~\\*~~~~~*/~~~~~~~~~\\\n", "                 >-----<~~~~~~~~~01V-01R-02V~~~~~~~~>-----<\n", "                /~~~~~~~\\~~~~~~~~/       \\~~~~~~~~~~/~~~~~~\\\n", "               /~~~~~~~~\\~~~~~~~02R      03R~~~~~~~~/~~~~~~~\\\n", "              /~~~~~~~~~\\~~~~~~~/   01T    \\~~~~~~~/~~~~~~~~\\\n", "       >-----<~~port2~*03V-04R-04V        05V-05R-06V*~port4~>-----<\n", "      /~~~~~~~\\~~~~~~~~~/       \\         /       \\~~~~~~~~~~/~~~~~~\\\n", "      /~~~~~~~\\~~~~~~~~06R       07R      08R      09R~~~~~~~/~~~~~~~\\\n", "     /~~~~~~~~~\\~~~~~~*/  02T    \\       /   03T    \\*~~~~~~/~~~~~~~~\\\n", "    <~~~~~~~~~07V-10R-08V        09V-11R-10V       11V-12R-12V~~~~~~~~>\n", "     \\~~~~~~~~~/       \\         /       \\         /       \\~~~~~~~~~/\n", "     \\~~~~~~~13R      14R      15R      16R      17R      18R~~~~~~~~/\n", "      \\~~~~~~~/  04T    \\       /   05T   \\       /   06T   \\~~~~~~~/\n", "       >---- 13V       14V-19R-15V       15V-20R-16V        17V----<\n", "      /~~~~~~~\\         /       \\         /       \\         /~~~~~~\\\n", "     /~~~~~~~~21R      22R      23R      24R      25R     26R~~~~~~~\\\n", "     /~~~~~~~~~\\       /    07T  \\       /   08T   \\       /~~~~~~~~~\\\n", "   <~~~port1~~*18V-27R-19V      20V-28R-21V       22V-29R-23V*~port5~~>\n", "     \\~~~~~~~~~/       \\         /       \\         /       \\~~~~~~~~~~/\n", "     \\~~~~~~~30R      31R      32R      33R      34R      35R~~~~~~~~/ \n", "      \\~~~~~~*/   09T   \\       /   10T   \\       /   11T   \\*~~~~~~~/\n", "       >----24V        25V-36R-26V       27V-37R-28V        29V-----<\n", "      /~~~~~~~\\         /       \\         /       \\         /~~~~~~~\\\n", "     /~~~~~~~38R      39R     40R       41R      42R      43R~~~~~~~~\\\n", "     /~~~~~~~~~\\       /   12T   \\       /   13T   \\       /~~~~~~~~~\\\n", "    <~~~~~~~~~30V-44R-31V       32V-45R-33V       34V-46R-35V~~~~~~~~~>\n", "     \\~~~~~~~~~/       \\         /       \\         /       \\~~~~~~~~/\n", "     \\~~~~~~~~47R     48R       49R      50R     51R      52R~~~~~~~/\n", "      \\~~~~~~~/   14T   \\       /   15T   \\       /   16T   \\~~~~~~~~/\n", "       >-----36V       37V-53R-38V       39V-54R-40V       41V------< \n", "      /~~~~~~*\\         /       \\         /       \\         /*~~~~~~\\\n", "     /~~~~~~~~55R      56R     57R       58R     59R       60R~~~~~~\\\n", "     /~~~~~~~~~\\       /   17T   \\       /   18T   \\       /~~~~~~~~~\\\n", "    <~~port9~~*42V-61R-43V      44V-62R-45V       46V-63R-47V*~port6~~>\n", "     \\~~~~~~~~~/~~~~~~~\\         /       \\         /~~~~~~~\\~~~~~~~~~/\n", "     \\~~~~~~~~/~~~~~~~~63R      64R      65R     66R~~~~~~~\\~~~~~~~~~/\n", "      \\~~~~~~~/~~~~~~~~~\\       /   19T   \\       /~~~~~~~~~\\~~~~~~~/\n", "       >-----< ~~~~~~~~48V-67R-49V       50V-68R-51V~~~~~~~~~>------<\n", "              \\~~~~~~~~~/*~~~~~*\\         /*~~~~~*\\~~~~~~~~~/\n", "              \\~~~~~~~~/~~~~~~~~69R     70R~~~~~~~\\~~~~~~~~/\n", "               \\~~~~~~~/~~~~~~~~~\\       /~~~~~~~~~\\~~~~~~~/\n", "                >-----<~~~port8~~52V-71R-53V~~port7~>-----<\n", "                       \\~~~~~~~~~/~~~~~~~\\~~~~~~~~~/\n", "                        \\~~~~~~~/~~~~~~~~~\\~~~~~~~/\n"];
         $scope.main.temp = ["1","2","2"]
-
+        $scope.main.turnCount = 0;
         $scope.main.message_to_user = ""
         // trading vars:
         $scope.main.give_ore = 0
@@ -229,6 +229,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             console.log(model);
             
             //update variables:
+            console.log("curPlayer", model.currentPlayer);
             $scope.main.currentPlayer = model.currentPlayer
             $scope.main.numPlayers = model.numPlayers
             $scope.main.message_to_user = model.message
@@ -258,6 +259,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             }
             $scope.main.map = newArr;
+            for (var i = 0; i < $scope.main.map.length; i++) {
+                var newstr = $scope.main.map.replace(/(\dS\d)/g,"<div style='color:red'>$1</div>");
+                $scope.main.map[i].trustAsHtml(newstr);
+            };
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
@@ -270,10 +275,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         //Functions for Game actions:
         //***************************
         $scope.endTurnPressed = function () {  
-            if($scope.main.currentPlayer) {}
+            if($scope.main.currentPlayer === $scope.main.players.length - 1) {
+                $scope.main.turnCount++;
+            }
             var userRes = $resource("/endOfTurn");
             console.log('currentPlayer before' + $scope.main.currentPlayer);
-            userRes.save({'currentPlayer': $scope.main.currentPlayer},
+            userRes.save({'currentPlayer': $scope.main.currentPlayer, 'turnCount':$scope.main.turnCount},
                 function (model){
                     $scope.updateBoardBasedOnRecievedGameState(model)
                     //TODO: set up the board for the next player
@@ -473,8 +480,9 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             for (var i = 0, max = inputs.length; i < max; i += 1) {
                // Take only those inputs which are checkbox
                if (inputs[i].type === "radio" && inputs[i].checked) {
-                  console.log("ADDED user to trade with: "+ i)
-                  arr.push(parseInt(inputs[i].value)+1);
+                  console.log(inputs[i].value);
+                  arr.push(parseInt(inputs[i].value));
+
                }
             }
 
@@ -508,6 +516,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                         $scope.main.offer = model.offer
                         $scope.main.take = model.take
                         $scope.main.proposer = model.proposer
+
                         $scope.switchToTradeModeUI()
                         
                         var playerTrade = document.querySelector(".playerTradeStuff");

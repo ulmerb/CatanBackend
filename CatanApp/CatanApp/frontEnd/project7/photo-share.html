@@ -60,7 +60,7 @@
                     <h3>Trade with:</h3>
                     <form id="trading" name="trading">
                         <div ng-repeat="player in main.players" ng-if="main.isUserLoggedIn && player.index != main.currentPlayer">
-                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value="player.index"> Player{{player.index}} <br>
+                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value={{player.index}}> Player{{player.index}} <br>
                             <!-- <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
                             <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>
                             <input type="radio" name="trade" ng-click="playerTradeInputs()" value="2"> Player3 <br>
@@ -135,6 +135,7 @@
                 <div style="line-height: 0px" ng-repeat="line in main.map" ng-if="main.isUserLoggedIn">
                     <!-- <a href="#users/{{user.id}}">{{user.first_name}} {{user.last_name}}</a> -->
                     <p><pre>{{line}}</pre></p>
+                    
                 </div>
 
                 <div ng-view></div>
