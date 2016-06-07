@@ -486,7 +486,8 @@ class ai:
         #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
-        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
+        # options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
+        options = {}
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
         if self.AI.settlementsRemaining > 0:

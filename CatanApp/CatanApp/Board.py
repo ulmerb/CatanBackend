@@ -163,6 +163,22 @@ class board:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
 
+			# ports
+			for i in xrange (1,10):
+				prevAscii = "port"+str(i)
+				newAscii = "#3:1#"
+				if(i==8):
+					newAscii = "#2:1O"
+				if(i==1):
+					newAscii = "#2:1S"
+				if(i==7):
+					newAscii = "#2:1G"
+				if(i==5):
+					newAscii = "#2:1W"
+				if(i==4):
+					newAscii = "#2:1B"
+				writer.writerow([prevAscii,newAscii])
+
 	def robberTileAscii(self, num):
 		result = "T"
 		if num < 10:
