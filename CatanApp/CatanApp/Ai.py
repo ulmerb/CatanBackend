@@ -783,4 +783,38 @@ class ai:
 
 
     def handleDiscard(self):
-        # STUB
+        sortRes = []
+        numLost = sum(self.AI.resources.values())
+        if self.verbose: print "The ai must discard", numLost, "resources"
+        bestMove = self.savedBestOpt
+        if bestMove[0] == None:
+            cost = {'wood': 0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+        else:
+            cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
+        for r in self.AI.resources:
+             sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
+        sortRes.sort(key=lambda tup: tup[1], reverse=True)
+        sortRes.sort(key=lambda tup: tup[0], reverse=True)
+        while (numLost > 0):
+            excess = sortRes[0][0]
+            if excess <= 0:
+                if self.resources[sortRes[0][2]] == 0:
+                    del sortRes[0]
+                else:
+                    self.resources[sortRes[0][2]] -=1
+                    numLost -= 1
+                    sortRes[0][0] -= 1
+                    if self.verbose: print "The ai has discared 1", sortRes[0][2]
+            else:
+                if excess >= numLost:
+                    self.AI.resources[sortRes[0][2]] -= numLost
+                    numLost = 0
+                    if self.verbose: print "The ai has discared", numLost, sortRes[0][2]
+                    break
+                else:
+                    self.AI.resources[sortRes[0][2]] -= excess
+                    numLost -= excess
+                    sortRes[0][0] -= excess
+                    if self.verbose: print "The ai has discared", excess, sortRes[0][2]
+            sortRes.sort(key=lambda tup: tup[1], reverse=True)
+            sortRes.sort(key=lambda tup: tup[0], reverse=True)
