@@ -43,6 +43,16 @@ class ai:
         self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
         self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
    
+
+    def numResources(self, resource):
+      return self.AI.numResources(resource)
+
+    def loseResource(resource, numResource):
+      self.AI.loseResource(resource, numResource)
+    
+    def addResource(resource, numResource):
+      self.AI.addResource(resource, numResource)
+
     def incrementScore(self, s = 1):
       self.AI.incrementScore(s)
 
@@ -686,7 +696,7 @@ class ai:
         maxDamage = 0
         for tile in board.getAllTiles():
           badChoice = False
-          if tile.robber == True: # can't option not to move the robber
+          if tile.robber == True or tile.type() == "desert": # can't option not to move the robber
             badChoice = True
             continue 
           vertexes = board.getTileToVertices(tile)
@@ -697,9 +707,9 @@ class ai:
               break
             if vertex.getOwner() != None:
               if vertex.getSettlement() != self.AI.playerNumber:
-                occupiedSpots += 1
+                occupiedSpots += 1+self.diceProbs[tile.getNumber()]
               elif vertex.getCity() != self.AI.playerNumber:
-                occupiedSpots += 2
+                occupiedSpots += 2+self.diceProbs[tile.getNumber()]
               else:
                 if self.verbose: print "weirdness in placing robber"
           if badChoice == True: # one of AI settlements is here
