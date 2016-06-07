@@ -466,7 +466,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         }
 
         $scope.isAi = function(playerNum) {
-            return (playerNum === numPlayers - 1);
+            return (playerNum === $scope.main.numPlayers - 1);
         }
 
         //TODO: connect ot back end
@@ -510,7 +510,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'userToTradeWithArr':arr},
                 function (model){
                     //suggest trade to others
-                    console.log(model)
                     if (model.canTrade) {
                         console.log("can trade:true")
                         $scope.main.isTrading = true
@@ -521,10 +520,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                         $scope.main.proposer = model.proposer
                         if(!($scope.isAi(scope.main.currentPlayer))){
                             $scope.switchToTradeModeUI()
-                        } else {
-                            //crapityccrap
-                        }
-                        
+                        } 
                         var playerTrade = document.querySelector(".playerTradeStuff");
                         playerTrade.style.display = "none";
                         var acceptReject = document.querySelector(".acceptReject");

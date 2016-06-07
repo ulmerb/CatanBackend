@@ -31,7 +31,7 @@ def tileInitialization(numPlayers, ai):
 	   board.batchUpdate()
 	return board, players
 
-def rollDice(board, players, curPlayer, AiNum=-1):
+def rollDice(board, players, curPlayer):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
 	        print str(diceRoll) + " was rolled"

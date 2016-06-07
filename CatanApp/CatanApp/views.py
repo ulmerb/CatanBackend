@@ -105,18 +105,31 @@ def build(request):
 def endOfTurn(request):
     info = json.loads(request.POST['js_resp'])
     newCurPlayer = int(info['currentPlayer'] + 1) % len(settings.PLAYERS)
-    turnCount = info['turnCount']
-    if turnCount > 0:
-        dRoll = Controller.rollDice(
-            settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
+    dRoll = Controller.rollDice(
+        settings.BOARD, settings.PLAYERS, newCurPlayer)
+    if isAI(newCurPlayer):
+        if dRoll == 7:
+            settings.PLAYERS[newCurPlayer].placeRobber(settings.BOARD)
+            newCurPlayer = int(
+                newCurPlayer + 1) % len(settings.PLAYERS)  # should be 0
+            dRoll = Controller.rollDice(
+                settings.BOARD, settings.PLAYERS, newCurPlayer)
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai placed robber, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
+        else:
+            settings.PLAYERS[newCurPlayer].decideMove(
+                settings.PLAYERS, settings.BOARD, False)
+            newCurPlayer = int(
+                newCurPlayer + 1) % len(settings.PLAYERS)  # should be 0
+            dRoll = Controller.rollDice(
+                settings.BOARD, settings.PLAYERS, newCurPlayer)
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai moved, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
     else:
-        dRoll = 0
-    if dRoll == 7:
-        resp = makeJson(
-            settings.BOARD, settings.PLAYERS, "Robber!", dRoll, newCurPlayer)
-    else:
-        resp = makeJson(
-            settings.BOARD, settings.PLAYERS, "not robber", dRoll, newCurPlayer)
+        if dRoll == 7:
+            resp = makeJson(
+                settings.BOARD, settings.PLAYERS, "Robber!", dRoll, newCurPlayer)
+        else:
+            resp = makeJson(
+                settings.BOARD, settings.PLAYERS, "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer)
     return HttpResponse(resp)
 
 
@@ -127,6 +140,10 @@ def placeRobber(request):
     target = int(info['playerToStealFrom'])
     curPlayer = int(info['currentPlayer'])
     print "old board number", settings.BOARD.currentBoardNumber
+    if isAI(target):
+        settings.PLAYERS[target].handleDiscard()
+        return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai has discarded, " + "Player " + str(curPlayer) + "'s turn", 7, curPlayer))
+
     error = Controller.serverHandleRobber(
         curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
     print "new board number", settings.BOARD.currentBoardNumber
@@ -269,11 +286,13 @@ def executeAITrade(curPlayer, ainum, offer, receive, players, board):
         for r in offer:
             players[curPlayer].resources[r] -= offer[r]
             players[ainum].AI.resources[r] += offer[r]
+            print players[curPlayer]
+            print players[ainum].AI
         for r in receive:
             players[curPlayer].resources[r] += receive[r]
             players[ainum].AI.resources[r] -= receive[r]
-        for player in players:
-            print player
+            print players[curPlayer]
+            print players[ainum].AI
         return True
     return False
 
@@ -287,9 +306,9 @@ def playerTrade(request):
     userToTradeWith = info['userToTradeWithArr'][0]
     if isAI(userToTradeWith):
         if executeAITrade(curPlayer, userToTradeWith, offer, take, settings.PLAYERS, settings.BOARD):
-            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has accepted trade", 0, curPlayer))
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has accepted trade", 0, curPlayer, 0, True))
         else:
-            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has rejected trade", 0, curPlayer))
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has rejected trade", 0, curPlayer, 0, True))
 
     canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
     if canTrade:
