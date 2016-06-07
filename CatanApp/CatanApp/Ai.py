@@ -27,7 +27,7 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -343,11 +343,17 @@ class ai:
                 path = self.savedPaths[bestOptionKey]
             else:
                 path = self.findShortestPath(bestOption['backtrace'][1], settleLoc, bestOption['backtrace'][2], board)
-            roadsAway = bestOption['backtrace'][2]
+            predRoadsAway = bestOption['backtrace'][2]
+            roadsAway = len(path)
             for r in path:
                 if r in self.AI.structures['roads']:
                     roadsAway -= 1
             cost = self.getResourceCost('settlement', roadsAway)
+            if roadsAway > predRoadsAway:
+                newTurnCost = self.getCostInTurns('settlement', roadsAway, self.income)
+                if newTurnCost > 0:
+                    self.savedPaths[bestOptionKey] = path
+                    return False  
             settleObj = board.vertices[settleLoc]
             if not self.needsExchange(cost):
                 for i in xrange(len(path)):
