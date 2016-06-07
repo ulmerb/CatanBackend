@@ -509,6 +509,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                         $scope.main.take = model.take
                         $scope.main.proposer = model.proposer
                         $scope.switchToTradeModeUI()
+                        
                         var playerTrade = document.querySelector(".playerTradeStuff");
                         playerTrade.style.display = "none";
                         var acceptReject = document.querySelector(".acceptReject");
