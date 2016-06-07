@@ -473,7 +473,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                // Take only those inputs which are checkbox
                if (inputs[i].type === "radio" && inputs[i].checked) {
                   console.log("ADDED user to trade with: "+ i)
-                  arr.push(inputs[i].value);
+                  arr.push(parseInt(inputs[i].value)+1);
                }
             }
 
@@ -498,15 +498,26 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'userToTradeWithArr':arr},
                 function (model){
                     //suggest trade to others
+                    console.log(model)
                     if (model.canTrade) {
+                        console.log("can trade:true")
                         $scope.main.isTrading = true
-                        scope.updateBoardBasedOnRecievedGameState(model);
+                        $scope.updateBoardBasedOnRecievedGameState(model);
                         //take, offer, canTrade
                         $scope.main.offer = model.offer
                         $scope.main.take = model.take
                         $scope.main.proposer = model.proposer
-                        switchToTradeModeUI()
+                        $scope.switchToTradeModeUI()
+                        var playerTrade = document.querySelector(".playerTradeStuff");
+                        playerTrade.style.display = "none";
+                        var acceptReject = document.querySelector(".acceptReject");
+                        acceptReject.style.display = "block";
+                        var acceptRejectButtons = document.querySelectorAll(".acceptRejectButtons");
+                        
+                        acceptRejectButtons[0].style.display = "block";
+                        acceptRejectButtons[1].style.display = "block";
                     } else {
+                        console.log("can trade:false")
                         var playerTrade = document.querySelector(".tradeWithPlayer");
                         playerTrade.style.display = "none";
                         $scope.main.message_to_user = model.message;
@@ -522,7 +533,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var buttons = document.getElementsByTagName("BUTTON");
             for (var i=0, max=buttons.length; i < max; i++) {
                 // Do something with the element here
-                buttons[i].style.visibility = "hidden";
+                buttons[i].style.display = "none";
             }
             var playerTrade = document.querySelector(".tradeWithPlayer");
             playerTrade.style.display = "block";
@@ -537,6 +548,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'take':$scope.main.take
                 },
                 function (model){
+                    console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
                     $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {

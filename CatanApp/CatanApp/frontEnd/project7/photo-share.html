@@ -119,8 +119,12 @@
                         <div ng-repeat="(getResource, getQuantity) in main.take" ng-if="main.isUserLoggedIn">
                             <p>{{getResource}}:{{getQuantity}}, </p>
                         </div>
-                        <button id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
-                        <button id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
+                        
+                    </div>
+                    <div class="acceptReject" style="display:none">
+                            <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
+                            <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
+                            <p>test</p>
                     </div>
                 </div>
             </md-sidenav>
