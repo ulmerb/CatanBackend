@@ -54,7 +54,7 @@ class player:
 		for resource in trade:
 			amount = trade[resource]
 			if self.resources[resource] - amount < 0:
-				return False, "Not enough of ", resource
+				return False, "Not enough of "+resource
 		return True, trade
 		
 	def makeTrade(self, offer, take, proposee, players):
