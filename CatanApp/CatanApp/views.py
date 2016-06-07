@@ -205,10 +205,8 @@ def bankTrade(request):
     else:
         resp = makeJson(
             settings.BOARD, settings.PLAYERS, "Successfull transaction", 0, curPlayer)
-
-<<<<<<< Updated upstream
     return HttpResponse(resp)
-=======
+
 @csrf_exempt
 def playerTrade(request):
 	info = json.loads(request.POST['js_resp'])
@@ -224,7 +222,7 @@ def playerTrade(request):
 		resp = makeJson(settings.BOARD, settings.PLAYERS, "Successfull player to player trade", 0, curPlayer)
 
 	return HttpResponse(resp)
->>>>>>> Stashed changes
+
 
 
 @csrf_exempt
