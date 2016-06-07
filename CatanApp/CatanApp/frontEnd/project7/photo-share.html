@@ -59,7 +59,7 @@
                     <button id="button" ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
                     <form id="trading" name="trading">
-                        <div ng-repeat="player in main.players" ng-if="main.isUserLoggedIn">
+                        <div ng-repeat="player in main.players" ng-if="main.isUserLoggedIn && player.index != main.currentPlayer">
                             <input type="radio" name="trade" ng-click="playerTradeInputs()" value="player.index"> Player{{player.index}} <br>
                             <!-- <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
                             <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>

@@ -257,6 +257,8 @@ def playerTrade(request):
     userToTradeWith = info['userToTradeWithArr'][0]
     # if isAI(userToTradeWith):
     #     executeAITrade(offer, take, settings.PLAYERS)
+    print "current player:"
+    print curPlayer
     canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
     if canTrade:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
