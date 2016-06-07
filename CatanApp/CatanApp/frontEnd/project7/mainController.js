@@ -469,20 +469,25 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                   arr.push(inputs[i].value);
                }
             }
+
             console.log("users you want to tade with"+arr);
             var userRes = $resource("/suggestTrade");
             userRes.save({'currentPlayer':$scope.main.currentPlayer,
-                'tradeMessage':$scope.main.message_to_user, 
-                'giveOre':$scope.main.give_ore,
-                'giveBrick':$scope.main.give_brick,
-                'giveGrain':$scope.main.give_grain,
-                'giveWood':$scope.main.give_wood,
-                'giveSheep':$scope.main.give_sheep,
-                'getOre':$scope.main.get_ore , 
-                'getBrick':$scope.main.get_brick,
-                'getGrain':$scope.main.get_grain,
-                'getWood':$scope.main.get_wood,
-                'getSheep':$scope.main.get_sheep,
+                'tradeMessage':$scope.main.message_to_user,
+                'offer': {
+                    'wood':$scope.main.give_wood,
+                    'sheep':$scope.main.give_sheep,
+                    'brick':$scope.main.give_brick,
+                    'ore':$scope.main.give_ore,
+                    'grain':$scope.main.give_grain
+                },
+                'take': {
+                    'wood':$scope.main.get_wood,
+                    'sheep':$scope.main.get_sheep,
+                    'brick':$scope.main.get_brick,
+                    'ore':$scope.main.get_ore,
+                    'grain':$scope.main.get_grain
+                },
                 'userToTradeWithArr':arr},
                 function (model){
                     //suugest trade to others
