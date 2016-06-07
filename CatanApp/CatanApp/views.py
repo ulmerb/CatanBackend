@@ -12,7 +12,7 @@ import settings
 import Devcards
 
 
-def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
+def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=False, take=None, offer=None):
     data = {}
     data['message'] = message
     data['currentDiceRoll'] = diceRoll
@@ -46,6 +46,9 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0):
             pInfo[key] = p.structures[key]
         data["players"].append(pInfo)
     data['devCardName'] = card
+    data['canTrade'] = canTrade
+    data['take'] = take
+    data['offer'] = offer
     return json.dumps(data)
 
 # Intialize game
@@ -208,21 +211,20 @@ def bankTrade(request):
     return HttpResponse(resp)
 
 
+@csrf_exempt
 def playerTrade(request):
     info = json.loads(request.POST['js_resp'])
     curPlayer = info['curPlayer']
     offer = info['offer']
     take = info['take']
     userToTradeWith = info['userToTradeWithArr'][0]
-    player = settings.PLAYERS[curPlayer]
-    error = player.checkTrade(userToTradeWith,
-                              curPlayer, offer, take, settings.PLAYERS, settings.BOARD, AiNum=-2)  # AiNum = -2
-    if error:
-        resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+    canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer, player)
+    if canTrade:
+        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
+                        str(curPlayer) + " has proposed a trade", 0, userToTradeWith, 0, canTrade, take)
     else:
         resp = makeJson(settings.BOARD, settings.PLAYERS,
-                        "Successfull player to player trade", 0, curPlayer)
-
+                        message, 0, curPlayer, 0, canTrade, take, offer)
     return HttpResponse(resp)
 
 
