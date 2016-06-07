@@ -322,12 +322,12 @@ def handleDiscard(player, playerNum, resources):
 				continue
 			else:
 				print "You will discard ", numSheep, " of your ", player.resources['sheep'], " sheep"
-			numWheat = int(raw_input("How much wheat do you want to discard? "))
-			if numWheat > player.resources['grain']:
+			numGrain = int(raw_input("How much grain do you want to discard? "))
+			if numGrain > player.resources['grain']:
 				print "You can't discard that much, you only have ",  player.resources['grain'], " wheat"
 			else:
-				print "You will discard ", numWheat, " of your ", player.resources['grain'], " wheat"
-			totalResources = numWood+numBrick+numOre+numSheep+numWheat
+				print "You will discard ", numGrain, " of your ", player.resources['grain'], " wheat"
+			totalResources = numWood+numBrick+numOre+numSheep+numGrain
 			if totalResources != toDiscard:
 				print "You selected ", totalResources, " resources, you need to discard ", toDiscard, " resources"
 				continue
@@ -336,7 +336,7 @@ def handleDiscard(player, playerNum, resources):
 				player.loseResource('brick',numBrick)
 				player.loseResource('ore',numOre)
 				player.loseResource('sheep',numSheep)
-				player.loseResource('grain',numWheat)
+				player.loseResource('grain',numGrain)
 				break
 	except EOFError:
 		print "Sublime error"
