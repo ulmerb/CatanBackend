@@ -250,6 +250,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 				break
 			turnCounter += 1
 
+
 def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	board.createBatchCSV(players)
 	board.batchUpdate()
