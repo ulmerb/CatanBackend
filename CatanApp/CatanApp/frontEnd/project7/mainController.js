@@ -465,7 +465,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             for (var i = 0, max = inputs.length; i < max; i += 1) {
                // Take only those inputs which are checkbox
                if (inputs[i].type === "radio" && inputs[i].checked) {
-                  console.log("ADDED "+ i)
+                  console.log("ADDED user to trade with: "+ i)
                   arr.push(inputs[i].value);
                }
             }
@@ -486,6 +486,8 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'userToTradeWithArr':arr},
                 function (model){
                     //suugest trade to others
+                    scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
                 }

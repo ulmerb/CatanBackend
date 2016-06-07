@@ -29,6 +29,6 @@ urlpatterns = [
     url(r'^buyCard/', buyCard),
     url(r'^playCard/', playCard),
     url(r'^portTrade/', portTrade),
-    url(r'^bankTrade/',bankTrade)
-
+    url(r'^bankTrade/',bankTrade),
+    url(r'^playerTrade/',playerTrade)
 ]
