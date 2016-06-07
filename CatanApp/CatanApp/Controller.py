@@ -223,33 +223,33 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 1
 	robberCounter = 0
 	while (True):
-	        #print turnCounter
-	        curPlayer = turnCounter % numPlayers
-	        isAi = False
-	        if (curPlayer == AiNum):
-	            isAi = True
-	        if (isAi):
-	            diceRoll = board.rollDice()
-	            #print "dice", diceRoll
-	            if diceRoll is CONST_ROBBER:
-		        handleRobber(curPlayer, players, board, AiNum)
-		        robberCounter += 1
-		    else:
-		        board.assignResources(diceRoll, players)
-	            gameEndVP = players[AiNum].decideMove(players, board, False)
-	            #print gameEndVP
-	            if gameEndVP >= 10:
-	                print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
-	                gameEnd = True
-	                return turnCounter - robberCounter
-	            else:
-	                gameEnd = False
-	        else:
-		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
-		#remove the turnCounter>= 10 when full implementation
-		if gameEnd or turnCounter >= 1000:
-			break
-		turnCounter += 1
+			#print turnCounter
+			curPlayer = turnCounter % numPlayers
+			isAi = False
+			if (curPlayer == AiNum):
+				isAi = True
+			if (isAi):
+				diceRoll = board.rollDice()
+				if diceRoll is CONST_ROBBER:
+					handleResourceLossFromRobber(players, board,AiNum)
+					handleRobber(curPlayer, players, board, AiNum)
+					robberCounter += 1					
+				else:
+					board.assignResources(diceRoll, players)
+				gameEndVP = players[AiNum].decideMove(players, board, False)
+				#print gameEndVP
+				if gameEndVP >= 10:
+						print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
+						gameEnd = True
+						return turnCounter - robberCounter
+				else:
+						gameEnd = False
+			else:
+				gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
+			if gameEnd or turnCounter >= 1000:
+				break
+			turnCounter += 1
+
 
 def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	board.createBatchCSV(players)
@@ -377,7 +377,6 @@ def handleResourceLossFromRobber(players, board,AiNum = -1):
 			if resources > 7:
 				handleDiscard(player, playerNum, resources)
 		else:
-			print "Ai is discarding"
 			players[playerNum].handleDiscard()
 
 
@@ -486,9 +485,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()    
 		initialPlacement(i, players, board)
@@ -498,9 +497,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range(numPlayers -1, -1, -1):
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()
 	 	setLoc = initialPlacement(i, players, board)
@@ -792,7 +791,7 @@ def trade(curPlayer, players, board, AiNum = -2):
             response = raw_input("Would you like to propose a trade? ")
             if  response == "Yes" or response == "yes" or response == "y":
             	bankResponse = raw_input("Would you like to trade with the bank? ")
-            	if  bankResponse == "Yes" or response == "yes" or response == "y":
+            	if  bankResponse == "Yes" or bankResponse == "yes" or bankResponse == "y":
             		toLose = resourceSelector("Which resource do you want to give to the bank? ")
             		numberToLose = getAmountFromPlayer()
             		toGet = resourceSelector("Which resource do you want to receive? ")
@@ -824,7 +823,7 @@ def trade(curPlayer, players, board, AiNum = -2):
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
                 	partner = -3
                 if (partner == AiNum and AiNum != -2):
-					traded = players[AiNum].evaluateTrade(offer, recieve)
+					traded = players[AiNum].evaluateTrade(offer, recieve, players, board)
 					print "trade executed with AI"
 					for r in offer:
 						players[curPlayer].loseResource(r, offer[r])
@@ -841,7 +840,7 @@ def trade(curPlayer, players, board, AiNum = -2):
                         if i == curPlayer:
                             continue
                         if i == AiNum:
-                            executed = players[AiNum].evaluateTrade(offer, recieve)
+                            executed = players[AiNum].evaluateTrade(offer, recieve, players, board)
                             if (executed):
 								print "trade executed with AI"
 								for r in offer:
@@ -868,5 +867,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-# main()
+main()
 

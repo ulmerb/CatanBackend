@@ -44,7 +44,7 @@
   				<p class="left" ng-if="main.isUserLoggedIn"> Current Player: {{main.currentPlayer}}</p>
                 <p class="left" ng-if="!main.isUserLoggedIn"> Welcome to Catan </p>
   				<p class="right">{{main.titleText}}</p>
-                <button ng-click="main.logout($event)" ng-if="main.isUserLoggedIn"> Log Out </button>
+                <button id="button" ng-click="main.logout($event)" ng-if="main.isUserLoggedIn"> Log Out </button>
   			</div>
   				
         </md-toolbar>
@@ -55,8 +55,8 @@
                 <div ng-if="main.isUserLoggedIn"> 
                     <p>System messages:</p>
                     <p>{{main.message_to_user}}</p>
-                    <button ng-click="endTurnPressed()"> end my turn </button>
-                    <button ng-click="newGame()"> New Game </button>
+                    <button id="button" ng-click="endTurnPressed()"> end my turn </button>
+                    <button id="button" ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
                     <form id="trading" name="trading">
                         <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
@@ -85,7 +85,7 @@
                         <p>Brick <input type="number" ng-model="main.get_brick"></p>
                         <p>Wood <input type="number" ng-model="main.get_wood"></p>
                         <p>Sheep <input type="number" ng-model="main.get_sheep"></p><br>
-                        <button ng-click="sendTradeMessageToUserMessage()"> submit trade suggestion</button>
+                        <button id="button" ng-click="sendTradeMessageToUserMessage()"> submit trade suggestion</button>
                     </div>
                     <div class="fixedExchangeRates" style="display:none">    
                         <form id ="bankOrPortTrade">
@@ -105,9 +105,22 @@
                           <input type="radio" name="want" value="wood"> Wood<br>
                           <input type="radio" name="want" value="sheep"> Sheep
                         </div>
-                          <button class="bankSubmit"ng-click="tradeWithBankOrPort('bank')"> submit trade to Bank</button>
-                          <button class="portSubmit" ng-click="tradeWithBankOrPort(main.selectedPort)"> submit trade to Port</button>
+                          <button id="button" class="bankSubmit"ng-click="tradeWithBankOrPort('bank')"> submit trade to Bank</button>
+                          <button id="button" class="portSubmit" ng-click="tradeWithBankOrPort(main.selectedPort)"> submit trade to Port</button>
                         </form>
+                    </div>
+                    <div class="tradeWithPlayer" style="display:none">
+                        <h4>Terms of trade</h4>
+                        <p>You give:</p>
+                        <div ng-repeat="(giveResource, giveQuantity) in main.offer" ng-if="main.isUserLoggedIn">
+                            <p>{{giveResource}}:{{giveQuantity}}, </p>
+                        </div>
+                        <p>You get:</p>
+                        <div ng-repeat="(getResource, getQuantity) in main.take" ng-if="main.isUserLoggedIn">
+                            <p>{{getResource}}:{{getQuantity}}, </p>
+                        </div>
+                        <button id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
+                        <button id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
                     </div>
                 </div>
             </md-sidenav>

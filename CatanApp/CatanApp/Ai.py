@@ -27,7 +27,7 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = True):
+    def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -214,7 +214,7 @@ class ai:
         #for v in cur:
             #print "V", v.index
         return cur            
-    def evaluateTrade(self, gain, lose):
+    def evaluateTrade(self, gain, lose, players, board):
         if self.verbose: 
             print "gain",gain,"lose",lose
         currentResources  = self.AI.resources
@@ -229,8 +229,13 @@ class ai:
                 print "dont have enough", key, "to accept trade"
             return False
 
-        gainTotal = sum(gain.values())
-        loseTotal = sum(lose.values())
+        scarcity = self.getSoonScarcity(players, board)
+        gainTotal = 0
+        loseTotal = 0
+        for value in gain:
+          gainTotal += scarcity[value] * gain[value]
+        for value in lose:
+          loseTotal += scarcity[value] * lose[value]
         if self.verbose: print "gainTotal", gainTotal, "loseTotal",loseTotal
         if gainTotal > loseTotal: # accept if we are gaining more than we're losing
           return True
@@ -486,7 +491,7 @@ class ai:
         #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
-        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
+        options = {}
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
         if self.AI.settlementsRemaining > 0:
@@ -550,7 +555,7 @@ class ai:
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
-        if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
+        if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
             cost = 0
@@ -785,7 +790,10 @@ class ai:
     def handleDiscard(self):
         #test
         sortRes = []
+        if sum(self.AI.resources.values()) <= 7:
+            return
         numLost = sum(self.AI.resources.values())
+        numLost /= 2
         if self.verbose: print "The ai must discard", numLost, "resources"
         bestMove = self.savedBestOpt
         if bestMove[0] == None:
@@ -793,7 +801,7 @@ class ai:
         else:
             cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
         for r in self.AI.resources:
-             sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
+             sortRes.append([self.AI.resources[r] - cost[r], self.income[r], r])
         sortRes.sort(key=lambda tup: tup[1], reverse=True)
         sortRes.sort(key=lambda tup: tup[0], reverse=True)
         while (numLost > 0):
@@ -805,12 +813,13 @@ class ai:
                     self.resources[sortRes[0][2]] -=1
                     numLost -= 1
                     sortRes[0][0] -= 1
+                    #if self.verbose: 
                     if self.verbose: print "The ai has discared 1", sortRes[0][2]
             else:
                 if excess >= numLost:
                     self.AI.resources[sortRes[0][2]] -= numLost
-                    numLost = 0
                     if self.verbose: print "The ai has discared", numLost, sortRes[0][2]
+                    numLost = 0                  
                     break
                 else:
                     self.AI.resources[sortRes[0][2]] -= excess

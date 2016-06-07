@@ -94,6 +94,12 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         $scope.main.devCardRoadLocation1 = 0
         $scope.main.devCardRoadLocation2 = 0
 
+        //trading:
+        $scope.main.offer = {}
+        $scope.main.take = {}
+        $scope.main.isTrading = false
+        $scope.main.proposer = 0
+
         $scope.testPlayDevCard = function(str){
             console.log("brick " + $scope.main.devCardBrick)
             console.log(str)
@@ -491,15 +497,50 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 },
                 'userToTradeWithArr':arr},
                 function (model){
-                    //suugest trade to others
-                    // if (model.canTrade):
-                    //     scope.updateBoardBasedOnRecievedGameState(model);
-                    // else:
-                    //     $scope.main.message_to_user = model.message;
+                    //suggest trade to others
+                    if (model.canTrade):
+                        $scope.main.isTrading = true
+                        scope.updateBoardBasedOnRecievedGameState(model);
+                        //take, offer, canTrade
+                        $scope.main.offer = model.offer
+                        $scope.main.take = model.take
+                        $scope.main.proposer = model.proposer
+                        switchToTradeModeUI()
+                    else:
+                        var playerTrade = document.querySelector(".tradeWithPlayer");
+                        playerTrade.style.display = "none";
+                        $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
                 }
             )
+
+        }
+
+        $scope.switchToTradeModeUI = function(){
+            var buttons = document.getElementsByTagName("BUTTON");
+            for (var i=0, max=buttons.length; i < max; i++) {
+                // Do something with the element here
+                buttons[i].style.visibility = "hidden";
+            }
+            var playerTrade = document.querySelector(".tradeWithPlayer");
+            playerTrade.style.display = "block";
+        }
+
+        $scope.accpetOrRejectTrade = function(str) {
+            var userRes = $resource("/acceptOrRejectTrade");
+            userRes.save({'curPlayer':$scope.main.currentPlayer,
+                'acceptOrReject':str,
+                'proposer':$scope.main.proposer,
+                'offer':$scope.main.offer,
+                'take':$scope.main.take
+                },
+                function (model){
+                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.main.message_to_user = model.message;
+                }, function errorHandling(err) {
+                    $scope.main.message_to_user = "Error: sendTradeMessagetobankFailed failed";
+            });
 
         }
 
