@@ -208,7 +208,9 @@ class player:
 		    self.resources['sheep'] -= 1
 		    self.structures['settlements'].append(location.index)
 		    self.score += 1
-		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']))
+
+		    location.buildSettlement(self.playerNumber, len(self.structures['settlements']) + len(self.structures['cities']))
+
 		    ind = location.index
 		    three = [5,6,3,4,28,17,53,54]
 		    ore = [39,40]
