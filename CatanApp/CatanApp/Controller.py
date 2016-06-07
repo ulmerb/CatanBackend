@@ -248,6 +248,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
 		#remove the turnCounter>= 10 when full implementation
 		if gameEnd or turnCounter >= 1000:
+			print curPlayer, " has won"
 			break
 		turnCounter += 1
 
