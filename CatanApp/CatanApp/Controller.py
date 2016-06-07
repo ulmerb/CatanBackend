@@ -25,6 +25,7 @@ def tileInitialization(numPlayers, ai):
 	AiNum = -1
 	if ai:
 		players.append(Ai.ai(len(players)))
+		players[-1].verbose = True
 		numPlayers +=1
 	if not ai or numPlayers > 1:
 	   board.createBatchCSV(players)

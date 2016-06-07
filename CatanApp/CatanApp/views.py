@@ -12,7 +12,7 @@ import settings
 import Devcards
 
 
-def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=False, take=None, offer=None, proposer=None):
+def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=False, take=None, offer=None, proposer=None, discarding=False):
     data = {}
     data['message'] = message
     data['currentDiceRoll'] = diceRoll
@@ -117,7 +117,7 @@ def endOfTurn(request):
             return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai placed robber, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
         else:
             settings.PLAYERS[newCurPlayer].decideMove(
-                settings.PLAYERS, settings.BOARD, False)
+                settings.PLAYERS, settings.BOARD, True)
             newCurPlayer = int(
                 newCurPlayer + 1) % len(settings.PLAYERS)  # should be 0
             dRoll = Controller.rollDice(
@@ -151,9 +151,14 @@ def placeRobber(request):
     if error:
         resp = makeJson(settings.BOARD, settings.PLAYERS, error, 7, curPlayer)
     else:
-        resp = makeJson(settings.BOARD, settings.PLAYERS,
-                        "Player " + str(curPlayer) + "'s turn", 7, curPlayer)
+        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " + str(target) +
+                        ": choose half of your cards to discard", 7, target, 0, False, None, None, None, True)
     return HttpResponse(resp)
+
+
+@csrf_exempt
+def playerHandleDiscard(request):
+    pass
 
 
 @csrf_exempt

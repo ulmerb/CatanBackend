@@ -259,10 +259,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             }
             $scope.main.map = newArr;
-            for (var i = 0; i < $scope.main.map.length; i++) {
-                var newstr = $scope.main.map.replace(/(\dS\d)/g,"<div style='color:red'>$1</div>");
-                $scope.main.map[i].trustAsHtml(newstr);
-            };
+            // for (var i = 0; i < $scope.main.map.length; i++) {
+            //     var newstr = $scope.main.map.replace(/(\dS\d)/g,"<div style='color:red'>$1</div>");
+            //     $scope.main.map[i].trustAsHtml(newstr);
+            // };
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
@@ -282,6 +282,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             console.log('currentPlayer before' + $scope.main.currentPlayer);
             userRes.save({'currentPlayer': $scope.main.currentPlayer, 'turnCount':$scope.main.turnCount},
                 function (model){
+                    console.log("settle", model.players[2].settlements);
                     $scope.updateBoardBasedOnreceivedGameState(model)
                     //TODO: set up the board for the next player
                     console.log('updated resources and dice roll');
