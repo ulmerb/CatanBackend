@@ -59,15 +59,18 @@
                     <button id="button" ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
                     <form id="trading" name="trading">
-                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
-                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>
-                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="2"> Player3 <br>
-                        <input type="radio" name="trade" ng-click="playerTradeInputs()" value="3"> Player4 <br>
+                        <div ng-repeat="player in main.players" ng-if="main.isUserLoggedIn && player.index != main.currentPlayer">
+                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value="player.index"> Player{{player.index}} <br>
+                            <!-- <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
+                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>
+                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value="2"> Player3 <br>
+                            <input type="radio" name="trade" ng-click="playerTradeInputs()" value="3"> Player4 <br> -->
+                        </div>
                         <input type="radio" name="trade" ng-click="bankTradeInputs()"> Bank <br>
                         <div id="ports" ng-if="main.ports.length > 0">
                             <div style="line-height: 0px" ng-repeat="port in main.ports" ng-if="main.isUserLoggedIn">
                              <input type="radio" name="trade" value=port ng-click="portTradeInputs(port)"> Port {{port}} <br>
-                            </div>
+                            </div >
                         </div>
                     </form>
                     <br>
@@ -124,7 +127,6 @@
                     <div class="acceptReject" style="display:none">
                             <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
                             <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
-                            <p>test</p>
                     </div>
                 </div>
             </md-sidenav>

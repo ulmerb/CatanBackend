@@ -44,6 +44,16 @@ class ai:
         self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
         self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
    
+
+    def numResources(self, resource):
+      return self.AI.numResources(resource)
+
+    def loseResource(resource, numResource):
+      self.AI.loseResource(resource, numResource)
+    
+    def addResource(resource, numResource):
+      self.AI.addResource(resource, numResource)
+
     def incrementScore(self, s = 1):
       self.AI.incrementScore(s)
 
@@ -527,6 +537,11 @@ class ai:
                 if ((len(options) >= 7 and curDistanceAway >= 3) or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
+        if self.verbose: 
+          print ""
+          print "settlements",self.AI.structures['settlements']
+          print "cities",self.AI.structures['cities']
+          print ""
         if self.AI.citiesRemaining > 0:      
             for settle in self.AI.structures['settlements']:
                 s = board.vertices[settle]
@@ -542,6 +557,8 @@ class ai:
         if self.verbose: print bestOptionKey
         bestOption = options[bestOptionKey[0]]
         self.savedBestOpt = [bestOptionKey, bestOption]
+
+
         if bestOptionKey[0] == 'pass':
             "The wise Ai has contemplated all its options and decided to pass"
             return
@@ -550,6 +567,7 @@ class ai:
             print bestOption
             print bestOptionKey[0]
         if bestOption['costInTurns'] == 0:
+
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
                     if self.verbose: print "the Ai is checking for more actions"
                     self.decideMove(players, board, firstTurn)
@@ -565,6 +583,7 @@ class ai:
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
+
         if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
@@ -608,7 +627,8 @@ class ai:
                             
                 if not changeMade:
                     break
-        #end 7 cards in hand handle                
+        #end 7 cards in hand handle
+
         return vp
     def possiblePortEx(self):
         maxi = max(self.AI.resources.values())
@@ -684,7 +704,7 @@ class ai:
         maxDamage = 0
         for tile in board.getAllTiles():
           badChoice = False
-          if tile.robber == True: # can't option not to move the robber
+          if tile.robber == True or tile.getType() == "desert": # can't option not to move the robber
             badChoice = True
             continue 
           vertexes = board.getTileToVertices(tile)
@@ -695,9 +715,9 @@ class ai:
               break
             if vertex.getOwner() != None:
               if vertex.getSettlement() != self.AI.playerNumber:
-                occupiedSpots += 1
+                occupiedSpots += 1+self.diceProbs[tile.getNumber()]
               elif vertex.getCity() != self.AI.playerNumber:
-                occupiedSpots += 2
+                occupiedSpots += 2+self.diceProbs[tile.getNumber()]
               else:
                 if self.verbose: print "weirdness in placing robber"
           if badChoice == True: # one of AI settlements is here
@@ -758,8 +778,8 @@ class ai:
 
     def getSoonScarcity(self,players,board):
         scarcity = {'wood':0.01, 'sheep':0.01, 'brick': 0.01, 'ore': 0.01, 'grain' : 0.01}
-        ALLsettlements = self.AI.structures['settlements']
-        ALLcities = self.AI.structures['cities']
+        ALLsettlements = self.AI.structures['settlements'][:]
+        ALLcities = self.AI.structures['cities'][:]
 
         for player in players:
           if(player == self):

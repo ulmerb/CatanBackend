@@ -10,6 +10,7 @@ import TileToVertexDict
 import VertexToTileDict
 import EdgeToVertexDict
 import EdgeToEdgeDict
+import presetBoard
 import os
 from settings import IS_RUNNING, BASE_DIR
 # IS_RUNNING is True when the django server is running
@@ -17,6 +18,10 @@ from settings import IS_RUNNING, BASE_DIR
 class board:
 
 	def __init__(self):
+		
+		self.usePresetBoard = False
+		self.presetBoard = presetBoard.getMap()
+
 		self.BOARD_LENGTH = 5
 		self.robberTile = None
 		self.asciiToTile = {}
@@ -55,16 +60,29 @@ class board:
 		self.curMaxKnights = 0
 		types = self.getShuffledTypes()
 		numbers = self.getShuffledNumbers()
+
 		for i in range(19):
 			index = i + 1
-			givenType = types.pop()
-			self.tiles[index].setType(givenType)
 			self.tiles[index].setIndex(index)
-			if givenType != "desert":
-				self.tiles[index].setNumber(numbers.pop())
+			if(self.usePresetBoard == False):
+				givenType = types.pop()
+				self.tiles[index].setType(givenType)
+				if givenType != "desert":
+					self.tiles[index].setNumber(numbers.pop())
+				else:
+					self.tiles[index].setRobber(True)
+					self.robberTile = self.tiles[index]
 			else:
-				self.tiles[index].setRobber(True)
-				self.robberTile = self.tiles[index]
+				givenType = self.presetBoard[index][0]
+				print givenType
+				self.tiles[index].setType(givenType)
+				if givenType != "desert":
+					self.tiles[index].setNumber(self.presetBoard[index][1])
+					print self.presetBoard[index][1]
+				else:
+					self.tiles[index].setRobber(True)
+					self.robberTile = self.tiles[index]
+
 	  	self.buildASCIIGridMaps()
 
 	def buildASCIIGridMaps(self):
