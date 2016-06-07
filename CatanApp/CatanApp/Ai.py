@@ -28,7 +28,7 @@ import sys
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -392,7 +392,9 @@ class ai:
                         continue
                     locObj = board.edges[roadInd]
                     self.AI.buildRoad(locObj, board)
-                self.AI.buildSettlement(settleObj, board)
+                if not self.AI.buildSettlement(settleObj, board):
+                    print "for some reason the AI failed to build a settlement where it thinks it can"
+                    return False
                 if self.verbose:
                     print settleObj.getCity()
                     print settleObj.getSettlement()
@@ -412,7 +414,9 @@ class ai:
                             continue
                         locObj = board.edges[roadInd]
                         self.AI.buildRoad(locObj, board)
-                    self.AI.buildSettlement(settleObj, board)
+                    if not self.AI.buildSettlement(settleObj, board):
+                        print "for some reason the AI failed to build a settlement where it thinks it can"
+                        return False
                     self.updateIncome(settleObj, board) 
                     if self.verbose:
                         print settleObj.getCity()
@@ -431,7 +435,10 @@ class ai:
             if self.verbose: print self.AI.resources
             locObj = board.vertices[bestOption['backtrace'][1]]
             if self.AI.canBuildCity(locObj):
-                self.AI.buildCity(locObj, board)
+                
+                if not self.AI.buildCity(locObj, board):
+                    print "for some reason the AI failed to build a city where it thinks it can"
+                    return False
                 self.updateIncome(locObj, board)
                 if self.verbose:
                     print locObj.getCity()
@@ -447,7 +454,9 @@ class ai:
                 #the following needs to be decomped later
                 cost = self.getResourceCost('city', 0)
                 if self.makeExchange(cost, board, locObj, players, 'city'):
-                    self.AI.buildCity(locObj, board)
+                    if not self.AI.buildCity(locObj, board):
+                         print "for some reason the AI failed to build a city where it thinks it can"
+                         return False
                     self.updateIncome(locObj, board)
                     if self.verbose:
                         print locObj.getCity()
@@ -590,12 +599,13 @@ class ai:
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
-
+        if self.verbose: print self.AI.resources
         if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
             cost = 0
             cost = self.getResourceCost(bestOption['backtrace'][0], bestOption['backtrace'][2])
+            if self.verbose: print "The Ai is attempting to reduce its hand size"
             while sum(self.AI.resources.values()) >=7:
                 counter += 1
                 if counter >= 20:
@@ -864,7 +874,7 @@ class ai:
         if bestMove[0] == None:
             cost = {'wood': 0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
         else:
-            cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
+            cost = self.getResourceCost(bestMove[1]['backtrace'][0], bestMove[1]['backtrace'][2])
         for r in self.AI.resources:
              sortRes.append([self.AI.resources[r] - cost[r], self.income[r], r])
         sortRes.sort(key=lambda tup: tup[1], reverse=True)

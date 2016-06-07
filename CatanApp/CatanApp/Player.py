@@ -251,8 +251,11 @@ class player:
 		    self.resources['brick'] -= 1
 		    self.structures['roads'].append(location.index)
 		    location.buildRoad(self.playerNumber)
+		    return True
 		else:
-			print "You cannot build a road there"
+		    print "You cannot build a road there"
+		    return False
+			
 
 	def buildSettlement(self, location, board):
 		if self.canBuildSettlement(board, location) or (self.settlementsRemaining > 3 and self.citiesRemaining == 4):
@@ -293,9 +296,10 @@ class player:
 		        print "you've gained a brick port"
 		        self.structures['ports'].append('brick')
 		    board.addSettlement(location)
+		    return True
 		else:
-			print "You cannot build a settlement there"
-			# return "You cannot build a settlement there"
+		  print "You cannot build a settlement there"
+                  return False
 
 	def buildCity(self, location, board):
 		if self.canBuildCity(location):
@@ -308,8 +312,10 @@ class player:
 		    self.structures['cities'].append(location.index)
 		    self.score +=1
 		    location.buildCity(self.playerNumber, len(self.structures['cities']))
+		    return True
 		else:
 		    print "You cannot build a city there"
+		    return False
 	def canAffordDevCard(self):
 	    return self.resources['sheep'] > 0 and self.resources['grain'] > 0 and self.resources['ore'] > 0
 
