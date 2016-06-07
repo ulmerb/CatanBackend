@@ -792,11 +792,9 @@ class ai:
         sortRes = []
         if sum(self.AI.resources.values()) <= 7:
             return
-        
         numLost = sum(self.AI.resources.values())
-        
-        #if self.verbose:
-        print "The ai must discard", numLost, "resources"
+        numLost /= 2
+        if self.verbose: print "The ai must discard", numLost, "resources"
         bestMove = self.savedBestOpt
         if bestMove[0] == None:
             cost = {'wood': 0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
@@ -816,19 +814,17 @@ class ai:
                     numLost -= 1
                     sortRes[0][0] -= 1
                     #if self.verbose: 
-                    print "The ai has discared 1", sortRes[0][2]
+                    if self.verbose: print "The ai has discared 1", sortRes[0][2]
             else:
                 if excess >= numLost:
                     self.AI.resources[sortRes[0][2]] -= numLost
-                    numLost = 0
-                    #if self.verbose: 
-                    print "The ai has discared", numLost, sortRes[0][2]
+                    if self.verbose: print "The ai has discared", numLost, sortRes[0][2]
+                    numLost = 0                  
                     break
                 else:
                     self.AI.resources[sortRes[0][2]] -= excess
                     numLost -= excess
                     sortRes[0][0] -= excess
-                    #if self.verbose: 
-                    print "The ai has discared", excess, sortRes[0][2]
+                    if self.verbose: print "The ai has discared", excess, sortRes[0][2]
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)

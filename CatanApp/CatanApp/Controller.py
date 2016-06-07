@@ -377,7 +377,6 @@ def handleResourceLossFromRobber(players, board,AiNum = -1):
 			if resources > 7:
 				handleDiscard(player, playerNum, resources)
 		else:
-			print "Ai is discarding"
 			players[playerNum].handleDiscard()
 
 
