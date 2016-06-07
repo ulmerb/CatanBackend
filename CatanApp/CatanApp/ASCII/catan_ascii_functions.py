@@ -2,8 +2,7 @@ import os
 import sys
 import fileinput
 import json
-# from CatanApp import settings
-# from CatanApp import settings
+
 # ^Use import settings when server is not running
 # otherwise use from CatanApp import settings
 import settings
@@ -298,7 +297,7 @@ def main():
 			filedata = f.read()
 			print filedata
 			f.close()
-# main()
+#main()
 
 
 	

@@ -27,7 +27,7 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -40,7 +40,27 @@ class ai:
         self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
+        self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
+        self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
    
+
+    def numResources(self, resource):
+      return self.AI.numResources(resource)
+
+    def loseResource(resource, numResource):
+      self.AI.loseResource(resource, numResource)
+    
+    def addResource(resource, numResource):
+      self.AI.addResource(resource, numResource)
+
+    def incrementScore(self, s = 1):
+      self.AI.incrementScore(s)
+
+    def getRoadLength(self, board):
+      return self.AI.getRoadLength(board)
+
+    def getKnightsPlayed(self):
+      return self.AI.getKnightsPlayed()
     # getResourceCost(buildType,roadsAway)
     # Varible one, build type, "road", "settlement", "city", "devCard"
     # Variable two, number of roads away
@@ -508,9 +528,9 @@ class ai:
                         else:
                             roadsAway = curDistanceAway
                         turnCost = self.getCostInTurns('settlement', roadsAway, self.income)
-                        resCost = sum(self.getResourceCost('settlement', roadsAway).values())
+                        resCost = self.getResourceCost('settlement', roadsAway)
                         cent = self.getCentrality(board, playableS)
-                        options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'centrality' : cent, 'backtrace' : ['settlement', settlement, roadsAway]}
+                        options[asciiRepresentation] = {'incomeIncrease': benefit, 'costInTurns' : turnCost, 'costInRes' : resCost, 'centrality' : cent, 'backtrace' : ['settlement', settlement, roadsAway]}
                         if playableS.index in self.portsMap.keys():
                             options[asciiRepresentation]['port'] = self.portsMap[playableS.index]
                 if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
@@ -522,13 +542,13 @@ class ai:
                 s = board.vertices[settle]
                 benefit = self.evaluateLocationBenefit(s, board)
                 turnCost = self.getCostInTurns('city', 0, self.income)
-                resCost = sum(self.getResourceCost('city', 0).values())
+                resCost = self.getResourceCost('city', 0)
                 asciiRepresentation = str(board.vertexSettlementAscii(s))
                 #cent = self.getCentrality(board, s)
-                options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['city', settle, 0]}
+                options[asciiRepresentation] = {'incomeIncrease': benefit, 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['city', settle, 0]}
           #need to add more options and expand the curDistanceAway
         if self.verbose: print options
-        bestOptionKey = self.evaluateOptions(options)
+        bestOptionKey = self.evaluateOptions(options, players, board)
         if self.verbose: print bestOptionKey
         bestOption = options[bestOptionKey[0]]
         self.savedBestOpt = [bestOptionKey, bestOption]
@@ -612,7 +632,12 @@ class ai:
                 if self.AI.resources[r] ==2 and r in self.AI.structures['ports']:
                     return True
         return False
-    def evaluateOptions(self, options):
+    def evaluateOptions(self, options, players, board):
+        overallScarcity = self.overallScarcity
+        soonScarcity = self.getSoonScarcity(players, board)
+        curNormS = self.getCurrentNormalizedScarcity(players)
+        scarceWeightsInc = self.scarceWeightsInc
+        scarceWeightsCost = self.scarceWeightsCost
         bestOption = ""
         bestScore = -float('inf')
         for opt in options:
@@ -620,6 +645,24 @@ class ai:
             for field in options[opt]:
                     if field not in self.weights:
                         continue
+                    elif field == 'incomeIncrease':
+                        total = 0.0
+                        for r in overallScarcity:
+                            total += scarceWeightsInc['overall']  * options[opt][field][r]
+                        for r in soonScarcity:
+                            total += scarceWeightsInc['soon']  * options[opt][field][r]
+                        for r in curNormS:
+                            total += scarceWeightsInc['cur']  * options[opt][field][r]
+                        score += total * self.weights['incomeIncrease']
+                    elif field == 'costInRes':
+                        total = 0.0
+                        for r in overallScarcity:
+                            total += scarceWeightsCost['overall']  * options[opt][field][r]
+                        for r in soonScarcity:
+                            total += scarceWeightsCost['soon']  * options[opt][field][r]
+                        for r in curNormS:
+                            total += scarceWeightsCost['cur']  * options[opt][field][r]
+                        score += total * self.weights['costInRes']
                     elif field == 'port':
                         if options[opt][field] in self.AI.structures['ports']:
                             continue
@@ -633,7 +676,14 @@ class ai:
                         else:
                            score += self.income[options[opt][field]] * self.weights[field]     
                         
-                    
+                    elif field == 'costInTurns': 
+                        vp = self.getVictoryPoints()
+                        if vp == 7:
+                            score += options[opt][field] * self.weights[field] * 5
+                        elif vp >= 8:
+                            score += options[opt][field] * self.weights[field] * 50
+                        else:
+                            score += options[opt][field] * self.weights[field]      
                     else:
                         score += options[opt][field] * self.weights[field]
                     
@@ -646,7 +696,7 @@ class ai:
         maxDamage = 0
         for tile in board.getAllTiles():
           badChoice = False
-          if tile.robber == True: # can't option not to move the robber
+          if tile.robber == True or tile.getType() == "desert": # can't option not to move the robber
             badChoice = True
             continue 
           vertexes = board.getTileToVertices(tile)
@@ -657,9 +707,9 @@ class ai:
               break
             if vertex.getOwner() != None:
               if vertex.getSettlement() != self.AI.playerNumber:
-                occupiedSpots += 1
+                occupiedSpots += 1+self.diceProbs[tile.getNumber()]
               elif vertex.getCity() != self.AI.playerNumber:
-                occupiedSpots += 2
+                occupiedSpots += 2+self.diceProbs[tile.getNumber()]
               else:
                 if self.verbose: print "weirdness in placing robber"
           if badChoice == True: # one of AI settlements is here
@@ -719,7 +769,7 @@ class ai:
         return scarcity
 
     def getSoonScarcity(self,players,board):
-        scarcity = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
+        scarcity = {'wood':0.01, 'sheep':0.01, 'brick': 0.01, 'ore': 0.01, 'grain' : 0.01}
         ALLsettlements = self.AI.structures['settlements']
         ALLcities = self.AI.structures['cities']
 

@@ -54,16 +54,18 @@ class player:
 		for resource in trade:
 			amount = trade[resource]
 			if self.resources[resource] - amount < 0:
-				return False, "Not enough of ", resource
+				return False, "Not enough of "+resource
 		return True, trade
 		
+	# server func
 	def makeTrade(self, offer, take, proposee, players):
+		# print "offer and take:", offer, take
 		for res in offer:
 			self.resources[res] -= offer[res]
-			players[proposee][res] += offer[res]
+			players[proposee].resources[res] += offer[res]
 		for res in take:
-			self.resources[res] += offer[res]
-			players[proposee][res] -= offer[res]
+			self.resources[res] += take[res]
+			players[proposee].resources[res] -= take[res]
 
 	#trade function based on Controller.trade 
 	def trade(curPlayer, players, board, AiNum = -2):
@@ -98,17 +100,7 @@ class player:
 
 		partner = userToTradeWith
 
-		if (partner == AiNum and AiNum != -2):
-			traded = players[AiNum].evaluateTrade(offer, recieve)
-			print "trade executed with AI"
-			for r in offer:
-				players[curPlayer].loseResource(r, offer[r])
-				players[AiNum].addResource(r, offer[r])
-			for r in recieve:
-				players[curPlayer].addResource(r, recieve[r])
-				players[AiNum].loseResource(r, recieve[r])
-			for player in players:
-				print player
+		
 
 		
 

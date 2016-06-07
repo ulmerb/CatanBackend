@@ -59,6 +59,8 @@
                     <button id="button" ng-click="newGame()"> New Game </button>
                     <h3>Trade with:</h3>
                     <form id="trading" name="trading">
+                        <!-- TODO: These values need to be variables depending on who the
+                        current player is. They will be all the players who are not the current player-->
                         <input type="radio" name="trade" ng-click="playerTradeInputs()" value="0"> Player1 <br>
                         <input type="radio" name="trade" ng-click="playerTradeInputs()" value="1"> Player2 <br>
                         <input type="radio" name="trade" ng-click="playerTradeInputs()" value="2"> Player3 <br>
@@ -119,8 +121,11 @@
                         <div ng-repeat="(getResource, getQuantity) in main.take" ng-if="main.isUserLoggedIn">
                             <p>{{getResource}}:{{getQuantity}}, </p>
                         </div>
-                        <button id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
-                        <button id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
+                        
+                    </div>
+                    <div class="acceptReject" style="display:none">
+                            <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('accept')">Accept offer</button>
+                            <button class="acceptRejectButtons" id="button" ng-click="accpetOrRejectTrade('reject')">Reject offer</button>
                     </div>
                 </div>
             </md-sidenav>
