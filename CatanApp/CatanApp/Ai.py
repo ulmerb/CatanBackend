@@ -214,7 +214,7 @@ class ai:
         #for v in cur:
             #print "V", v.index
         return cur            
-    def evaluateTrade(self, gain, lose):
+    def evaluateTrade(self, gain, lose, players, board):
         if self.verbose: 
             print "gain",gain,"lose",lose
         currentResources  = self.AI.resources
@@ -229,8 +229,13 @@ class ai:
                 print "dont have enough", key, "to accept trade"
             return False
 
-        gainTotal = sum(gain.values())
-        loseTotal = sum(lose.values())
+        scarcity = self.getSoonScarcity(players, board)
+        gainTotal = 0
+        loseTotal = 0
+        for value in gain:
+          gainTotal += scarcity[value] * gain[value]
+        for value in lose:
+          loseTotal += scarcity[value] * lose[value]
         if self.verbose: print "gainTotal", gainTotal, "loseTotal",loseTotal
         if gainTotal > loseTotal: # accept if we are gaining more than we're losing
           return True

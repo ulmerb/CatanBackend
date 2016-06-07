@@ -793,7 +793,7 @@ def trade(curPlayer, players, board, AiNum = -2):
             response = raw_input("Would you like to propose a trade? ")
             if  response == "Yes" or response == "yes" or response == "y":
             	bankResponse = raw_input("Would you like to trade with the bank? ")
-            	if  bankResponse == "Yes" or response == "yes" or response == "y":
+            	if  bankResponse == "Yes" or bankResponse == "yes" or bankResponse == "y":
             		toLose = resourceSelector("Which resource do you want to give to the bank? ")
             		numberToLose = getAmountFromPlayer()
             		toGet = resourceSelector("Which resource do you want to receive? ")
@@ -825,7 +825,7 @@ def trade(curPlayer, players, board, AiNum = -2):
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
                 	partner = -3
                 if (partner == AiNum and AiNum != -2):
-					traded = players[AiNum].evaluateTrade(offer, recieve)
+					traded = players[AiNum].evaluateTrade(offer, recieve, players, board)
 					print "trade executed with AI"
 					for r in offer:
 						players[curPlayer].loseResource(r, offer[r])
@@ -842,7 +842,7 @@ def trade(curPlayer, players, board, AiNum = -2):
                         if i == curPlayer:
                             continue
                         if i == AiNum:
-                            executed = players[AiNum].evaluateTrade(offer, recieve)
+                            executed = players[AiNum].evaluateTrade(offer, recieve, players, board)
                             if (executed):
 								print "trade executed with AI"
 								for r in offer:
@@ -869,5 +869,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-# main()
+main()
 
