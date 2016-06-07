@@ -63,6 +63,7 @@ class board:
 			if givenType != "desert":
 				self.tiles[index].setNumber(numbers.pop())
 			else:
+				self.prevRobber = index
 				self.tiles[index].setRobber(True)
 				self.robberTile = self.tiles[index]
 	  	self.buildASCIIGridMaps()
@@ -146,18 +147,11 @@ class board:
 			for tile in self.tiles:
 				if tile is not None and tile.index != 0:
 					tileAscii = self.tileToAscii[tile]
-					goalTag = ""
-					if tile is self.robberTile:
-						goalTag = "ROB"
-						if tile.type is not "desert":
-							tileAscii = self.getTilesString(tile)
-					elif tile.type is "desert":
-						goalTag = "DES"
-					else:
-						goalTag = self.getTilesString(tile)
-					if tile.index == self.prevRobber:
-						tileAscii = "ROB"
+					goalTag = self.getTilesString(tile)
 					writer.writerow([tileAscii, goalTag])
+			writer.writerow(["ROB", self.robberTileAscii(self.prevRobber)])
+			writer.writerow([self.robberTileAscii(self.robberTile.index), "ROB"])
+			writer.writerow(["TMP", "DES"])
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
 					vertexAscii = self.vertexToAscii[vertex]
@@ -169,6 +163,13 @@ class board:
 				if edge is not None and edge.getOwner() is not None:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
+
+	def robberTileAscii(self, num):
+		result = "T"
+		if num < 10:
+			result += "0"
+		result += str(num)
+		return result
 
 	def getTilesString(self, tile):
 		if tile.type == "desert":

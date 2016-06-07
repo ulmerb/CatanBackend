@@ -602,7 +602,7 @@ def recalculateLargestArmy(players, board):
 			maxKnights = numKnights
 			leadingPlayer = player
 			bestIndex = curIndex
-		print "player "+ str(curIndex) +"played "+ str(numKnights) + "knights!!!!"
+		print "player "+ str(curIndex) +" has played "+ str(numKnights) + "knights"
 		curIndex += 1
 	if maxKnights >= 3 and maxKnights > board.curMaxKnights:
 		if board.largestArmy != -1:
