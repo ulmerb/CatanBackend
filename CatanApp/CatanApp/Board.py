@@ -135,7 +135,7 @@ class board:
 		for row in self.vertices:
 			print ','.join([str(e.index) if e is not None else "None" for e in row])
 
-	def createBatchCSV(self, players):
+ 	def createBatchCSV(self, players):
 		if IS_RUNNING:
 			path = os.path.join(BASE_DIR, 'ASCII/latest_update.csv')
 		else:
@@ -145,19 +145,12 @@ class board:
 			# THIS DISPLAYS THE INITINALIZED TILES - matt
 			for tile in self.tiles:
 				if tile is not None and tile.index != 0:
+					goalTag = self.getTilesString(tile)
 					tileAscii = self.tileToAscii[tile]
-					goalTag = ""
-					if tile is self.robberTile:
-						goalTag = "ROB"
-						if tile.type is not "desert":
-							tileAscii = self.getTilesString(tile)
-					elif tile.type is "desert":
-						goalTag = "DES"
-					else:
-						goalTag = self.getTilesString(tile)
-					if tile.index == self.prevRobber:
-						tileAscii = "ROB"
 					writer.writerow([tileAscii, goalTag])
+			writer.writerow(["ROB", self.robberTileAscii(self.prevRobber)])
+			writer.writerow([self.robberTileAscii(self.robberTile.index), "ROB"])
+			self.prevRobber = self.robberTile.index
 			for vertex in self.vertices:
 				if vertex is not None and vertex.getOwner() is not None:
 					vertexAscii = self.vertexToAscii[vertex]
@@ -169,6 +162,13 @@ class board:
 				if edge is not None and edge.getOwner() is not None:
 					edgeAscii = self.edgeToAscii[edge]
 					writer.writerow([edgeAscii, "!R" + str(edge.getOwner())])
+
+	def robberTileAscii(self, num):
+		result = "T"
+		if num < 10:
+			result += "0"
+		result += str(num)
+		return result
 
 	def getTilesString(self, tile):
 		if tile.type == "desert":
