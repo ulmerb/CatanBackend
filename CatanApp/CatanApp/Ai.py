@@ -27,7 +27,7 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = True):
+    def __init__(self, i, verbose = False):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -486,7 +486,7 @@ class ai:
         #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
-        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]},"pass": {'backtrace' : ['pass', None, 0]} }
+        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
         if self.AI.settlementsRemaining > 0:
@@ -504,7 +504,8 @@ class ai:
                             roadsAway = curDistanceAway
                         turnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                         resCost = sum(self.getResourceCost('settlement', roadsAway).values())
-                        options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['settlement', settlement, roadsAway]}
+                        cent = self.getCentrality(board, playableS)
+                        options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'centrality' : cent, 'backtrace' : ['settlement', settlement, roadsAway]}
                         if playableS.index in self.portsMap.keys():
                             options[asciiRepresentation]['port'] = self.portsMap[playableS.index]
                 if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
@@ -518,6 +519,7 @@ class ai:
                 turnCost = self.getCostInTurns('city', 0, self.income)
                 resCost = sum(self.getResourceCost('city', 0).values())
                 asciiRepresentation = str(board.vertexSettlementAscii(s))
+                #cent = self.getCentrality(board, s)
                 options[asciiRepresentation] = {'incomeIncrease': sum(benefit.values()), 'costInTurns' : turnCost, 'costInRes' : resCost, 'backtrace' : ['city', settle, 0]}
           #need to add more options and expand the curDistanceAway
         if self.verbose: print options
@@ -763,13 +765,15 @@ class ai:
 
     def getCurrentNormalizedScarcity(self,players):
         scarcity = self.getCurrentScarcity(players)
-        scarcity = self.reciprocalAndNormalize(scarcity)
+        scarcity = self.reciprocalAndNormalize(scarcity,True)
         return scarcity
 
-    def reciprocalAndNormalize(self,scarcity):
+    def reciprocalAndNormalize(self,scarcity,laplace = False):
         done = scarcity
         # inverse
         for res in scarcity:
+          if laplace == True:
+            scarcity[res] += 1.0
           done[res] = 1.0 / float(scarcity[res])
         # normalize
         factor=1.0/sum(done.itervalues())
@@ -778,6 +782,6 @@ class ai:
         return done
 
 
-
-
-    
+    def handleDiscard(self):
+      pass
+      # STUB

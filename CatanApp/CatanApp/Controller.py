@@ -260,7 +260,7 @@ def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	diceRoll = board.rollDice()
 	if diceRoll is CONST_ROBBER:
 		print "7 is rolled, robber!"
-		handleResourceLossFromRobber(players, board)
+		handleResourceLossFromRobber(players, board,AiNum)
 		handleRobber(curPlayer, players, board, AiNum)
 	else:
 		print str(diceRoll) + " was rolled"
@@ -298,36 +298,61 @@ def handleDiscard(player, playerNum, resources):
 	print "Player ", playerNum, " has too many resources. ", playerNum, " must discard ", toDiscard
 	try:
 		while True:
+			numWood = 0
+			numBrick = 0
+			numGrain = 0
+			numSheep = 0
+			numOre = 0
+
+
 			numWood = int(raw_input("How much wood do you want to discard? "))
 			if numWood > player.resources['wood']:
 				print "You can't discard that much, you only have ",  player.resources['wood'], " wood"
 				continue
 			else:
 				print "You will discard ", numWood, " of your ", player.resources['wood'], " wood"
+			
+			print "For the remaining resources you must discard", toDiscard - (numWood+numBrick+numOre+numSheep+numGrain)
+
 			numBrick = int(raw_input("How much brick do you want to discard? "))
+			
 			if numBrick > player.resources['brick']:
 				print "You can't discard that much, you only have ",  player.resources['brick'], " brick"
 				continue
 			else:
 				print "You will discard ", numBrick, " of your ", player.resources['brick'], " brick"
+			
+			print "For the remaining resources you must discard", toDiscard - (numWood+numBrick+numOre+numSheep+numGrain)
+
 			numOre = int(raw_input("How much ore do you want to discard? "))
+			
 			if numOre > player.resources['ore']:
 				print "You can't discard that much, you only have ",  player.resources['ore'], " ore"
 				continue
 			else:
 				print "You will discard ", numOre, " of your ", player.resources['ore'], " ore"				
+
+			print "For the remaining resources you must discard", toDiscard - (numWood+numBrick+numOre+numSheep+numGrain)
+			
 			numSheep = int(raw_input("How muuch sheep do you want to discard? "))
+			
 			if numSheep > player.resources['sheep']:
 				print "You can't discard that much, you only have ",  player.resources['sheep'], " sheep"
 				continue
 			else:
 				print "You will discard ", numSheep, " of your ", player.resources['sheep'], " sheep"
+
+			print "For the remaining resources you must discard", toDiscard - (numWood+numBrick+numOre+numSheep+numGrain)
+			
 			numGrain = int(raw_input("How much grain do you want to discard? "))
+			
 			if numGrain > player.resources['grain']:
 				print "You can't discard that much, you only have ",  player.resources['grain'], " wheat"
 			else:
 				print "You will discard ", numGrain, " of your ", player.resources['grain'], " wheat"
+			
 			totalResources = numWood+numBrick+numOre+numSheep+numGrain
+			
 			if totalResources != toDiscard:
 				print "You selected ", totalResources, " resources, you need to discard ", toDiscard, " resources"
 				continue
@@ -344,12 +369,17 @@ def handleDiscard(player, playerNum, resources):
 		print "Please enter a number"
 		handleDiscard(player, playerNum, resources)
 
-def handleResourceLossFromRobber(players, board):
+def handleResourceLossFromRobber(players, board,AiNum = -1):
 	for playerNum in range(len(players)):
-		player = players[playerNum]
-		resources = player.totalResources()
-		if resources > 7:
-			handleDiscard(player, playerNum, resources)
+		if(playerNum != AiNum):
+			player = players[playerNum]
+			resources = player.totalResources()
+			if resources > 7:
+				handleDiscard(player, playerNum, resources)
+		else:
+			print "Ai is discarding"
+			players[playerNum].handleDiscard()
+
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
 	if curPlayer != AiNum: print "Robber"

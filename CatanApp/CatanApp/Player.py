@@ -5,8 +5,8 @@ class player:
 
 	def __init__(self, i):
 		self.score =  0
-		#self.resources =  {'wood':14, 'sheep':14, 'brick': 14, 'ore': 16, 'grain' : 14}
 		self.resources =  {'wood': 14, 'sheep':12, 'brick': 14, 'ore': 10, 'grain' : 12}
+		#self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
 		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
@@ -51,6 +51,23 @@ class player:
 
 	#trade function based on Controller.trade 
 	def trade(curPlayer, players, board, AiNum = -2):
+		 #   while(trading):
+      #       response = raw_input("Would you like to propose a trade?")
+      #       if  response == "Yes" or response == "yes" or response == "y":
+      #       	bankResponse = raw_input("Would you like to trade with the bank?")
+      #       	if  bankResponse == "Yes" or response == "yes" or response == "y":
+      #       		toLose = resourceSelector("Which resource do you want to give to the bank? ")
+      #       		numberToLose = getAmountFromPlayer()
+      #       		toGet = resourceSelector("Which resource do you want to receive? ")
+      #       		modifier = findTradeModifier(curPlayer, toLose, board)
+      #       		if numberToLose % modifier != 0:
+      #       			print "Retry and enter a number that is a multiple of ", modifier
+      #       			continue
+      #       		else:
+						# players[curPlayer].addResource(toGet, numberToLose/modifier)
+						# players[curPlayer].loseResource(toLose, numberToLose)
+						# print "You know have ", players[curPlayer].resources
+						# continue
 		print "Trading phase Django"
 		trading = True
 		curResources = players[curPlayer].checkResources() 
