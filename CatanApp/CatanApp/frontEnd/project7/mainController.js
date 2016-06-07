@@ -270,6 +270,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
         //Functions for Game actions:
         //***************************
         $scope.endTurnPressed = function () {  
+            if($scope.main.currentPlayer) {}
             var userRes = $resource("/endOfTurn");
             console.log('currentPlayer before' + $scope.main.currentPlayer);
             userRes.save({'currentPlayer': $scope.main.currentPlayer},

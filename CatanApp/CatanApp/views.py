@@ -25,6 +25,7 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=
         pInfo = {"victoryPoints": p.score}
         pInfo['resources'] = p.resources
         pInfo["devCards"] = {}
+        pInfo["index"] = p.playerNumber
         pInfo["devCardsPlayed"] = {}
         pInfo["ports"] = p.structures['ports']
         for card in p.devCardsHeld:
