@@ -233,16 +233,16 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 				if diceRoll is CONST_ROBBER:
 					handleResourceLossFromRobber(players, board,AiNum)
 					handleRobber(curPlayer, players, board, AiNum)
-					robberCounter += 1
+					robberCounter += 1					
 				else:
 					board.assignResources(diceRoll, players)
-					gameEndVP = players[AiNum].decideMove(players, board, False)
-					#print gameEndVP
-					if gameEndVP >= 10:
+				gameEndVP = players[AiNum].decideMove(players, board, False)
+				#print gameEndVP
+				if gameEndVP >= 10:
 						print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
 						gameEnd = True
 						return turnCounter - robberCounter
-					else:
+				else:
 						gameEnd = False
 			else:
 				gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)

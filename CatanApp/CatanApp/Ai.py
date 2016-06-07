@@ -486,11 +486,6 @@ class ai:
         #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
-<<<<<<< HEAD
-        options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
-=======
-        # options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
->>>>>>> origin/master
         options = {}
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
@@ -803,7 +798,7 @@ class ai:
         else:
             cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
         for r in self.AI.resources:
-             sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
+             sortRes.append([self.AI.resources[r] - cost[r], self.income[r], r])
         sortRes.sort(key=lambda tup: tup[1], reverse=True)
         sortRes.sort(key=lambda tup: tup[0], reverse=True)
         while (numLost > 0):
