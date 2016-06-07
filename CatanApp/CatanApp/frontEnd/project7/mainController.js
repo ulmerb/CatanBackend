@@ -412,6 +412,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
             document.querySelector('.bankSubmit').style.display = "block";
             document.querySelector('.portSubmit').style.display = "none";
+            document.querySelector(".fixedExchangeGive").style.display = "block";
 
         }
 
