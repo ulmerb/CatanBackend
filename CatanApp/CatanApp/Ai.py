@@ -741,6 +741,7 @@ class ai:
           if badChoice == True: # one of AI settlements is here
             continue
           else:
+            #print "Tile ", tile.index, " has a score ", occupiedSpots 
             if occupiedSpots > maxDamage:
               bestTile = tile
               maxDamage = occupiedSpots
@@ -768,7 +769,7 @@ class ai:
         self.AI.loseResource(res, amount)
         
     def loseRandomCard(self):
-        self.AI.loseRandomCard()   
+        return self.AI.loseRandomCard()   
              
     def tests(self):
         if self.verbose: print self.AI.roadsRemaining
