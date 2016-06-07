@@ -49,8 +49,6 @@ class player:
 		else:
 			return "Not enough " + port
 
-<<<<<<< Updated upstream
-=======
 	#trade function based on Controller.trade 
 	def trade(curPlayer, players, board, AiNum = -2):
         print "Trading phase Django"
@@ -127,7 +125,6 @@ class player:
             # else:
             #     trading = False
 
->>>>>>> Stashed changes
 
 	def getScore(self):
 		return self.score
