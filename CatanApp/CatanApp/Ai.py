@@ -24,6 +24,7 @@
 import math
 import Player
 import VertexToCentralityDict
+import sys
 
 class ai:
     
@@ -31,7 +32,7 @@ class ai:
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
-        self.weights =  {'incomeIncrease' : 100, 'centrality' : 1.0, 'costInTurns' : -20.0, 'costInRes' : -1.0, 'port' : 80.0, 'vp' : 1.0}
+        self.weights =  {'incomeIncrease' : 200, 'centrality' : 10.0, 'costInTurns' : -20.0, 'costInRes' : -10.0, 'port' : 80.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
@@ -40,8 +41,8 @@ class ai:
         self.portsMap = {5 : 'three', 6 : 'three', 3 : 'three', 4 : 'three', 28 : 'three', 17 : 'three', 53 : 'three',
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
-        self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
-        self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 1.0}
+        self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
+        self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.5}
    
     def incrementScore(self, s = 1):
       self.AI.incrementScore(s)
@@ -503,7 +504,7 @@ class ai:
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
         options = {}
         curSettlements = self.AI.structures['settlements'][:]
-        curSettlements += self.AI.structures['cities']
+        curSettlements += self.AI.structures['cities'][:]
         if self.AI.settlementsRemaining > 0:
             while(True):
                 for settlement in curSettlements:
@@ -523,10 +524,9 @@ class ai:
                         options[asciiRepresentation] = {'incomeIncrease': benefit, 'costInTurns' : turnCost, 'costInRes' : resCost, 'centrality' : cent, 'backtrace' : ['settlement', settlement, roadsAway]}
                         if playableS.index in self.portsMap.keys():
                             options[asciiRepresentation]['port'] = self.portsMap[playableS.index]
-                if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
+                if ((len(options) >= 7 and curDistanceAway >= 3) or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
-        if self.verbose: print self.AI.structures['settlements']
         if self.AI.citiesRemaining > 0:      
             for settle in self.AI.structures['settlements']:
                 s = board.vertices[settle]
@@ -637,21 +637,19 @@ class ai:
                         continue
                     elif field == 'incomeIncrease':
                         total = 0.0
-                        for r in overallScarcity:
-                            total += scarceWeightsInc['overall']  * options[opt][field][r]
-                        for r in soonScarcity:
-                            total += scarceWeightsInc['soon']  * options[opt][field][r]
-                        for r in curNormS:
-                            total += scarceWeightsInc['cur']  * options[opt][field][r]
+                        for r in self.AI.resources:
+                            total += scarceWeightsInc['overall']  * options[opt][field][r] * overallScarcity[r]
+                            total += scarceWeightsInc['soon']  * options[opt][field][r] * soonScarcity[r]
+                            total += scarceWeightsInc['cur']  * options[opt][field][r] * curNormS[r]
+                            total += scarceWeightsInc['gross']  * options[opt][field][r]
                         score += total * self.weights['incomeIncrease']
                     elif field == 'costInRes':
                         total = 0.0
-                        for r in overallScarcity:
-                            total += scarceWeightsCost['overall']  * options[opt][field][r]
-                        for r in soonScarcity:
-                            total += scarceWeightsCost['soon']  * options[opt][field][r]
-                        for r in curNormS:
-                            total += scarceWeightsCost['cur']  * options[opt][field][r]
+                        for r in self.AI.resources:
+                            total += scarceWeightsCost['overall']  * options[opt][field][r] * overallScarcity[r]
+                            total += scarceWeightsCost['soon']  * options[opt][field][r] * soonScarcity[r]
+                            total += scarceWeightsCost['cur']  * options[opt][field][r] * curNormS[r]
+                            total += scarceWeightsCost['gross']  * options[opt][field][r]
                         score += total * self.weights['costInRes']
                     elif field == 'port':
                         if options[opt][field] in self.AI.structures['ports']:
@@ -828,7 +826,6 @@ class ai:
 
 
     def handleDiscard(self):
-        #test
         sortRes = []
         if sum(self.AI.resources.values()) <= 7:
             return
