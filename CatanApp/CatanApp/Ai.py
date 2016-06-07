@@ -413,7 +413,7 @@ class ai:
                         locObj = board.edges[roadInd]
                         self.AI.buildRoad(locObj, board)
                     self.AI.buildSettlement(settleObj, board)
-                    self.updateIncome(settleObj, board)
+                    self.updateIncome(settleObj, board) 
                     if self.verbose:
                         print settleObj.getCity()
                         print settleObj.getSettlement()
@@ -504,13 +504,17 @@ class ai:
                 bestloc = i
                 maxIncome = gain
           self.AI.buildSettlement(locs[bestloc], board)
-          self.updateIncome(locs[bestloc], board)
+          self.updateIncome(locs[bestloc], board)     		
           builtSettlementSpot = locs[bestloc].getIndex()
-          roadOptions = board.vertexToEdgeMap[builtSettlementSpot]
+          roadOptions = board.vertexToEdgeMap[builtSettlementSpot]	  
           if self.verbose: print builtSettlementSpot, "roadOptions", roadOptions
           if self.verbose: print "currently just choosing the first road on the list" # Currentliy just building at the first option
           roadChoice = board.edges[roadOptions[0]]
-          self.AI.buildRoad(roadChoice, board) 
+          self.AI.buildRoad(roadChoice, board)
+          if len(self.AI.structures['settlements']) == 2:
+                for tile in board.vertexToTileMap[locs[bestloc].index]:
+	 		if board.tiles[tile].type != "desert":
+	 			self.addResource(board.tiles[tile].type, 1)
       else:
         #sys.exit()
         curDistanceAway = 2
