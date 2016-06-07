@@ -479,7 +479,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
             console.log("users you want to tade with"+arr);
             var userRes = $resource("/suggestTrade");
-            userRes.save({'currentPlayer':$scope.main.currentPlayer,
+            userRes.save({'curPlayer':$scope.main.currentPlayer,
                 'tradeMessage':$scope.main.message_to_user,
                 'offer': {
                     'wood':$scope.main.give_wood,
