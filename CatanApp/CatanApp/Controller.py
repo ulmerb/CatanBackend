@@ -334,7 +334,7 @@ def handleDiscard(player, playerNum, resources):
 
 			print "For the remaining resources you must discard", toDiscard - (numWood+numBrick+numOre+numSheep+numGrain)
 			
-			numSheep = int(raw_input("How muuch sheep do you want to discard? "))
+			numSheep = int(raw_input("How much sheep do you want to discard? "))
 			
 			if numSheep > player.resources['sheep']:
 				print "You can't discard that much, you only have ",  player.resources['sheep'], " sheep"
@@ -558,7 +558,6 @@ def checkLongestRoad(board, players):
 	bestIndex = -1
 	curIndex = 0
 	for player in players:
-		print "examining ", player
 		numRoads = player.getRoadLength(board)
 		if numRoads > longestRoad:
 			longestRoad = numRoads
@@ -865,5 +864,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-# main()
+main()
 
