@@ -41,6 +41,9 @@ class ai:
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
    
+    def incrementScore(self, s = 1):
+      self.AI.incrementScore(s)
+
     def getRoadLength(self, board):
       return self.AI.getRoadLength(board)
 
