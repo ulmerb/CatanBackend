@@ -78,10 +78,13 @@ def build(request):
 @csrf_exempt
 def endOfTurn(request):
     info = json.loads(request.POST['js_resp'])
-    print info['currentPlayer']
     newCurPlayer = int(info['currentPlayer'] + 1) % len(settings.PLAYERS)
-    dRoll = Controller.rollDice(
-        settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
+    turnCount = info['turnCount']
+    if turnCount > 0:
+        dRoll = Controller.rollDice(
+            settings.BOARD, settings.PLAYERS, newCurPlayer, -1)
+    else:
+        dRoll = 0
     if dRoll == 7:
         resp = makeJson(
             settings.BOARD, settings.PLAYERS, "Robber!", dRoll, newCurPlayer)
