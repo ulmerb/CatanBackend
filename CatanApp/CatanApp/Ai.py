@@ -696,7 +696,7 @@ class ai:
         maxDamage = 0
         for tile in board.getAllTiles():
           badChoice = False
-          if tile.robber == True or tile.type() == "desert": # can't option not to move the robber
+          if tile.robber == True or tile.getType() == "desert": # can't option not to move the robber
             badChoice = True
             continue 
           vertexes = board.getTileToVertices(tile)
