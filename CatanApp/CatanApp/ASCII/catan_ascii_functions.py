@@ -5,7 +5,7 @@ import json
 from CatanApp import settings
 # ^Use import settings when server is not running
 # otherwise use from CatanApp import settings
-#import settings
+# import settings
 
 
 # IS_RUNNING is True when the django server is running
