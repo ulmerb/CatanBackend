@@ -886,10 +886,10 @@ class ai:
         while (numLost > 0):
             excess = sortRes[0][0]
             if excess <= 0:
-                if self.resources[sortRes[0][2]] == 0:
+                if self.AI.resources[sortRes[0][2]] == 0:
                     del sortRes[0]
                 else:
-                    self.resources[sortRes[0][2]] -=1
+                    self.AI.resources[sortRes[0][2]] -=1
                     numLost -= 1
                     sortRes[0][0] -= 1
                     #if self.verbose: 
