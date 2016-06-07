@@ -127,7 +127,7 @@ def endOfTurn(request):
             settings.BOARD.createBatchCSV(settings.PLAYERS)
             settings.BOARD.batchUpdate()
             print "LATEST BOARD"
-            settings.BOARD.printBoard()
+            print settings.BOARD.printBoard()
             return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai moved, " + "Player " + str(newCurPlayer) + " turn", dRoll, newCurPlayer))
     else:
         if dRoll == 7:
@@ -151,7 +151,7 @@ def placeRobber(request):
         return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "Ai has discarded, " + "Player " + str(curPlayer) + "'s turn", 7, curPlayer))
 
     error = Controller.serverHandleRobber(
-        curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
+        curPlayer, settings.PLAYERS, loc, target, settings.BOARD, len(settings.PLAYERS) - 1)
     print "new board number", settings.BOARD.currentBoardNumber
     # print settings.BOARD.printBoard()
     if error:
@@ -242,7 +242,7 @@ def playCard(request):
     devCardGrain = info['devCardGrain']
     roadLoc1 = info['roadLoc1']
     roadLoc2 = info['roadLoc2']
-    tilePosition = info['tilePosition']
+    tilePosition = int(info['tilePosition'])
     playerToStealFrom = info['playerToStealFrom']
     error = Controller.serverUseCard(curPlayer, settings.PLAYERS, settings.BOARD, cardType,
                                      devCardBrick, devCardWood, devCardSheep, devCardOre, devCardGrain, roadLoc1, roadLoc2, tilePosition, playerToStealFrom)

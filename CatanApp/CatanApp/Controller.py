@@ -44,6 +44,8 @@ def rollDice(board, players, curPlayer):
 		return diceRoll
 
 def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
+	print "serverHandleRobber is called with: "
+	print curPlayer, players, loc, target, board, AiNum
 	if curPlayer == AiNum:
 		target = players[curPlayer].placeRobber(board)
 		if target != None and target != curPlayer:
@@ -51,6 +53,7 @@ def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
 		print "The ai has moved the robber"
 	else:
 		if loc > 0 and loc < len(board.tiles) - 1:
+			print "robber is being moved"
 			newRobberLocation = board.tiles[loc]
 			board.moveRobber(newRobberLocation)
 			board.createBatchCSV(players)
@@ -107,7 +110,7 @@ def serverUseCard(curPlayer, players, board, chosenCard, devCardBrick, devCardWo
 		print "You played a knight!"
 		#handleRobber(curPlayer, players, board)
 		#error = Controller.serverHandleRobber(curPlayer, settings.PLAYERS, loc, target, settings.BOARD, -1)
-		serverHandleRobber(curPlayer, players, tilePosition, playerToStealFrom, board, -1) #TO DO change AI number
+		serverHandleRobber(curPlayer, players, tilePosition, playerToStealFrom, board, len(players) - 1) #TO DO change AI number
 		players[curPlayer].playDevCard(chosenCard)
 		recalculateLargestArmy(players, board)
 	if chosenCard == "victoryPoint":
@@ -871,5 +874,5 @@ def isInt(s):
 
 
 # comment out main when using controller to handle requests
-main()
+# main()
 
