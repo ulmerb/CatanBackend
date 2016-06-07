@@ -485,9 +485,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()    
 		initialPlacement(i, players, board)
@@ -497,9 +497,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range(numPlayers -1, -1, -1):
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()
 	 	setLoc = initialPlacement(i, players, board)
@@ -867,5 +867,5 @@ def isInt(s):
         return False
 
 # comment out main when using controller to handle requests
-main()
+#main()
 
