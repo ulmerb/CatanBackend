@@ -353,6 +353,7 @@ class ai:
                 newTurnCost = self.getCostInTurns('settlement', roadsAway, self.income)
                 if newTurnCost > 0:
                     self.savedPaths[bestOptionKey] = path
+                    if self.verbose: print "A planned road for this settlement has been built on, the Ai can no longer complete this option this turn"
                     return False  
             settleObj = board.vertices[settleLoc]
             if not self.needsExchange(cost):
