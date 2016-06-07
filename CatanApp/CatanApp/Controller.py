@@ -382,6 +382,8 @@ def handleResourceLossFromRobber(players, board,AiNum = -1):
 
 
 def handleRobber(curPlayer, players, board, AiNum = -1):
+	board.createBatchCSV(players)
+	board.batchUpdate()
 	if curPlayer != AiNum: print "Robber"
 	locations = board.getAllTiles()
 	if curPlayer != AiNum: print "Choose a location: "
@@ -869,5 +871,5 @@ def isInt(s):
 
 
 # comment out main when using controller to handle requests
-#main()
+main()
 
