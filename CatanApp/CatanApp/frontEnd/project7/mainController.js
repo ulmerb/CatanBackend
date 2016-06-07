@@ -190,7 +190,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     console.log("model: success");
                     // console.log(model);
                     //update all variables on UI
-                    $scope.updateBoardBasedOnRecievedGameState(model)
+                    $scope.updateBoardBasedOnreceivedGameState(model)
                 }, function errorHandling(err) {
                     $scope.login_name = "";
                     $scope.password = "";
@@ -202,13 +202,13 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.newGame = function() {
             var userRes = $resource("/newGame");
-            userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
+            userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':true},
                 function (model){
                     console.log('new game model');
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                     $scope.initialPlacement(model);
                     //update all variables on UI
-                    //$scope.updateBoardBasedOnRecievedGameState(model)
+                    //$scope.updateBoardBasedOnreceivedGameState(model)
                 }, function errorHandling(err) {
                     $scope.login_name = "";
                     $scope.password = "";
@@ -224,7 +224,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             }
         }
 
-        $scope.updateBoardBasedOnRecievedGameState = function(model) {
+        $scope.updateBoardBasedOnreceivedGameState = function(model) {
             console.log("JSON data is: ");
             console.log(model);
             
@@ -282,7 +282,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             console.log('currentPlayer before' + $scope.main.currentPlayer);
             userRes.save({'currentPlayer': $scope.main.currentPlayer, 'turnCount':$scope.main.turnCount},
                 function (model){
-                    $scope.updateBoardBasedOnRecievedGameState(model)
+                    $scope.updateBoardBasedOnreceivedGameState(model)
                     //TODO: set up the board for the next player
                     console.log('updated resources and dice roll');
                     console.log(model);
@@ -313,7 +313,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var suggestedEdgeForRoad = $scope.main.buildRoadLocation
             userRes.save({'suggestedLocation':suggestedEdgeForRoad, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: buildRoadButtonPressed failed";
                 }
@@ -325,7 +325,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var suggestedVertexForSettlement = $scope.main.buildSettlementLocation
             userRes.save({'suggestedLocation':suggestedVertexForSettlement, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: buildSettlementButtonPressed failed";
                 }
@@ -337,7 +337,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             var suggestedVertexForCity = $scope.main.buildCityLocation
             userRes.save({'suggestedLocation':suggestedVertexForCity, 'curPlayer':$scope.main.currentPlayer},
                 function (model){
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
 
                     //TODO: if city can be built, build it
                     //else continue
@@ -354,7 +354,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     console.log("model after card bought");
                     console.log(model.players[$scope.main.currentPlayer].devCards);
                     console.log(model)
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                     // if(model.devCardName === "victoryPoint") {
                     //     $scope.playDevCardButtonPressed("victoryPoint");
                     // }
@@ -387,7 +387,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     console.log("robber location:")
                     console.log(model.robberTileLocation)
                     console.log(model)
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: playDevCardButtonPressed failed";
                 }
@@ -404,7 +404,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     //else continue
                     console.log("new board");
                     console.log(model);
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                     $scope.main.message_to_user = model.message;
 
                 }, function errorHandling(err) {
@@ -465,6 +465,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             }
         }
 
+        $scope.isAi = function(playerNum) {
+            return (playerNum === numPlayers - 1);
+        }
+
         //TODO: connect ot back end
         $scope.sendTradeMessageToUserMessage = function(){
             $scope.main.message_to_user = "This is your offer: Ore:"+$scope.main.give_ore+", Brick:"+ $scope.main.give_brick
@@ -473,7 +477,6 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                  + ",Grain:" + $scope.main.get_grain + ", Wood: " + $scope.main.get_wood+ ", Sheep:" + $scope.main.get_sheep 
             //get the checked users on the list:
 
-            
             var form = document.getElementById("trading"),
             inputs = form.getElementsByTagName("INPUT"),
             arr = [];
@@ -511,13 +514,16 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     if (model.canTrade) {
                         console.log("can trade:true")
                         $scope.main.isTrading = true
-                        $scope.updateBoardBasedOnRecievedGameState(model);
+                        $scope.updateBoardBasedOnreceivedGameState(model);
                         //take, offer, canTrade
                         $scope.main.offer = model.offer
                         $scope.main.take = model.take
                         $scope.main.proposer = model.proposer
-
-                        $scope.switchToTradeModeUI()
+                        if(!($scope.isAi(scope.main.currentPlayer))){
+                            $scope.switchToTradeModeUI()
+                        } else {
+                            //crapityccrap
+                        }
                         
                         var playerTrade = document.querySelector(".playerTradeStuff");
                         playerTrade.style.display = "none";
@@ -560,7 +566,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 },
                 function (model){
                     console.log(model)
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                     $scope.main.message_to_user = model.message;
                     //**** switch UI back to normal*** :
                     var buttons = document.getElementsByTagName("BUTTON");
@@ -609,7 +615,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 'youWantResource':youWantResource,
                 'youGiveResource':youGiveResource},
                 function (model){
-                    $scope.updateBoardBasedOnRecievedGameState(model);
+                    $scope.updateBoardBasedOnreceivedGameState(model);
                     $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessagetobankFailed failed";

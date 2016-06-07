@@ -724,13 +724,13 @@ def tradeHelper(trade, curResources, rec = False):
                     print "invalid input try again"
     return trade
 
-def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
+def tradeLogicHelper(curPlayer, partner, players, offer, receive):
     partnerRes = players[partner].checkResources()
-    for r in recieve:
-        if recieve[r] > partnerRes[r]:
+    for r in receive:
+        if receive[r] > partnerRes[r]:
             print "Player ", partner, " cant make the proposed trade because they dont have enough " + r + "."
             return False
-    print "Player " + str(partner) + ", Player " + str(curPlayer) + " has proposed to trade: ", offer, "for: ",  recieve, "do you accept?"
+    print "Player " + str(partner) + ", Player " + str(curPlayer) + " has proposed to trade: ", offer, "for: ",  receive, "do you accept?"
     answer = raw_input("y/n?") 
     if answer == "Yes" or answer == "yes" or answer == "y":
         confirm =  raw_input("Player " + str(curPlayer) + " would you like to confirm this trade?")
@@ -739,9 +739,9 @@ def tradeLogicHelper(curPlayer, partner, players, offer, recieve):
             for r in offer:
                 players[curPlayer].loseResource(r, offer[r])
                 players[partner].addResource(r, offer[r])
-            for r in recieve:
-                players[curPlayer].addResource(r, recieve[r])
-                players[partner].loseResource(r, recieve[r])
+            for r in receive:
+                players[curPlayer].addResource(r, receive[r])
+                players[partner].loseResource(r, receive[r])
             for player in players:
 				print player
             return True
@@ -808,9 +808,9 @@ def trade(curPlayer, players, board, AiNum = -2):
                 offer =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
                 print "What would you like to offer? (Enter an amount for each following resource)"
                 offer = tradeHelper(offer, curResources)
-                recieve = {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+                receive = {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
                 print "What would you like in return? (Enter an amount for each following resource)"
-                recieve = tradeHelper(recieve, curResources, True)
+                receive = tradeHelper(receive, curResources, True)
                 partner = -1
                 potentialPartner = raw_input("Would like to ask a specific player (if so enter the player number you'd like to trade with)")
                 if isInt(potentialPartner):
@@ -823,37 +823,37 @@ def trade(curPlayer, players, board, AiNum = -2):
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
                 	partner = -3
                 if (partner == AiNum and AiNum != -2):
-					traded = players[AiNum].evaluateTrade(offer, recieve, players, board)
+					traded = players[AiNum].evaluateTrade(offer, receive, players, board)
 					print "trade executed with AI"
 					for r in offer:
 						players[curPlayer].loseResource(r, offer[r])
 						players[AiNum].addResource(r, offer[r])
-					for r in recieve:
-						players[curPlayer].addResource(r, recieve[r])
-						players[AiNum].loseResource(r, recieve[r])
+					for r in receive:
+						players[curPlayer].addResource(r, receive[r])
+						players[AiNum].loseResource(r, receive[r])
 					for player in players:
 						print player
                 elif partner != -1 and partner != -3:
-                    tradeLogicHelper(curPlayer, partner, players, offer, recieve)
+                    tradeLogicHelper(curPlayer, partner, players, offer, receive)
                 else:
                     for i in xrange(len(players)):
                         if i == curPlayer:
                             continue
                         if i == AiNum:
-                            executed = players[AiNum].evaluateTrade(offer, recieve, players, board)
+                            executed = players[AiNum].evaluateTrade(offer, receive, players, board)
                             if (executed):
 								print "trade executed with AI"
 								for r in offer:
 									players[curPlayer].loseResource(r, offer[r])
 									players[AiNum].addResource(r, offer[r])
-								for r in recieve:
-									players[curPlayer].addResource(r, recieve[r])
-									players[AiNum].loseResource(r, recieve[r])
+								for r in receive:
+									players[curPlayer].addResource(r, receive[r])
+									players[AiNum].loseResource(r, receive[r])
 								for player in players:
 									print player
 								break
                         else:
-                            executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
+                            executed = tradeLogicHelper(curPlayer, i, players, offer, receive)
                             if (executed):
                                 break
             else:

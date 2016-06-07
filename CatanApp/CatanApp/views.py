@@ -22,30 +22,56 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=
     data["players"] = []
     data["boardString"] = board.printBoard()
     for p in players:
-        pInfo = {"victoryPoints": p.score}
-        pInfo['resources'] = p.resources
-        pInfo["devCards"] = {}
-        pInfo["index"] = p.playerNumber
-        pInfo["devCardsPlayed"] = {}
-        pInfo["ports"] = p.structures['ports']
-        for card in p.devCardsHeld:
-            if card in pInfo["devCards"]:
-                pInfo["devCards"][card] += 1
-            else:
-                pInfo["devCards"][card] = 1
+        if hasattr(p, 'AI'):
+            pInfo = {"victoryPoints": p.AI.score}
+            pInfo['resources'] = p.AI.resources
+            pInfo["devCards"] = {}
+            pInfo["index"] = p.AI.playerNumber
+            pInfo["devCardsPlayed"] = {}
+            pInfo["ports"] = p.AI.structures['ports']
+            for card in p.AI.devCardsHeld:
+                if card in pInfo["devCards"]:
+                    pInfo["devCards"][card] += 1
+                else:
+                    pInfo["devCards"][card] = 1
 
-        for card in p.devCardsPlayed:
-            if card in pInfo["devCardsPlayed"]:
-                pInfo["devCardsPlayed"][card] += 1
-            else:
-                pInfo["devCardsPlayed"][card] = 1
+            for card in p.AI.devCardsPlayed:
+                if card in pInfo["devCardsPlayed"]:
+                    pInfo["devCardsPlayed"][card] += 1
+                else:
+                    pInfo["devCardsPlayed"][card] = 1
 
-        # stubs to be updated
-        pInfo["hasLongestRoad"] = False
-        pInfo["hasLongestArmy"] = (board.largestArmy == p.playerNumber)
-        for key in p.structures:
-            pInfo[key] = p.structures[key]
-        data["players"].append(pInfo)
+            # stubs to be updated
+            pInfo["hasLongestRoad"] = False
+            pInfo["hasLongestArmy"] = (board.largestArmy == p.AI.playerNumber)
+            for key in p.AI.structures:
+                pInfo[key] = p.AI.structures[key]
+            data["players"].append(pInfo)
+        else:
+            pInfo = {"victoryPoints": p.score}
+            pInfo['resources'] = p.resources
+            pInfo["devCards"] = {}
+            pInfo["index"] = p.playerNumber
+            pInfo["devCardsPlayed"] = {}
+            pInfo["ports"] = p.structures['ports']
+            for card in p.devCardsHeld:
+                if card in pInfo["devCards"]:
+                    pInfo["devCards"][card] += 1
+                else:
+                    pInfo["devCards"][card] = 1
+
+            for card in p.devCardsPlayed:
+                if card in pInfo["devCardsPlayed"]:
+                    pInfo["devCardsPlayed"][card] += 1
+                else:
+                    pInfo["devCardsPlayed"][card] = 1
+
+            # stubs to be updated
+            pInfo["hasLongestRoad"] = False
+            pInfo["hasLongestArmy"] = (board.largestArmy == p.playerNumber)
+            for key in p.structures:
+                pInfo[key] = p.structures[key]
+            data["players"].append(pInfo)
     data['devCardName'] = card
     data['canTrade'] = canTrade
     data['take'] = take
@@ -237,18 +263,19 @@ def isAI(playerNum):
     return playerNum == len(settings.PLAYERS) - 1
 
 
-def executeAITrade(offer, receive):
-    if (partner == AiNum and AiNum != -2):
-        traded = players[AiNum].evaluateTrade(offer, recieve)
-        print "trade executed with AI"
+def executeAITrade(curPlayer, ainum, offer, receive, players, board):
+    traded = players[ainum].evaluateTrade(offer, receive, players, board)
+    if traded:
         for r in offer:
-            settings.PLAYERS[curPlayer].loseResource(r, offer[r])
-            settings.PLAYERS[AiNum].addResource(r, offer[r])
-        for r in recieve:
-            settings.PLAYERS[curPlayer].addResource(r, recieve[r])
-            settings.PLAYERS[AiNum].loseResource(r, recieve[r])
+            players[curPlayer].resources[r] -= offer[r]
+            players[ainum].AI.resources[r] += offer[r]
+        for r in receive:
+            players[curPlayer].resources[r] += receive[r]
+            players[ainum].AI.resources[r] -= receive[r]
         for player in players:
             print player
+        return True
+    return False
 
 
 @csrf_exempt
@@ -258,10 +285,12 @@ def playerTrade(request):
     offer = info['offer']
     take = info['take']
     userToTradeWith = info['userToTradeWithArr'][0]
-    # if isAI(userToTradeWith):
-    #     executeAITrade(offer, take, settings.PLAYERS)
-    print "current player:"
-    print curPlayer
+    if isAI(userToTradeWith):
+        if executeAITrade(curPlayer, userToTradeWith, offer, take, settings.PLAYERS, settings.BOARD):
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has accepted trade", 0, curPlayer))
+        else:
+            return HttpResponse(makeJson(settings.BOARD, settings.PLAYERS, "AI has rejected trade", 0, curPlayer))
+
     canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
     if canTrade:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
