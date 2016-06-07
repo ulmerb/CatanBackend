@@ -205,14 +205,22 @@ def bankTrade(request):
     else:
         resp = makeJson(
             settings.BOARD, settings.PLAYERS, "Successfull transaction", 0, curPlayer)
+<<<<<<< HEAD
     return HttpResponse(resp)
 
 
 
+=======
+
+<<<<<<< Updated upstream
+    return HttpResponse(resp)
+=======
+>>>>>>> origin/master
 @csrf_exempt
 def playerTrade(request):
 	info = json.loads(request.POST['js_resp'])
 	curPlayer = info['curPlayer']
+<<<<<<< HEAD
 	offer = info['offer']
 	take = info['take']
 	userToTradeWith = info['userToTradeWithArr'][0]
@@ -226,6 +234,20 @@ def playerTrade(request):
 	                    "Successfull player to player trade", 0, curPlayer)
 
 	return HttpResponse(resp)
+=======
+	give = info['youGiveResource']
+	take = info['youWantResource']
+	portNum = info['tradeEntity']
+	player = settings.PLAYERS[curPlayer]
+	error = player.trade(curPlayer, settings.PLAYERS , settings.BOARD, AiNum = -2)  #AiNum = -2 
+	if error:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, error, 0, curPlayer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Successfull player to player trade", 0, curPlayer)
+
+	return HttpResponse(resp)
+>>>>>>> Stashed changes
+>>>>>>> origin/master
 
 
 @csrf_exempt

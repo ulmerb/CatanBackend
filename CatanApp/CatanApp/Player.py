@@ -49,6 +49,7 @@ class player:
 		else:
 			return "Not enough " + port
 
+<<<<<<< HEAD
 	#trade function based on Controller.trade
 	def checkTrade(self, offer, player):
 		value, message = validateTrade(offer, self)
@@ -56,6 +57,15 @@ class player:
 
 	def trade(self,userToTradeWith, curPlayer, offer, take, players, board, AiNum = -2):
 		 #   while(trading):
+=======
+<<<<<<< Updated upstream
+=======
+	#trade function based on Controller.trade 
+	def trade(curPlayer, players, board, AiNum = -2):
+        print "Trading phase Django"
+        trading = True
+      #   while(trading):
+>>>>>>> origin/master
       #       response = raw_input("Would you like to propose a trade?")
       #       if  response == "Yes" or response == "yes" or response == "y":
       #       	bankResponse = raw_input("Would you like to trade with the bank?")
@@ -72,6 +82,7 @@ class player:
 						# players[curPlayer].loseResource(toLose, numberToLose)
 						# print "You know have ", players[curPlayer].resources
 						# continue
+<<<<<<< HEAD
 		# print "Trading phase Django"
 		# trading = True
 		curResources = players[curPlayer].checkResources() 
@@ -106,7 +117,64 @@ class player:
 			if player.resources[resource] - amount < 0:
 				return False, "Not enough of ", resource
 		return True, trade
+=======
+                curResources = players[curPlayer].checkResources() 
+                offer =  {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+                # print "What would you like to offer? (Enter an amount for each following resource)"
+                offer = tradeHelper(offer, curResources)
+                recieve = {'wood':0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
+                print "What would you like in return? (Enter an amount for each following resource)"
+                recieve = tradeHelper(recieve, curResources, True)
+                partner = -1
+                potentialPartner = raw_input("Would like to ask a specific player (if so enter the player number you'd like to trade with)")
+                if isInt(potentialPartner):
+                    potentialPartner = int(potentialPartner)
+                    if potentialPartner < len(players) and potentialPartner != curPlayer:
+                        partner = potentialPartner
+                        print "Proposing trade to player: ", partner
+                    else:
+                        print "No partner or invalid partner inserted, proposing trade to all players"
+                else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
+                	partner = -3
+                if (partner == AiNum and AiNum != -2):
+					traded = players[AiNum].evaluateTrade(offer, recieve)
+					print "trade executed with AI"
+					for r in offer:
+						players[curPlayer].loseResource(r, offer[r])
+						players[AiNum].addResource(r, offer[r])
+					for r in recieve:
+						players[curPlayer].addResource(r, recieve[r])
+						players[AiNum].loseResource(r, recieve[r])
+					for player in players:
+						print player
+                elif partner != -1 and partner != -3:
+                    tradeLogicHelper(curPlayer, partner, players, offer, recieve)
+                else:
+                    for i in xrange(len(players)):
+                        if i == curPlayer:
+                            continue
+                        if i == AiNum:
+                            executed = players[AiNum].evaluateTrade(offer, recieve)
+                            if (executed):
+								print "trade executed with AI"
+								for r in offer:
+									players[curPlayer].loseResource(r, offer[r])
+									players[AiNum].addResource(r, offer[r])
+								for r in recieve:
+									players[curPlayer].addResource(r, recieve[r])
+									players[AiNum].loseResource(r, recieve[r])
+								for player in players:
+									print player
+								break
+                        else:
+                            executed = tradeLogicHelper(curPlayer, i, players, offer, recieve)
+                            if (executed):
+                                break
+            # else:
+            #     trading = False
+>>>>>>> origin/master
 
+>>>>>>> Stashed changes
 
 	def getScore(self):
 		return self.score
