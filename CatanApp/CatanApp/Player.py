@@ -60,10 +60,10 @@ class player:
 	def makeTrade(self, offer, take, proposee, players):
 		for res in offer:
 			self.resources[res] -= offer[res]
-			players[proposee][res] += offer[res]
+			players[proposee].resources[res] += offer[res]
 		for res in take:
 			self.resources[res] += offer[res]
-			players[proposee][res] -= offer[res]
+			players[proposee].resources[res] -= offer[res]
 
 	#trade function based on Controller.trade 
 	def trade(curPlayer, players, board, AiNum = -2):

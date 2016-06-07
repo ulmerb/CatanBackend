@@ -277,7 +277,7 @@ def tradeMaker(request):
     canTrade, message = settings.PLAYERS[proposee].checkTrade(take)
     if canTrade:
         if accepted == 'accept':
-            settings.PLAYER[proposer].makeTrade(
+            settings.PLAYERS[proposer].makeTrade(
                 offer, take, proposee, settings.PLAYERS)
             resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                             str(proposee) + " has accepted your offer", 0, proposer)
@@ -287,3 +287,4 @@ def tradeMaker(request):
     else:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                         str(proposee) + " has rejected your offer", 0, proposer)
+    return HttpResponse(resp) 
