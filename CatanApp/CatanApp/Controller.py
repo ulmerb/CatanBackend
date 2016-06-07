@@ -347,15 +347,17 @@ def handleRobber(curPlayer, players, board, AiNum = -1):
 	if curPlayer != AiNum: print "Choose a location: "
 	location_dict = {}
 	for l in locations:
-		goalTag = board.tileToAscii[l]
-		location_dict[goalTag] = l
-		if curPlayer != AiNum: print goalTag
-        if (curPlayer == AiNum):
-            target = players[curPlayer].placeRobber(board)
-            if target != None and target != curPlayer:
-                steal(players[int(target)], curPlayer,players)
-            if curPlayer != AiNum: print "The ai has moved the robber"
-	    return
+		if board.robberTile != l:
+			goalTag = board.tileToAscii[l]
+			location_dict[goalTag] = l
+			if curPlayer != AiNum: print goalTag
+	if (curPlayer == AiNum):
+		target = players[curPlayer].placeRobber(board)
+		if target != None and target != curPlayer:
+			steal(players[int(target)], curPlayer,players)
+		if curPlayer != AiNum: 
+			print "The ai has moved the robber"
+		return
 	locationForRobber = 0
 	try:
 		while True:
