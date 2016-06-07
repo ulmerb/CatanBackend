@@ -53,7 +53,7 @@
 		<h4>Knights Played</h4>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p>Player number{{$index + 1}}: {{player.devCardsPlayed.knight}} knights</p>
+		<p>Player number{{$index}}: {{player.devCardsPlayed.knight}} knights</p>
 	</div>
 
 	<div ng-if="main.hasLargestArmy">
@@ -65,7 +65,7 @@
 		<p>Your longest road length is: {{main.lengthOfLongestRoad}}</p>
 	</div>
 	<div ng-repeat="player in main.players">
-		<p> player {{$index + 1}} longest road: {{player.lengthOfLongestRoad}} roads</p>
+		<p> player {{$index}} longest road: {{player.lengthOfLongestRoad}} roads</p>
 	</div>
 
 	<div ng-if="main.hasLongestRoad">
@@ -111,7 +111,7 @@
 <!-- game scores -->
 <h3>Leader Board</h3>
 	<div ng-repeat="player in main.players">
-		<p>Player {{$index + 1}} points: {{player.victoryPoints}}</p>
+		<p>Player {{$index}} points: {{player.victoryPoints}}</p>
 	</div>
 
 <!-- *** Player Actions ***-->

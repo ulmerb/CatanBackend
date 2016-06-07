@@ -202,7 +202,7 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.newGame = function() {
             var userRes = $resource("/newGame");
-            userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':true},
+            userRes.save({'newgame':'newgame', 'numPlayers': 2, 'AI':false},
                 function (model){
                     console.log('new game model');
                     $scope.updateBoardBasedOnreceivedGameState(model);
@@ -259,10 +259,10 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                 }
             }
             $scope.main.map = newArr;
-            for (var i = 0; i < $scope.main.map.length; i++) {
-                var newstr = $scope.main.map.replace(/(\dS\d)/g,"<div style='color:red'>$1</div>");
-                $scope.main.map[i].trustAsHtml(newstr);
-            };
+            // for (var i = 0; i < $scope.main.map.length; i++) {
+            //     //var newstr = $scope.main.map.replace(/(\dS\d)/g,"<div style='color:red'>$1</div>");
+            //     //$scope.main.map[i].trustAsHtml(newstr);
+            // };
         
             if ($scope.main.lastDieRollValue == 0) {
                 $scope.main.userAlreadyRolledDieThisTurn = false
