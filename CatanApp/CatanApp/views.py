@@ -12,7 +12,7 @@ import settings
 import Devcards
 
 
-def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=False, take=None, offer=None):
+def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=False, take=None, offer=None, proposer=None):
     data = {}
     data['message'] = message
     data['currentDiceRoll'] = diceRoll
@@ -49,6 +49,7 @@ def makeJson(board, players, message, diceRoll=0, curPlayer=0, card=0, canTrade=
     data['canTrade'] = canTrade
     data['take'] = take
     data['offer'] = offer
+    data['proposer'] = proposer
     return json.dumps(data)
 
 # Intialize game
@@ -212,23 +213,6 @@ def bankTrade(request):
 
 
 @csrf_exempt
-def playerTrade(request):
-    info = json.loads(request.POST['js_resp'])
-    curPlayer = info['curPlayer']
-    offer = info['offer']
-    take = info['take']
-    userToTradeWith = info['userToTradeWithArr'][0]
-    canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer, player)
-    if canTrade:
-        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
-                        str(curPlayer) + " has proposed a trade", 0, userToTradeWith, 0, canTrade, take)
-    else:
-        resp = makeJson(settings.BOARD, settings.PLAYERS,
-                        message, 0, curPlayer, 0, canTrade, take, offer)
-    return HttpResponse(resp)
-
-
-@csrf_exempt
 def portTrade(request):
     info = json.loads(request.POST['js_resp'])
     curPlayer = info['curPlayer']
@@ -243,3 +227,43 @@ def portTrade(request):
             settings.BOARD, settings.PLAYERS, "Successfull port trade", 0, curPlayer)
 
     return HttpResponse(resp)
+
+
+@csrf_exempt
+def playerTrade(request):
+    info = json.loads(request.POST['js_resp'])
+    curPlayer = info['curPlayer']
+    offer = info['offer']
+    take = info['take']
+    userToTradeWith = info['userToTradeWithArr'][0]
+    canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
+    if canTrade:
+        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
+                        str(curPlayer) + " has proposed a trade", 0, userToTradeWith, 0, canTrade, take, offer, curPlayer)
+    else:
+        resp = makeJson(settings.BOARD, settings.PLAYERS,
+                        message, 0, curPlayer, 0, canTrade, take, offer, curPlayer)
+    return HttpResponse(resp)
+
+
+@csrf_exempt
+def tradeMaker(request):
+    info = json.loads(request.POST['js_resp'])
+    proposee = info['curPlayer']
+    proposer = info['proposer']
+    offer = info['offer']
+    take = info['take']
+    accepted = info['acceptOrReject']
+    canTrade, message = settings.PLAYERS[proposee].checkTrade(take)
+    if canTrade:
+	    if accepted == 'accept':
+	        settings.PLAYER[proposer].makeTrade(offer, take, proposee)
+	        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
+	                        str(proposee) + " has accepted your offer", 0, proposer)
+	    else:
+	        resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
+	                        str(proposee) + " has rejected your offer", 0, proposer)
+	else:
+		resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
+	                        str(proposee) + " has rejected your offer", 0, proposer)
+

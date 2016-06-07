@@ -30,5 +30,6 @@ urlpatterns = [
     url(r'^playCard/', playCard),
     url(r'^portTrade/', portTrade),
     url(r'^bankTrade/',bankTrade),
-    url(r'^playerTrade/',playerTrade)
+    url(r'^playerTrade/',playerTrade),
+    url(r'^tradeMaker/', tradeMaker)
 ]
