@@ -536,7 +536,11 @@ class ai:
                 if ((len(options) >= 7 and curDistanceAway >= 4) or curDistanceAway >= 5):
                     break
                 curDistanceAway += 1
-        if self.verbose: print self.AI.structures['settlements']
+        if self.verbose: 
+          print ""
+          print "settlements",self.AI.structures['settlements']
+          print "cities",self.AI.structures['cities']
+          print ""
         if self.AI.citiesRemaining > 0:      
             for settle in self.AI.structures['settlements']:
                 s = board.vertices[settle]
@@ -552,6 +556,8 @@ class ai:
         if self.verbose: print bestOptionKey
         bestOption = options[bestOptionKey[0]]
         self.savedBestOpt = [bestOptionKey, bestOption]
+
+
         if bestOptionKey[0] == 'pass':
             "The wise Ai has contemplated all its options and decided to pass"
             return
@@ -560,6 +566,7 @@ class ai:
             print bestOption
             print bestOptionKey[0]
         if bestOption['costInTurns'] == 0:
+
                 if self.execute(players, board, bestOption, bestOptionKey[0], options) and self.getVictoryPoints() < 10:
                     if self.verbose: print "the Ai is checking for more actions"
                     self.decideMove(players, board, firstTurn)
@@ -575,6 +582,7 @@ class ai:
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
+
         if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
@@ -618,7 +626,8 @@ class ai:
                             
                 if not changeMade:
                     break
-        #end 7 cards in hand handle                
+        #end 7 cards in hand handle
+
         return vp
     def possiblePortEx(self):
         maxi = max(self.AI.resources.values())
@@ -770,8 +779,8 @@ class ai:
 
     def getSoonScarcity(self,players,board):
         scarcity = {'wood':0.01, 'sheep':0.01, 'brick': 0.01, 'ore': 0.01, 'grain' : 0.01}
-        ALLsettlements = self.AI.structures['settlements']
-        ALLcities = self.AI.structures['cities']
+        ALLsettlements = self.AI.structures['settlements'][:]
+        ALLcities = self.AI.structures['cities'][:]
 
         for player in players:
           if(player == self):
