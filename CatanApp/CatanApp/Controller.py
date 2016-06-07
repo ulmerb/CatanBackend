@@ -44,8 +44,6 @@ def rollDice(board, players, curPlayer):
 		return diceRoll
 
 def serverHandleRobber(curPlayer, players, loc, target, board, AiNum):
-	print "serverHandleRobber is called with: "
-	print curPlayer, players, loc, target, board, AiNum
 	if curPlayer == AiNum:
 		target = players[curPlayer].placeRobber(board)
 		if target != None and target != curPlayer:
