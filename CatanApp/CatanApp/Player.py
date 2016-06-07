@@ -5,9 +5,9 @@ class player:
 
 	def __init__(self, i):
 		self.score =  0
-		#self.resources =  {'wood': 14, 'sheep':12, 'brick': 14, 'ore': 10, 'grain' : 12}
-		self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
-		self.roadsRemaining = 100
+		self.resources =  {'wood': 14, 'sheep':12, 'brick': 14, 'ore': 10, 'grain' : 12}
+		#self.resources =  {'wood': 4, 'sheep':2, 'brick': 4, 'ore': 0, 'grain' : 2}
+		self.roadsRemaining = 15
 		self.citiesRemaining = 4
 		self.settlementsRemaining = 5
 	        #we may want to handle this differently but it seems useful for the player to have internal knowledge

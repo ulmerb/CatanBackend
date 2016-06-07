@@ -27,7 +27,7 @@ import VertexToCentralityDict
 
 class ai:
     
-    def __init__(self, i, verbose = False):
+    def __init__(self, i, verbose = True):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
@@ -491,6 +491,7 @@ class ai:
         #sys.exit()
         curDistanceAway = 2
         devCardCost = sum(self.getResourceCost('devCard', 0).values())
+        # options = {"devCard": {'costInRes' : devCardCost, 'backtrace' : ['dev', None, 0]}}#,"pass": {'backtrace' : ['pass', None, 0]} }
         options = {}
         curSettlements = self.AI.structures['settlements'][:]
         curSettlements += self.AI.structures['cities']
@@ -555,7 +556,7 @@ class ai:
 	    #print board.printBoard()
             return vp
         #handle over 7 cards in hand
-        if sum(self.AI.resources.values()) > 7 and bestOptionKey[0] != 'pass':
+        if sum(self.AI.resources.values()) >= 7 and bestOptionKey[0] != 'pass':
             curPath = None
             counter = 0 
             cost = 0
@@ -790,20 +791,15 @@ class ai:
     def handleDiscard(self):
         #test
         sortRes = []
-        if sum(self.AI.resources.values()) <= 7:
-            return
-        
         numLost = sum(self.AI.resources.values())
-        
-        #if self.verbose:
-        print "The ai must discard", numLost, "resources"
+        if self.verbose: print "The ai must discard", numLost, "resources"
         bestMove = self.savedBestOpt
         if bestMove[0] == None:
             cost = {'wood': 0, 'sheep':0, 'brick': 0, 'ore': 0, 'grain' : 0}
         else:
             cost = self.getResourceCost(bestMove[1]['backtrace'], bestMove[1]['backtrace'][2])
         for r in self.AI.resources:
-             sortRes.append([self.AI.resources[r] - cost[r], self.income[r], r])
+             sortRes.append((self.AI.resources[r] - cost[r], self.income[r], r))
         sortRes.sort(key=lambda tup: tup[1], reverse=True)
         sortRes.sort(key=lambda tup: tup[0], reverse=True)
         while (numLost > 0):
@@ -815,20 +811,17 @@ class ai:
                     self.resources[sortRes[0][2]] -=1
                     numLost -= 1
                     sortRes[0][0] -= 1
-                    #if self.verbose: 
-                    print "The ai has discared 1", sortRes[0][2]
+                    if self.verbose: print "The ai has discared 1", sortRes[0][2]
             else:
                 if excess >= numLost:
                     self.AI.resources[sortRes[0][2]] -= numLost
                     numLost = 0
-                    #if self.verbose: 
-                    print "The ai has discared", numLost, sortRes[0][2]
+                    if self.verbose: print "The ai has discared", numLost, sortRes[0][2]
                     break
                 else:
                     self.AI.resources[sortRes[0][2]] -= excess
                     numLost -= excess
                     sortRes[0][0] -= excess
-                    #if self.verbose: 
-                    print "The ai has discared", excess, sortRes[0][2]
+                    if self.verbose: print "The ai has discared", excess, sortRes[0][2]
             sortRes.sort(key=lambda tup: tup[1], reverse=True)
             sortRes.sort(key=lambda tup: tup[0], reverse=True)

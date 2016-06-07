@@ -223,33 +223,34 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 	turnCounter = 1
 	robberCounter = 0
 	while (True):
-			#print turnCounter
-			curPlayer = turnCounter % numPlayers
-			isAi = False
-			if (curPlayer == AiNum):
-				isAi = True
-			if (isAi):
-				diceRoll = board.rollDice()
-				if diceRoll is CONST_ROBBER:
-					handleResourceLossFromRobber(players, board,AiNum)
-					handleRobber(curPlayer, players, board, AiNum)
-					robberCounter += 1					
-				else:
-					board.assignResources(diceRoll, players)
-				gameEndVP = players[AiNum].decideMove(players, board, False)
-				#print gameEndVP
-				if gameEndVP >= 10:
-						print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
-						gameEnd = True
-						return turnCounter - robberCounter
-				else:
-						gameEnd = False
-			else:
-				gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
-			if gameEnd or turnCounter >= 1000:
-				break
-			turnCounter += 1
-
+	        #print turnCounter
+	        curPlayer = turnCounter % numPlayers
+	        isAi = False
+	        if (curPlayer == AiNum):
+	            isAi = True
+	        if (isAi):
+	            diceRoll = board.rollDice()
+	            #print "dice", diceRoll
+	            if diceRoll is CONST_ROBBER:
+		        handleRobber(curPlayer, players, board, AiNum)
+		        robberCounter += 1
+		    else:
+		        board.assignResources(diceRoll, players)
+	            gameEndVP = players[AiNum].decideMove(players, board, False)
+	            #print gameEndVP
+	            if gameEndVP >= 10:
+	                print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
+	                gameEnd = True
+	                return turnCounter - robberCounter
+	            else:
+	                gameEnd = False
+	        else:
+		  gameEnd = playTurn(curPlayer, players, board, devCardsDeck, AiNum)
+		#remove the turnCounter>= 10 when full implementation
+		if gameEnd or turnCounter >= 1000:
+			print curPlayer, " has won"
+			break
+		turnCounter += 1
 
 def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
 	board.createBatchCSV(players)
@@ -486,9 +487,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		if (i == AiNum):
 			#print i
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()    
 		initialPlacement(i, players, board)
@@ -498,9 +499,9 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 	for i in range(numPlayers -1, -1, -1):
 		if (i == AiNum):
 			players[AiNum].decideMove(players, board, True)
-			#board.createBatchCSV(players)
-			#board.batchUpdate()
-			#print board.printBoard()
+			board.createBatchCSV(players)
+			board.batchUpdate()
+			print board.printBoard()
 			continue
 		print board.printBoard()
 	 	setLoc = initialPlacement(i, players, board)
