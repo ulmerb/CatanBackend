@@ -229,6 +229,24 @@ def portTrade(request):
     return HttpResponse(resp)
 
 
+def isAI(playerNum):
+    return playerNum == len(settings.PLAYERS) - 1
+
+
+def executeAITrade(offer, receive):
+    if (partner == AiNum and AiNum != -2):
+        traded = players[AiNum].evaluateTrade(offer, recieve)
+        print "trade executed with AI"
+        for r in offer:
+            settings.PLAYERS[curPlayer].loseResource(r, offer[r])
+            settings.PLAYERS[AiNum].addResource(r, offer[r])
+        for r in recieve:
+            settings.PLAYERS[curPlayer].addResource(r, recieve[r])
+            settings.PLAYERS[AiNum].loseResource(r, recieve[r])
+        for player in players:
+            print player
+
+
 @csrf_exempt
 def playerTrade(request):
     info = json.loads(request.POST['js_resp'])
@@ -236,6 +254,8 @@ def playerTrade(request):
     offer = info['offer']
     take = info['take']
     userToTradeWith = info['userToTradeWithArr'][0]
+    # if isAI(userToTradeWith):
+    #     executeAITrade(offer, take, settings.PLAYERS)
     canTrade, message = settings.PLAYERS[curPlayer].checkTrade(offer)
     if canTrade:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
@@ -257,8 +277,11 @@ def tradeMaker(request):
     canTrade, message = settings.PLAYERS[proposee].checkTrade(take)
     if canTrade:
         if accepted == 'accept':
+            print "before trade player 0 resource: ", settings.PLAYERS[proposer].resources, "player 1 resource:", settings.PLAYERS[proposee]
             settings.PLAYERS[proposer].makeTrade(
                 offer, take, proposee, settings.PLAYERS)
+            print "after trade player 0 resource: ", settings.PLAYERS[proposer].resources, "player 1 resource:", settings.PLAYERS[proposee]
+
             resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                             str(proposee) + " has accepted your offer", 0, proposer)
         else:
@@ -267,4 +290,4 @@ def tradeMaker(request):
     else:
         resp = makeJson(settings.BOARD, settings.PLAYERS, "Player " +
                         str(proposee) + " has rejected your offer", 0, proposer)
-    return HttpResponse(resp) 
+    return HttpResponse(resp)

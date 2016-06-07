@@ -551,6 +551,19 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
                     console.log(model)
                     $scope.updateBoardBasedOnRecievedGameState(model);
                     $scope.main.message_to_user = model.message;
+                    //**** switch UI back to normal*** :
+                    var buttons = document.getElementsByTagName("BUTTON");
+                    for (var i=0, max=buttons.length; i < max; i++) {
+                        // Do something with the element here
+                        buttons[i].style.display = "block";
+                    }
+                    var playerTrade = document.querySelector(".tradeWithPlayer");
+                    playerTrade.style.display = "none";
+                    var acceptRejectButtons = document.querySelectorAll(".acceptRejectButtons");    
+                    acceptRejectButtons[0].style.display = "none";
+                    acceptRejectButtons[1].style.display = "none";
+                    //**********************************
+
                 }, function errorHandling(err) {
                     $scope.main.message_to_user = "Error: sendTradeMessagetobankFailed failed";
             });
