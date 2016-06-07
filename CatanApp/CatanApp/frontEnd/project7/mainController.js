@@ -434,24 +434,20 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
             $scope.showBankTradeForm();
         }
 
-        $scope.portTradeInputs = function() {
+        $scope.portTradeInputs = function(port) {
+            $scope.main.selectedPort = port
+            console.log($scope.main.selectedPort);
             var form = document.getElementById("ports"),
             inputs = form.querySelectorAll("input");
-            console.log(inputs[0].checked);
             document.querySelector('.fixedExchangeRates').style.display = "block";
             document.querySelector('.playerTradeStuff').style.display = "none";
             document.querySelector('.bankSubmit').style.display = "none";
             document.querySelector('.portSubmit').style.display = "block";
-            for (var i = 0; i < inputs.length; i++) {
-                if(inputs[i].checked) {
-                    if(inputs[i].value === "three") {
-                        document.querySelector(".fixedExchangeGive").style.display = "block";
-                    } else {
-                        document.querySelector(".fixedExchangeGive").style.display = "none";
-                    }
-                    return;
-                }
-            };
+            if(port === "three") {
+                document.querySelector(".fixedExchangeGive").style.display = "block";
+            } else {
+                document.querySelector(".fixedExchangeGive").style.display = "none";
+            }
         }
 
         //TODO: connect ot back end
@@ -499,35 +495,38 @@ cs142App.controller('MainController', ['$scope','$rootScope', '$location', '$res
 
         $scope.tradeWithBankOrPort = function(str) {
             var userRes = $resource("/tradeWithBankOrPort");
-            var youWantResource = ""
-            var youGiveResource = ""
+            var takeInputs = document.querySelector(".fixedExchangeTake").querySelectorAll('input');
+            var youWantResource = "";
+            var youGiveResource = "";
+            for (var i = 0; i < takeInputs.length; i++) {
+                var inp = takeInputs[i];
+                if (inp.checked) {
+                    youWantResource = inp.value;
+                }
+            };
 
-            var form = document.getElementById("bankOrPortTrade"),
-            inputs = form.getElementsByTagName("INPUT"),
-            arr = [];
-            for (var i = 0, max = inputs.length; i < max; i += 1) {
-               // Take only those inputs which are checkbox
-               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="give") {
-                  youGiveResource = inputs[i].value;
-               }
-               if (inputs[i].type === "radio" && inputs[i].checked && inputs[i].name==="want") {
-                  youWantResource = inputs[i].value;
-               }
+            if(str === "bank" || str === "three") {
+                var giveInputs = document.querySelector(".fixedExchangeGive").querySelectorAll('input');
+                for (var i = 0; i < giveInputs.length; i++) {
+                    var inp = giveInputs[i];
+                    if (inp.checked) {
+                        youGiveResource = inp.value;
+                    }
+                };
+            }
 
-           }
-            
 
-            //tradeEntity = port number or 'bank'
-            userRes.save({'curPlayer':$scope.main.currentPlayer,
-                'tradeEntity':str, 
+             userRes.save({'curPlayer':$scope.main.currentPlayer,
+                'tradeType':str,
                 'youWantResource':youWantResource,
                 'youGiveResource':youGiveResource},
                 function (model){
                     $scope.updateBoardBasedOnRecievedGameState(model);
                     $scope.main.message_to_user = model.message;
                 }, function errorHandling(err) {
-                    $scope.main.message_to_user = "Error: sendTradeMessageToUserMessage failed";
-                });
+                    $scope.main.message_to_user = "Error: sendTradeMessagetobankFailed failed";
+            });
+           
         }
 
     }]);

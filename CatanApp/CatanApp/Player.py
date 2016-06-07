@@ -29,7 +29,6 @@ class player:
 			return "Not enough " + give
 
 	def makePortTrade(self, port, give, take):
-		print port
 		if port in self.structures['ports']:
 			if port == "three":
 				if self.resources[give] >= 3:
@@ -49,6 +48,8 @@ class player:
 			self.resources[take] += 1
 		else:
 			return "Not enough " + port
+
+
 	def getScore(self):
 		return self.score
                 

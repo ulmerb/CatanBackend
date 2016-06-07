@@ -602,11 +602,12 @@ app.post('/suggestTrade', function (request, response) {
 app.post('/tradeWithBankOrPort', function (request, response) {
     console.log("user would like to trade with Bank/Port")
     console.log(request.body.tradeEntity)
-    if(request.body.tradeEntity === 'bank') {
+
+    if(request.body.tradeType === 'bank') {
         postDjango(request,response, 'bankTrade', function(chunk) {
             response.status(200).send(chunk);        
         });
-    } else if(request.body.tradeEntity === 'port') {
+    } else {
         postDjango(request,response, 'portTrade', function(chunk) {
             response.status(200).send(chunk);        
         });

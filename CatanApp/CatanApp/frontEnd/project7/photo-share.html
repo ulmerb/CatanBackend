@@ -66,7 +66,7 @@
                         <input type="radio" name="trade" ng-click="bankTradeInputs()"> Bank <br>
                         <div id="ports" ng-if="main.ports.length > 0">
                             <div style="line-height: 0px" ng-repeat="port in main.ports" ng-if="main.isUserLoggedIn">
-                             <input type="radio" name="trade" value={{port}} ng-click="portTradeInputs()"> Port {{port}} <br>
+                             <input type="radio" name="trade" value=port ng-click="portTradeInputs(port)"> Port {{port}} <br>
                             </div>
                         </div>
                     </form>
@@ -106,7 +106,7 @@
                           <input type="radio" name="want" value="sheep"> Sheep
                         </div>
                           <button class="bankSubmit"ng-click="tradeWithBankOrPort('bank')"> submit trade to Bank</button>
-                          <button class="portSubmit" ng-click="tradeWithBankOrPort('port')"> submit trade to Port</button>
+                          <button class="portSubmit" ng-click="tradeWithBankOrPort(main.selectedPort)"> submit trade to Port</button>
                         </form>
                     </div>
                 </div>
