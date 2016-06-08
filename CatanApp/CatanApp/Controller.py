@@ -209,11 +209,17 @@ def main():
            	    AiNum = []
            	    for i in xrange(numAi):
            	        AiNum.append(len(players))
-           	        if i == 0:
+           	        if i == 3:
                             players.append(Ai.ai(AiNum[-1]))
-                        else:
+                        elif i == 0:
                             players.append(Ai.ai(AiNum[-1], weights = {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -5.0, 'costInRes' : -10.0, 'port' : 2.0},
-                            sWeights = [{'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0},{'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0} ]))
+                            sWeights = [{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0},{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} ]))
+                        elif i == 1:
+                            players.append(Ai.ai(AiNum[-1], weights = {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -5.0, 'costInRes' : -10.0, 'port' : 20.0},
+                            sWeights = [{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0},{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} ]))
+                        elif i == 2:
+                            players.append(Ai.ai(AiNum[-1], weights = {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 20.0},
+                            sWeights = [{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0},{'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} ]))
                         numPlayers +=1
                     board = Board.board()
                	    devCardsDeck = Devcards.devcards()

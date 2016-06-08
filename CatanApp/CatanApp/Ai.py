@@ -36,7 +36,7 @@ class ai:
         #self.weights =  {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
         #this is the baseline
         if weights == None:
-            self.weights =  {'incomeIncrease' : 500, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
+            self.weights =  {'incomeIncrease' : 100, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
         else:
             self.weights = weights
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
@@ -586,13 +586,15 @@ class ai:
           #need to add more options and expand the curDistanceAway
         if self.verbose: print options
         bestOptionKey = self.evaluateOptions(options, players, board)
+        if bestOptionKey[0] == '':
+            if self.verbose: print "The Ai has no optons"
         if self.verbose: print bestOptionKey
         bestOption = options[bestOptionKey[0]]
         self.savedBestOpt = [bestOptionKey, bestOption]
 
 
         if bestOptionKey[0] == 'pass':
-            "The wise Ai has contemplated all its options and decided to pass"
+            if self.verbose: print "The wise Ai has contemplated all its options and decided to pass"
             return
         if type(bestOption) == str:
             print "error####################"
