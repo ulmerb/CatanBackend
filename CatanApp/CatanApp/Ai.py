@@ -578,6 +578,9 @@ class ai:
           #need to add more options and expand the curDistanceAway
         if self.verbose: print options
         bestOptionKey = self.evaluateOptions(options, players, board)
+        if bestOptionKey[0] == '':
+            if self.verbose: print "The Ai has no optons"
+            return self.getVictoryPoints()
         if self.verbose: print bestOptionKey
         bestOption = options[bestOptionKey[0]]
         self.savedBestOpt = [bestOptionKey, bestOption]
