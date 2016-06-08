@@ -35,7 +35,7 @@ class ai:
         #change this for not baseline
         #self.weights =  {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
         #this is the baseline
-        self.weights =  {'incomeIncrease' : 100, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 20.0}
+        self.weights =  {'incomeIncrease' : 100, 'centrality' : 0.2, 'costInTurns' : -5.0, 'costInRes' : -10.0, 'port' : 20.0}
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
