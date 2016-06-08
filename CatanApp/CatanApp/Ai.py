@@ -28,14 +28,17 @@ import sys
 
 class ai:
     
-    def __init__(self, i, verbose = False, gamePlayVerbose = True):
+    def __init__(self, i, verbose = False, gamePlayVerbose = False, weights = None, sWeights = None):
         self.AI = Player.player(i)
         self.vertexToCentralityMap = VertexToCentralityDict.getMap()
         #weights for features
         #change this for not baseline
         #self.weights =  {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
         #this is the baseline
-        self.weights =  {'incomeIncrease' : 100, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 20.0}
+        if weights == None:
+            self.weights =  {'incomeIncrease' : 500, 'centrality' : 0.2, 'costInTurns' : -1.0, 'costInRes' : -2.0, 'port' : 2.0}
+        else:
+            self.weights = weights
         self.diceProbs = [0.0, 0.0, 0.028,0.056,0.083,0.111,0.139,0.167,0.139,0.111,0.083,0.056,0.028]
         self.income = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         self.savedBestOpt = [None, None]
@@ -45,8 +48,13 @@ class ai:
         54 : 'three', 39 : 'ore', 40 : 'ore', 8 : 'sheep', 9 : 'sheep', 50 : 'grain', 51 : 'grain', 37 : 'wood', 47: 'wood', 16 : 'brick', 26 : 'brick'}
         self.verbose = verbose
         self.gamePlayVerbose = gamePlayVerbose
-        self.scarceWeightsInc = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
-        self.scarceWeightsCost = {'overall' : 0.0, 'soon' : 0.0, 'cur' : 3.0, 'gross' : 0.0} #this should sum to three for baseline
+        if sWeights == None:
+            self.scarceWeightsInc = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0} #this should sum to three for baseline
+            self.scarceWeightsCost = {'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0} #this should sum to three for baseline
+        else:
+            self.scarceWeightsInc = sWeights[0]
+            self.scarceWeightsCost = sWeights[1]
+        self.isAi = True
    
 
     def numResources(self, resource):
@@ -375,6 +383,11 @@ class ai:
                 path = self.savedPaths[bestOptionKey]
             else:
                 path = self.findShortestPath(bestOption['backtrace'][1], settleLoc, bestOption['backtrace'][2], board)
+                if path == None:
+                                print "no viable path to this settle"
+                                curPath = [-1] * 100
+                                self.savedPaths[bestOptionKey[0]] = curPath
+                                return False
             predRoadsAway = bestOption['backtrace'][2]
             roadsAway = len(path)
             for r in path:
@@ -620,6 +633,12 @@ class ai:
                             curPath = self.findShortestPath(bestOption['backtrace'][1], int(bestOptionKey[0][:2]), bestOption['backtrace'][2], board)
                             self.savedPaths[bestOptionKey[0]] = curPath
                             trash = []
+                            if curPath == None:
+                                print "no viable path to this settle"
+                                curPath = [-1] * 100
+                                self.savedPaths[bestOptionKey[0]] = curPath
+                       if -1 not in curPath:
+                            trash = []
                             for r in curPath:
                                 if r in self.AI.structures['roads']:
                                     trash.append(r)
@@ -806,8 +825,12 @@ class ai:
         for player in players:
           if(player == self):
             continue
-          ALLsettlements += player.structures['settlements']
-          ALLcities += player.structures['cities']
+          if player.isAi:
+            ALLsettlements += player.AI.structures['settlements']
+            ALLcities += player.AI.structures['cities']
+          else:
+            ALLsettlements += player.structures['settlements']
+            ALLcities += player.structures['cities']
 
 
         ALLsettlements = list(set(ALLsettlements))
@@ -838,7 +861,7 @@ class ai:
     def getCurrentScarcity(self,players):
         scarcity = {'wood':0.0, 'sheep':0.0, 'brick': 0.0, 'ore': 0.0, 'grain' : 0.0}
         for player in players:
-          if(player == self):
+          if(player == self or player.isAi):
             AIresources = self.AI.resources
             for res in AIresources:
               scarcity[res] += AIresources[res]

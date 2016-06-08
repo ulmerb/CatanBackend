@@ -22,11 +22,11 @@ def tileInitialization(numPlayers, ai):
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
-	AiNum = -1
+	AiNum = []
 	if ai:
 		players.append(Ai.ai(len(players)))
 		players[-1].verbose = True
-		numPlayers +=1
+		numPlayers +=10
 	if not ai or numPlayers > 1:
 	   board.createBatchCSV(players)
 	   board.batchUpdate()
@@ -183,35 +183,52 @@ def main():
 	players = []
 	for i in range (0, numPlayers):
 		players.append(Player.player(i))
-	AiNum = -1
+	AiNum = []
+	numAi = 1
 	try:
             response = raw_input("Add an Ai player?")
             if response == "Yes" or response == "yes" or response == "y":
-                AiNum = len(players)			
-                players.append(Ai.ai(AiNum))
-                numPlayers +=1
+                response = raw_input('How many AI do you want? ')
+                numAi = int(response)
+                for i in xrange(numAi):
+                    AiNum.append(len(players))
+                    players.append(Ai.ai(AiNum[-1]))
+                    numPlayers +=1
 	except EOFError:
 		print " Not building, on sublime"
-        if AiNum != -1 and numPlayers == 1:
+        if AiNum != [] and numPlayers == len(AiNum):
 	   numRuns = input('How many runs? ')
 	else:
 	   numRuns = 1
 	if numRuns > 1:
 	        stats = []
+	        winners = []
            	for x in xrange(numRuns):
-           	    numPlayers = 1
+           	    numPlayers = 0
            	    players = []
-           	    AiNum = len(players)			
-                    players.append(Ai.ai(AiNum))
+           	    AiNum = []
+           	    for i in xrange(numAi):
+           	        AiNum.append(len(players))
+           	        if i == 0:
+                            players.append(Ai.ai(AiNum[-1]))
+                        else:
+                            players.append(Ai.ai(AiNum[-1], weights = {'incomeIncrease' : 100, 'centrality' : .2, 'costInTurns' : -5.0, 'costInRes' : -10.0, 'port' : 2.0},
+                            sWeights = [{'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0},{'overall' : 1.0, 'soon' : 1.0, 'cur' : 1.0, 'gross' : 0.0} ]))
+                        numPlayers +=1
                     board = Board.board()
                	    devCardsDeck = Devcards.devcards()
                     #board.createBatchCSV(players)
                     #board.batchUpdate()
                     #print board.printBoard()
                     firstPlacement(numPlayers, players, board, AiNum)
-                    stats.append(playMainGame(numPlayers, players, board, devCardsDeck, AiNum))
+                    turns, winner = playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
+                    stats.append(turns)
+                    winners.append(winner)
                 print stats
                 print "average turns (excluding robber) = ", sum(stats)/float(numRuns)
+                winnersSet = set(winners)
+                for ele in winnersSet:
+                    print "Ai number", ele, "won", winners.count(ele), "games"
         else:
             board = Board.board()
             devCardsDeck = Devcards.devcards()
@@ -221,14 +238,14 @@ def main():
             firstPlacement(numPlayers, players, board, AiNum)
             playMainGame(numPlayers, players, board, devCardsDeck, AiNum)
 
-def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
+def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = []):
 	turnCounter = 1
 	robberCounter = 0
 	while (True):
 			#print turnCounter
 			curPlayer = turnCounter % numPlayers
 			isAi = False
-			if (curPlayer == AiNum):
+			if (curPlayer in AiNum):
 				isAi = True
 			if (isAi):
 				diceRoll = board.rollDice()
@@ -238,12 +255,12 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 					robberCounter += 1					
 				else:
 					board.assignResources(diceRoll, players)
-				gameEndVP = players[AiNum].decideMove(players, board, False)
+				gameEndVP = players[curPlayer].decideMove(players, board, False)
 				#print gameEndVP
 				if gameEndVP >= 10:
-						print "the Ai has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
+						print "Ai number", curPlayer, "has won in", turnCounter, "turns with", robberCounter, "wasted robber turns"
 						gameEnd = True
-						return turnCounter - robberCounter
+						return turnCounter - robberCounter, curPlayer
 				else:
 						gameEnd = False
 			else:
@@ -253,7 +270,7 @@ def playMainGame(numPlayers, players, board, devCardsDeck, AiNum = -1):
 			turnCounter += 1
 
 
-def playTurn(curPlayer, players, board, devCardsDeck, AiNum = -1):
+def playTurn(curPlayer, players, board, devCardsDeck, AiNum = []):
 	board.createBatchCSV(players)
 	board.batchUpdate()
 	print board.printBoard()
@@ -371,9 +388,9 @@ def handleDiscard(player, playerNum, resources):
 		print "Please enter a number"
 		handleDiscard(player, playerNum, resources)
 
-def handleResourceLossFromRobber(players, board,AiNum = -1):
+def handleResourceLossFromRobber(players, board,AiNum = []):
 	for playerNum in range(len(players)):
-		if(playerNum != AiNum):
+		if(playerNum not in AiNum):
 			player = players[playerNum]
 			resources = player.totalResources()
 			if resources > 7:
@@ -382,23 +399,23 @@ def handleResourceLossFromRobber(players, board,AiNum = -1):
 			players[playerNum].handleDiscard()
 
 
-def handleRobber(curPlayer, players, board, AiNum = -1):
+def handleRobber(curPlayer, players, board, AiNum = []):
 	board.createBatchCSV(players)
 	board.batchUpdate()
-	if curPlayer != AiNum: print "Robber"
+	if curPlayer not in AiNum: print "Robber"
 	locations = board.getAllTiles()
-	if curPlayer != AiNum: print "Choose a location: "
+	if curPlayer not in AiNum: print "Choose a location: "
 	location_dict = {}
 	for l in locations:
 		if board.robberTile != l:
 			goalTag = board.tileToAscii[l]
 			location_dict[goalTag] = l
-			if curPlayer != AiNum: print goalTag
-	if (curPlayer == AiNum):
+			if curPlayer not in AiNum: print goalTag
+	if (curPlayer in AiNum):
 		target = players[curPlayer].placeRobber(board)
 		if target != None and target != curPlayer:
 			steal(players[int(target)], curPlayer,players)
-		if curPlayer != AiNum: 
+		if curPlayer != curPlayer: 
 			print "The ai has moved the robber"
 		return
 	locationForRobber = 0
@@ -486,12 +503,12 @@ def buildDevCard(curPlayer, players, board, devCardsDeck):
 def firstPlacement(numPlayers, players, board, AiNum = -1):
 	#print board.printBoard()
 	for i in range (0, numPlayers):
-		if (i == AiNum):
+		if (i in AiNum):
 			#print i
-			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+			players[i].decideMove(players, board, True)
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()    
 		initialPlacement(i, players, board)
@@ -499,11 +516,11 @@ def firstPlacement(numPlayers, players, board, AiNum = -1):
 		board.batchUpdate()
 	print numPlayers
 	for i in range(numPlayers -1, -1, -1):
-		if (i == AiNum):
-			players[AiNum].decideMove(players, board, True)
-			board.createBatchCSV(players)
-			board.batchUpdate()
-			print board.printBoard()
+		if (i in AiNum):
+			players[i].decideMove(players, board, True)
+			#board.createBatchCSV(players)
+			#board.batchUpdate()
+			#print board.printBoard()
 			continue
 		print board.printBoard()
 	 	setLoc = initialPlacement(i, players, board)
@@ -788,7 +805,7 @@ def findTradeModifier(curPlayer, resource, board):
 		return 3
 	return 4
 
-def trade(curPlayer, players, board, AiNum = -2):
+def trade(curPlayer, players, board, AiNum = []):
         print "Trading phase"
         trading = True
         while(trading):
@@ -826,15 +843,15 @@ def trade(curPlayer, players, board, AiNum = -2):
                         print "No partner or invalid partner inserted, proposing trade to all players"
                 else: # in this case they didn't provid a number so we can assume they want to offer it to anyone
                 	partner = -3
-                if (partner == AiNum and AiNum != -2):
-					traded = players[AiNum].evaluateTrade(offer, receive, players, board)
+                if (partner in AiNum and AiNum != []):
+					traded = players[partner].evaluateTrade(offer, receive, players, board)
 					print "trade executed with AI"
 					for r in offer:
 						players[curPlayer].loseResource(r, offer[r])
-						players[AiNum].addResource(r, offer[r])
+						players[partner].addResource(r, offer[r])
 					for r in receive:
 						players[curPlayer].addResource(r, receive[r])
-						players[AiNum].loseResource(r, receive[r])
+						players[partner].loseResource(r, receive[r])
 					for player in players:
 						print player
                 elif partner != -1 and partner != -3:
@@ -843,16 +860,16 @@ def trade(curPlayer, players, board, AiNum = -2):
                     for i in xrange(len(players)):
                         if i == curPlayer:
                             continue
-                        if i == AiNum:
-                            executed = players[AiNum].evaluateTrade(offer, receive, players, board)
+                        if i in AiNum:
+                            executed = players[i].evaluateTrade(offer, receive, players, board)
                             if (executed):
 								print "trade executed with AI"
 								for r in offer:
 									players[curPlayer].loseResource(r, offer[r])
-									players[AiNum].addResource(r, offer[r])
+									players[i].addResource(r, offer[r])
 								for r in receive:
 									players[curPlayer].addResource(r, receive[r])
-									players[AiNum].loseResource(r, receive[r])
+									players[i].loseResource(r, receive[r])
 								for player in players:
 									print player
 								break
@@ -872,5 +889,5 @@ def isInt(s):
 
 
 # comment out main when using controller to handle requests
-# main()
+main()
 
