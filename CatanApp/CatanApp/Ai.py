@@ -375,6 +375,11 @@ class ai:
                 path = self.savedPaths[bestOptionKey]
             else:
                 path = self.findShortestPath(bestOption['backtrace'][1], settleLoc, bestOption['backtrace'][2], board)
+            if path == None:
+                                print "no viable path to this settle"
+                                curPath = [-1] * 100
+                                self.savedPaths[bestOptionKey[0]] = curPath
+                                return False
             predRoadsAway = bestOption['backtrace'][2]
             roadsAway = len(path)
             for r in path:
@@ -619,6 +624,12 @@ class ai:
                        if curPath == None:
                             curPath = self.findShortestPath(bestOption['backtrace'][1], int(bestOptionKey[0][:2]), bestOption['backtrace'][2], board)
                             self.savedPaths[bestOptionKey[0]] = curPath
+                            trash = []
+                            if curPath == None:
+                                print "no viable path to this settle"
+                                curPath = [-1] * 100
+                                self.savedPaths[bestOptionKey[0]] = curPath
+                       if -1 not in curPath:
                             trash = []
                             for r in curPath:
                                 if r in self.AI.structures['roads']:
