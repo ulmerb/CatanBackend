@@ -828,15 +828,16 @@ def trade(curPlayer, players, board, AiNum = -2):
                 	partner = -3
                 if (partner == AiNum and AiNum != -2):
 					traded = players[AiNum].evaluateTrade(offer, receive, players, board)
-					print "trade executed with AI"
-					for r in offer:
-						players[curPlayer].loseResource(r, offer[r])
-						players[AiNum].addResource(r, offer[r])
-					for r in receive:
-						players[curPlayer].addResource(r, receive[r])
-						players[AiNum].loseResource(r, receive[r])
-					for player in players:
-						print player
+					if traded:
+           					print "trade executed with AI"
+           					for r in offer:
+          						players[curPlayer].loseResource(r, offer[r])
+          						players[AiNum].addResource(r, offer[r])
+           					for r in receive:
+          						players[curPlayer].addResource(r, receive[r])
+          						players[AiNum].loseResource(r, receive[r])
+           					for player in players:
+          						print player
                 elif partner != -1 and partner != -3:
                     tradeLogicHelper(curPlayer, partner, players, offer, receive)
                 else:
@@ -872,5 +873,5 @@ def isInt(s):
 
 
 # comment out main when using controller to handle requests
-# main()
+main()
 

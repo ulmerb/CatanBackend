@@ -868,7 +868,7 @@ class ai:
         return scarcity
 
     def reciprocalAndNormalize(self,scarcity,laplace = False):
-        done = scarcity
+        done = scarcity.copy()
         # inverse
         for res in scarcity:
           if laplace == True:
