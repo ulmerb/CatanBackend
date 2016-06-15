@@ -250,7 +250,7 @@ class ai:
             print "difference",difference
         for key in difference: # Check if we don't have the resources to support the trade
           if difference[key] < 0:
-            if self.verbose:
+            if self.verbose or self.gamePlayVerbose:
                 print "dont have enough", key, "to accept trade"
             return False
 
